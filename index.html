@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -14,19 +13,16 @@
   --black:#080808;
   --panel:#151515;
 }
-
 * {
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
-
 body {
   margin:0;
   background:var(--black);
   color:white;
   font-family:Arial,sans-serif;
 }
-
 header {
   padding:16px;
   background:#050505;
@@ -36,26 +32,22 @@ header {
   align-items:center;
   gap:12px;
 }
-
 .logo {
   font-size:21px;
   font-weight:bold;
   color:var(--gold);
 }
-
 .logo span { color:white; }
-
 header small {
   color:var(--gold2);
   font-size:11px;
+  text-align:right;
 }
-
 .container {
-  max-width:800px;
+  max-width:850px;
   margin:auto;
   padding:12px;
 }
-
 .panel {
   background:var(--panel);
   border:1px solid #34302a;
@@ -63,13 +55,11 @@ header small {
   padding:14px;
   margin-bottom:13px;
 }
-
 h3 {
   color:var(--gold);
   font-size:16px;
   margin:0 0 13px;
 }
-
 button,select {
   background:#222;
   color:white;
@@ -78,17 +68,21 @@ button,select {
   padding:12px;
   font-size:14px;
 }
-
 button:active { background:#55421d; }
-
-button:disabled { opacity:.6; }
-
 .gold-button {
   background:linear-gradient(135deg,#d2a64c,#806024);
   color:#000;
   font-weight:bold;
 }
-
+.row {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.row button {
+  flex:1;
+  min-width:100px;
+}
 .upload-btn {
   display:block;
   text-align:center;
@@ -97,139 +91,144 @@ button:disabled { opacity:.6; }
   border-radius:9px;
   padding:13px;
 }
-
 input[type=file] { display:none; }
 
 .camera-button {
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
   position:relative;
-  width:100% !important;
+  width:100%!important;
   min-height:60px;
   margin:10px 0 14px;
   padding:16px;
-  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24) !important;
-  color:#000 !important;
-  border:2px solid #f3d78b !important;
+  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24)!important;
+  color:#000!important;
+  border:2px solid #f3d78b!important;
   border-radius:12px;
-  font-size:18px !important;
+  font-size:18px!important;
   font-weight:bold;
   text-align:center;
   box-shadow:0 0 14px rgba(214,173,82,.25);
   z-index:5;
 }
-
 .camera-button:disabled {
-  opacity:1 !important;
-  color:#000 !important;
+  opacity:1!important;
+  color:#000!important;
 }
 
-.canvas-wrap {
+.stage {
   position:relative;
   width:100%;
-  height:58vh;
-  min-height:320px;
-  max-height:700px;
+  height:62vh;
+  min-height:340px;
+  max-height:750px;
   background:#000;
   border:2px solid #a17b31;
-  border-radius:12px;
+  border-radius:13px;
   overflow:hidden;
+  isolation:isolate;
 }
-
 #camera {
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
   background:#000;
   z-index:1;
 }
-
-#imageLayer {
-  position:absolute;
-  inset:0;
-  z-index:2;
-  overflow:hidden;
-  touch-action:none;
-}
-
-#referenceImage {
+#ref {
   position:absolute;
   left:50%;
   top:50%;
   max-width:100%;
   max-height:100%;
-  width:auto;
-  height:auto;
   object-fit:contain;
   opacity:.65;
-  transform:
-    translate(-50%,-50%)
-    translate(var(--moveX,0px),var(--moveY,0px))
-    scale(var(--zoom,1));
-  transform-origin:center center;
-  pointer-events:none;
+  transform:translate(-50%,-50%)
+    translate(var(--x),var(--y))
+    rotate(var(--rot))
+    scale(var(--zoom));
+  transform-origin:center;
+  z-index:2;
+  touch-action:none;
   user-select:none;
   -webkit-user-drag:none;
   display:none;
 }
-
-.empty-message {
+#grid {
   position:absolute;
   inset:0;
   z-index:3;
+  pointer-events:none;
+  display:none;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,.25) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(255,255,255,.25) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+#guides {
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  display:none;
+}
+#guides:before,#guides:after {
+  content:"";
+  position:absolute;
+  background:rgba(255,215,90,.65);
+}
+#guides:before {
+  width:1px;
+  height:100%;
+  left:50%;
+}
+#guides:after {
+  height:1px;
+  width:100%;
+  top:50%;
+}
+#empty {
+  position:absolute;
+  inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  color:#aaa;
+  color:#999;
   padding:20px;
+  z-index:5;
   pointer-events:none;
-  font-size:14px;
 }
-
-.control-row {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.control-row button {
-  flex:1;
-  min-width:90px;
-}
-
-.control {
-  margin:16px 0;
-}
-
+.control { margin:15px 0; }
 .control label {
   display:flex;
   justify-content:space-between;
+  gap:10px;
   font-size:13px;
-  margin-bottom:8px;
-  color:#eee;
+  margin-bottom:7px;
 }
-
 input[type=range] {
   width:100%;
   accent-color:#d6ad52;
   height:28px;
 }
-
 .status {
   font-size:12px;
   color:#d7b866;
   min-height:18px;
   margin-top:8px;
 }
-
 .note {
-  color:#aaa;
   font-size:12px;
+  color:#aaa;
   line-height:1.5;
+}
+.fullscreen {
+  height:90vh;
+  max-height:none;
 }
 </style>
 </head>
@@ -237,79 +236,114 @@ input[type=range] {
 <body>
 
 <header>
-  <div class="logo">TRACER <span>STUDIO</span> GOLD</div>
-  <small>DRAWING ASSISTANT</small>
+  <div class="logo">TRACER <span>STUDIO GOLD</span></div>
+  <small>DRAWING<br>ASSISTANT</small>
 </header>
 
 <div class="container">
 
+  <!-- CAMERA -->
   <div class="panel">
     <h3>📷 Kamera</h3>
 
-    <button class="camera-button" id="cameraBtn">
-      START KAMERA
+    <button id="cameraBtn" class="camera-button">
+      ▶ START KAMERA
     </button>
 
-    <div class="control-row">
+    <div class="row">
       <button id="flipBtn">🔄 Skift kamera</button>
       <button id="stopBtn">⏹ Stop kamera</button>
     </div>
 
     <div id="status" class="status">
-      Kamera ikke startet. Du kan stadig vise et billede.
+      Kamera ikke startet. Du kan stadig bruge referencefoto.
     </div>
   </div>
 
+  <!-- REFERENCE IMAGE -->
   <div class="panel">
     <h3>🖼️ Referencebillede</h3>
 
     <label class="upload-btn gold-button" for="fileInput">
-      VÆLG BILLEDE
+      📁 VÆLG BILLEDE
     </label>
 
-    <input type="file" id="fileInput" accept="image/*">
+    <input
+      class="file"
+      id="fileInput"
+      type="file"
+      accept="image/*"
+    >
 
-    <div class="control-row">
+    <div class="row">
       <button id="resetBtn">↩ Nulstil</button>
       <button id="removeBtn">🗑 Fjern billede</button>
     </div>
   </div>
 
+  <!-- DRAWING AREA -->
   <div class="panel">
     <h3>✏️ Tegnevisning</h3>
 
-    <div class="canvas-wrap" id="canvasWrap">
+    <div id="stage" class="stage">
       <video id="camera" autoplay playsinline muted></video>
-
-      <div id="imageLayer">
-        <img id="referenceImage" alt="Referencebillede">
-      </div>
-
-      <div id="emptyMessage" class="empty-message">
-        Vælg et billede for at begynde.<br><br>
-        Kameraet er ikke nødvendigt for at vise referencebilledet.
-      </div>
+      <img id="ref" alt="Referencebillede">
+      <div id="grid"></div>
+      <div id="guides"></div>
+      <div id="empty">Vælg et referencebillede for at starte</div>
     </div>
 
+    <!-- OPACITY -->
     <div class="control">
       <label>
         <span>Gennemsigtighed</span>
-        <span id="opacityValue">65%</span>
+        <span id="opacityText">65%</span>
       </label>
-      <input id="opacitySlider" type="range" min="0" max="100" value="65">
+      <input id="opacity" type="range" min="0" max="100" value="65">
+    </div>
+
+    <!-- ZOOM -->
+    <div class="control">
+      <label>
+        <span>Zoom</span>
+        <span id="zoomText">100%</span>
+      </label>
+      <input id="zoom" type="range" min="20" max="300" value="100">
+    </div>
+
+    <!-- ROTATION -->
+    <div class="control">
+      <label>
+        <span>Rotation</span>
+        <span id="rotationText">0°</span>
+      </label>
+      <input id="rotation" type="range" min="-180" max="180" value="0">
+    </div>
+
+    <!-- GRID & GUIDES -->
+    <div class="row">
+      <button id="gridBtn">▦ Gitter: FRA</button>
+      <button id="guideBtn">＋ Guides: FRA</button>
     </div>
 
     <div class="control">
       <label>
-        <span>Zoom</span>
-        <span id="zoomValue">100%</span>
+        <span>Gitterstørrelse</span>
+        <span id="gridText">40 px</span>
       </label>
-      <input id="zoomSlider" type="range" min="25" max="300" value="100">
+      <input id="gridSize" type="range" min="15" max="120" value="40">
+    </div>
+
+    <!-- FULLSCREEN & SAVE -->
+    <div class="row">
+      <button id="fullscreenBtn">⛶ Fuldskærm</button>
+      <button id="downloadBtn">⬇ Gem PNG</button>
     </div>
 
     <p class="note">
-      Stil telefonen i en holder over papiret. Vælg referencebilledet,
-      juster gennemsigtighed og zoom. Træk billedet med fingeren for at flytte det.
+      Sæt mobilen i en holder over papiret. Start kameraet,
+      vælg et referencefoto, juster gennemsigtighed og zoom.
+      Træk referencefotoet med fingeren for at flytte det.
     </p>
   </div>
 
@@ -319,155 +353,136 @@ input[type=range] {
 (() => {
   const $ = id => document.getElementById(id);
 
-  const camera = $("camera");
-  const cameraBtn = $("cameraBtn");
-  const flipBtn = $("flipBtn");
-  const stopBtn = $("stopBtn");
-  const fileInput = $("fileInput");
-  const referenceImage = $("referenceImage");
-  const imageLayer = $("imageLayer");
-  const emptyMessage = $("emptyMessage");
-  const opacitySlider = $("opacitySlider");
-  const zoomSlider = $("zoomSlider");
-  const opacityValue = $("opacityValue");
-  const zoomValue = $("zoomValue");
-  const resetBtn = $("resetBtn");
-  const removeBtn = $("removeBtn");
+  const video = $("camera");
+  const ref = $("ref");
+  const stage = $("stage");
   const status = $("status");
 
   let stream = null;
   let facing = "environment";
+  let loaded = false;
+  let objectURL = null;
+
   let opacity = 65;
   let zoom = 100;
-  let imageX = 0;
-  let imageY = 0;
+  let rotation = 0;
+  let x = 0;
+  let y = 0;
+
+  let gridOn = false;
+  let guidesOn = false;
+
   let dragging = false;
   let lastX = 0;
   let lastY = 0;
-  let imageLoaded = false;
-  let objectURL = null;
 
-  function updateImage() {
-    referenceImage.style.opacity = opacity / 100;
-
-    referenceImage.style.setProperty(
-      "--zoom",
-      zoom / 100
-    );
-
-    referenceImage.style.setProperty(
-      "--moveX",
-      imageX + "px"
-    );
-
-    referenceImage.style.setProperty(
-      "--moveY",
-      imageY + "px"
-    );
-
-    referenceImage.style.display =
-      imageLoaded ? "block" : "none";
-
-    opacityValue.textContent = opacity + "%";
-    zoomValue.textContent = zoom + "%";
-
-    emptyMessage.style.display =
-      imageLoaded ? "none" : "flex";
-  }
-
-  function updateStatus(text) {
+  function statusText(text) {
     status.textContent = text;
   }
 
+  function render() {
+    ref.style.opacity = opacity / 100;
+
+    ref.style.setProperty("--zoom", zoom / 100);
+    ref.style.setProperty("--rot", rotation + "deg");
+    ref.style.setProperty("--x", x + "px");
+    ref.style.setProperty("--y", y + "px");
+
+    ref.style.display = loaded ? "block" : "none";
+    $("empty").style.display = loaded ? "none" : "flex";
+
+    $("opacityText").textContent = opacity + "%";
+    $("zoomText").textContent = zoom + "%";
+    $("rotationText").textContent = rotation + "°";
+
+    $("grid").style.display = gridOn ? "block" : "none";
+    $("guides").style.display = guidesOn ? "block" : "none";
+
+    $("gridText").textContent = $("gridSize").value + " px";
+
+    $("grid").style.backgroundSize =
+      $("gridSize").value + "px " +
+      $("gridSize").value + "px";
+
+    $("gridBtn").textContent =
+      "▦ Gitter: " + (gridOn ? "TIL" : "FRA");
+
+    $("guideBtn").textContent =
+      "＋ Guides: " + (guidesOn ? "TIL" : "FRA");
+  }
+
+  // CAMERA
   async function startCamera() {
     stopCamera(false);
 
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
-      updateStatus("Browser understøtter ikke kameraadgang.");
-      return;
-    }
-
     try {
-      updateStatus("Starter kamera...");
+      statusText("Starter kamera...");
 
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: facing },
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          facingMode: { ideal: facing }
         },
         audio: false
       });
 
-      camera.srcObject = stream;
-      await camera.play();
+      video.srcObject = stream;
+      await video.play();
 
-      cameraBtn.textContent = "STOP KAMERA";
+      $("cameraBtn").textContent = "⏹ STOP KAMERA";
 
-      updateStatus(
-        "Kamera aktivt. Referencebilledet ligger ovenpå."
+      statusText(
+        "Kamera aktiv. Referencebilledet kan lægges ovenpå."
       );
 
-    } catch (err) {
-      updateStatus(
-        "Kamera kunne ikke startes: " + err.message
-      );
+    } catch (error) {
+      statusText("Kamera-fejl: " + error.message);
     }
   }
 
-  function stopCamera(update = true) {
+  function stopCamera(show = true) {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       stream = null;
     }
 
-    camera.srcObject = null;
-    cameraBtn.textContent = "START KAMERA";
+    video.srcObject = null;
+    $("cameraBtn").textContent = "▶ START KAMERA";
 
-    if (update) {
-      updateStatus(
-        "Kamera stoppet. Referencebilledet forbliver synligt."
-      );
+    if (show) {
+      statusText("Kamera stoppet.");
     }
   }
 
-  cameraBtn.addEventListener("click", () => {
+  $("cameraBtn").onclick = () => {
     if (stream) {
       stopCamera();
     } else {
       startCamera();
     }
-  });
+  };
 
-  stopBtn.addEventListener("click", () => {
-    stopCamera();
-  });
+  $("stopBtn").onclick = () => stopCamera();
 
-  flipBtn.addEventListener("click", () => {
-    facing =
-      facing === "environment" ? "user" : "environment";
+  $("flipBtn").onclick = () => {
+    facing = facing === "environment" ? "user" : "environment";
 
     if (stream) {
       startCamera();
     } else {
-      updateStatus(
-        "Valgt " +
-        (facing === "environment"
-          ? "bagkamera"
-          : "frontkamera")
+      statusText(
+        "Kamera valgt: " +
+        (facing === "environment" ? "bagkamera" : "frontkamera")
       );
     }
-  });
+  };
 
-  fileInput.addEventListener("change", event => {
-    const file =
-      event.target.files && event.target.files[0];
-
+  // IMAGE UPLOAD
+  $("fileInput").onchange = event => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      updateStatus("Vælg venligst et billedformat.");
+      statusText("Vælg en billedfil.");
       return;
     }
 
@@ -477,119 +492,240 @@ input[type=range] {
 
     objectURL = URL.createObjectURL(file);
 
-    referenceImage.onload = () => {
-      imageLoaded = true;
-      imageX = 0;
-      imageY = 0;
+    ref.onload = () => {
+      loaded = true;
+      x = 0;
+      y = 0;
       zoom = 100;
+      rotation = 0;
       opacity = 65;
 
-      zoomSlider.value = 100;
-      opacitySlider.value = 65;
+      $("zoom").value = 100;
+      $("rotation").value = 0;
+      $("opacity").value = 65;
 
-      updateImage();
-      updateStatus("Referencebillede indlæst og synligt.");
+      render();
+      statusText("Referencebillede indlæst.");
     };
 
-    referenceImage.onerror = () => {
-      updateStatus("Billedet kunne ikke indlæses.");
+    ref.onerror = () => {
+      statusText("Billedet kunne ikke indlæses.");
     };
 
-    referenceImage.src = objectURL;
-  });
+    ref.src = objectURL;
+  };
 
-  opacitySlider.addEventListener("input", () => {
-    opacity = Number(opacitySlider.value);
-    updateImage();
-  });
+  // SLIDERS
+  $("opacity").oninput = () => {
+    opacity = Number($("opacity").value);
+    render();
+  };
 
-  zoomSlider.addEventListener("input", () => {
-    zoom = Number(zoomSlider.value);
-    updateImage();
-  });
+  $("zoom").oninput = () => {
+    zoom = Number($("zoom").value);
+    render();
+  };
 
-  resetBtn.addEventListener("click", () => {
-    imageX = 0;
-    imageY = 0;
-    zoom = 100;
+  $("rotation").oninput = () => {
+    rotation = Number($("rotation").value);
+    render();
+  };
+
+  $("gridSize").oninput = render;
+
+  // GRID
+  $("gridBtn").onclick = () => {
+    gridOn = !gridOn;
+    render();
+  };
+
+  // GUIDES
+  $("guideBtn").onclick = () => {
+    guidesOn = !guidesOn;
+    render();
+  };
+
+  // RESET
+  $("resetBtn").onclick = () => {
     opacity = 65;
-
-    zoomSlider.value = 100;
-    opacitySlider.value = 65;
-
-    updateImage();
-    updateStatus("Placering og indstillinger nulstillet.");
-  });
-
-  removeBtn.addEventListener("click", () => {
-    referenceImage.removeAttribute("src");
-    imageLoaded = false;
-    imageX = 0;
-    imageY = 0;
     zoom = 100;
+    rotation = 0;
+    x = 0;
+    y = 0;
 
-    zoomSlider.value = 100;
-    updateImage();
+    $("opacity").value = 65;
+    $("zoom").value = 100;
+    $("rotation").value = 0;
+
+    render();
+    statusText("Indstillinger nulstillet.");
+  };
+
+  // REMOVE IMAGE
+  $("removeBtn").onclick = () => {
+    ref.src = "";
+    loaded = false;
+    x = 0;
+    y = 0;
 
     if (objectURL) {
       URL.revokeObjectURL(objectURL);
-      objectURL = null;
     }
 
-    fileInput.value = "";
+    objectURL = null;
+    $("fileInput").value = "";
 
-    updateStatus("Referencebillede fjernet.");
+    render();
+    statusText("Referencefoto fjernet.");
+  };
+
+  // FULLSCREEN
+  $("fullscreenBtn").onclick = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await stage.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      statusText("Fuldskærm understøttes ikke her.");
+    }
+  };
+
+  document.addEventListener("fullscreenchange", () => {
+    stage.classList.toggle(
+      "fullscreen",
+      !!document.fullscreenElement
+    );
   });
 
-  imageLayer.addEventListener("pointerdown", event => {
-    if (!imageLoaded) return;
+  // MOVE IMAGE BY TOUCH
+  ref.addEventListener("pointerdown", event => {
+    if (!loaded) return;
 
     dragging = true;
     lastX = event.clientX;
     lastY = event.clientY;
 
-    imageLayer.setPointerCapture(event.pointerId);
+    ref.setPointerCapture(event.pointerId);
   });
 
-  imageLayer.addEventListener("pointermove", event => {
+  ref.addEventListener("pointermove", event => {
     if (!dragging) return;
 
-    imageX += event.clientX - lastX;
-    imageY += event.clientY - lastY;
+    x += event.clientX - lastX;
+    y += event.clientY - lastY;
 
     lastX = event.clientX;
     lastY = event.clientY;
 
-    updateImage();
+    render();
   });
 
-  imageLayer.addEventListener("pointerup", () => {
+  ref.addEventListener("pointerup", () => {
     dragging = false;
   });
 
-  imageLayer.addEventListener("pointercancel", () => {
+  ref.addEventListener("pointercancel", () => {
     dragging = false;
   });
 
-  let wakeLock = null;
-
-  async function requestWakeLock() {
-    try {
-      if ("wakeLock" in navigator) {
-        wakeLock = await navigator.wakeLock.request("screen");
-      }
-    } catch (e) {}
-  }
-
-  camera.addEventListener("playing", requestWakeLock);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && stream) {
-      requestWakeLock();
+  // PNG DOWNLOAD
+  $("downloadBtn").onclick = () => {
+    if (!loaded) {
+      statusText("Vælg et billede før du gemmer.");
+      return;
     }
-  });
 
-  updateImage();
+    const w = stage.clientWidth;
+    const h = stage.clientHeight;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = w * 2;
+    canvas.height = h * 2;
+
+    const ctx = canvas.getContext("2d");
+    ctx.scale(2, 2);
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, w, h);
+
+    if (video.readyState >= 2 && stream) {
+      ctx.drawImage(video, 0, 0, w, h);
+    }
+
+    const image = new Image();
+
+    image.onload = () => {
+      ctx.save();
+
+      ctx.translate(w / 2 + x, h / 2 + y);
+      ctx.rotate(rotation * Math.PI / 180);
+      ctx.globalAlpha = opacity / 100;
+
+      const scale =
+        Math.min(w / image.width, h / image.height) *
+        zoom / 100;
+
+      const iw = image.width * scale;
+      const ih = image.height * scale;
+
+      ctx.drawImage(
+        image,
+        -iw / 2,
+        -ih / 2,
+        iw,
+        ih
+      );
+
+      ctx.restore();
+
+      // GRID IN PNG
+      if (gridOn) {
+        ctx.strokeStyle = "rgba(255,255,255,.3)";
+        ctx.lineWidth = 1;
+
+        const size = Number($("gridSize").value);
+
+        for (let xx = 0; xx < w; xx += size) {
+          ctx.beginPath();
+          ctx.moveTo(xx, 0);
+          ctx.lineTo(xx, h);
+          ctx.stroke();
+        }
+
+        for (let yy = 0; yy < h; yy += size) {
+          ctx.beginPath();
+          ctx.moveTo(0, yy);
+          ctx.lineTo(w, yy);
+          ctx.stroke();
+        }
+      }
+
+      // GUIDES IN PNG
+      if (guidesOn) {
+        ctx.strokeStyle = "rgba(255,215,90,.65)";
+        ctx.beginPath();
+        ctx.moveTo(w / 2, 0);
+        ctx.lineTo(w / 2, h);
+        ctx.moveTo(0, h / 2);
+        ctx.lineTo(w, h / 2);
+        ctx.stroke();
+      }
+
+      const link = document.createElement("a");
+      link.download = "Tracer-Studio.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      statusText("PNG gemt.");
+    };
+
+    image.src = ref.src;
+  };
+
+  // INITIALIZE
+  render();
 })();
 </script>
 
