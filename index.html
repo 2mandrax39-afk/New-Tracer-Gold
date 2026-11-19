@@ -14,96 +14,56 @@
   --black:#080808;
   --panel:#151515;
 }
-* {
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-body {
-  margin:0;
-  background:var(--black);
-  color:white;
-  font-family:Arial,sans-serif;
-}
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { margin:0;background:var(--black);color:white;font-family:Arial,sans-serif; }
 header {
-  padding:16px;
-  background:#050505;
-  border-bottom:1px solid #705522;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
+  padding:16px;background:#050505;border-bottom:1px solid #705522;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
 }
-.logo {
-  font-size:21px;
-  font-weight:bold;
-  color:var(--gold);
-}
+.logo { font-size:21px;font-weight:bold;color:var(--gold); }
 .logo span { color:white; }
-header small {
-  color:var(--gold2);
-  font-size:11px;
-}
-.container {
-  max-width:800px;
-  margin:auto;
-  padding:12px;
-}
-.panel {
-  background:var(--panel);
-  border:1px solid #34302a;
-  border-radius:13px;
-  padding:14px;
-  margin-bottom:13px;
-}
-h3 {
-  color:var(--gold);
-  font-size:16px;
-  margin:0 0 13px;
-}
+header small { color:var(--gold2);font-size:11px; }
+.container { max-width:800px;margin:auto;padding:12px; }
+.panel { background:var(--panel);border:1px solid #34302a;border-radius:13px;padding:14px;margin-bottom:13px; }
+h3 { color:var(--gold);font-size:16px;margin:0 0 13px; }
 button,select {
-  background:#222;
-  color:white;
-  border:1px solid #80652d;
-  border-radius:9px;
-  padding:12px;
-  font-size:14px;
+  background:#222;color:white;border:1px solid #80652d;
+  border-radius:9px;padding:12px;font-size:14px;
 }
 button:active { background:#55421d; }
-.gold-button {
-  background:linear-gradient(135deg,#d2a64c,#806024);
-  color:#000;
-  font-weight:bold;
-}
+button:disabled { opacity:.6; }
+.gold-button { background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold; }
 .upload-btn {
-  display:block;
-  text-align:center;
-  width:100%;
-  margin:10px 0;
-  border-radius:9px;
-  padding:13px;
+  display:block;text-align:center;width:100%;margin:10px 0;
+  border-radius:9px;padding:13px;
 }
 input[type=file] { display:none; }
 .camera-button {
-  display:block;
-  width:100%;
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:relative;
+  width:100% !important;
   min-height:60px;
   margin:10px 0 14px;
   padding:16px;
-  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24);
-  color:#000;
-  border:2px solid #f3d78b;
+  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24) !important;
+  color:#000 !important;
+  border:2px solid #f3d78b !important;
   border-radius:12px;
-  font-size:18px;
+  font-size:18px !important;
   font-weight:bold;
   text-align:center;
   box-shadow:0 0 14px rgba(214,173,82,.25);
+  z-index:5;
+}
+.camera-button:disabled {
+  opacity:1 !important;
+  color:#000 !important;
 }
 .canvas-wrap {
   position:relative;
-  width:100%;
-  height:58vh;
-  min-height:320px;
-  max-height:700px;
+  width:100%;height:58vh;min-height:320px;max-height:700px;
   background:#000;
   border:2px solid #a17b31;
   border-radius:12px;
@@ -116,30 +76,36 @@ input[type=file] { display:none; }
   height:100%;
   object-fit:cover;
   background:#000;
+  z-index:1;
 }
 #imageLayer {
   position:absolute;
   inset:0;
+  z-index:2;
   overflow:hidden;
   touch-action:none;
-  display:flex;
-  align-items:center;
-  justify-content:center;
 }
 #referenceImage {
+  position:absolute;
+  left:50%;
+  top:50%;
   max-width:100%;
   max-height:100%;
+  width:auto;
+  height:auto;
   object-fit:contain;
   opacity:.65;
-  transform:translate(0px,0px) scale(1);
+  transform:translate(-50%,-50%) translate(var(--moveX,0px),var(--moveY,0px)) scale(var(--zoom,1));
   transform-origin:center center;
   pointer-events:none;
   user-select:none;
   -webkit-user-drag:none;
+  display:none;
 }
 .empty-message {
   position:absolute;
   inset:0;
+  z-index:3;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -209,7 +175,7 @@ input[type=range] {
     </div>
 
     <div id="status" class="status">
-      Kameraet er ikke startet.
+      Kamera ikke startet. Du kan stadig vise et billede.
     </div>
   </div>
 
@@ -235,11 +201,12 @@ input[type=range] {
       <video id="camera" autoplay playsinline muted></video>
 
       <div id="imageLayer">
-        <img id="referenceImage" alt="Reference">
+        <img id="referenceImage" alt="Referencebillede">
       </div>
 
       <div id="emptyMessage" class="empty-message">
-        Start kameraet og vælg et referencebillede.
+        Vælg et billede for at begynde.<br><br>
+        Kameraet er ikke nødvendigt for at vise referencebilledet.
       </div>
     </div>
 
@@ -260,9 +227,8 @@ input[type=range] {
     </div>
 
     <p class="note">
-      Stil telefonen i en holder over papiret. Start kameraet, vælg dit
-      referencebillede og juster gennemsigtigheden. Træk billedet på
-      skærmen for at flytte det. Brug zoom til at ændre størrelsen.
+      Stil telefonen i en holder over papiret. Vælg referencebilledet,
+      juster gennemsigtighed og zoom. Træk billedet med fingeren for at flytte det.
     </p>
   </div>
 
@@ -270,21 +236,23 @@ input[type=range] {
 
 <script>
 (() => {
-  const camera = document.getElementById("camera");
-  const cameraBtn = document.getElementById("cameraBtn");
-  const flipBtn = document.getElementById("flipBtn");
-  const stopBtn = document.getElementById("stopBtn");
-  const fileInput = document.getElementById("fileInput");
-  const referenceImage = document.getElementById("referenceImage");
-  const imageLayer = document.getElementById("imageLayer");
-  const emptyMessage = document.getElementById("emptyMessage");
-  const opacitySlider = document.getElementById("opacitySlider");
-  const zoomSlider = document.getElementById("zoomSlider");
-  const opacityValue = document.getElementById("opacityValue");
-  const zoomValue = document.getElementById("zoomValue");
-  const resetBtn = document.getElementById("resetBtn");
-  const removeBtn = document.getElementById("removeBtn");
-  const status = document.getElementById("status");
+  const $ = id => document.getElementById(id);
+
+  const camera = $("camera");
+  const cameraBtn = $("cameraBtn");
+  const flipBtn = $("flipBtn");
+  const stopBtn = $("stopBtn");
+  const fileInput = $("fileInput");
+  const referenceImage = $("referenceImage");
+  const imageLayer = $("imageLayer");
+  const emptyMessage = $("emptyMessage");
+  const opacitySlider = $("opacitySlider");
+  const zoomSlider = $("zoomSlider");
+  const opacityValue = $("opacityValue");
+  const zoomValue = $("zoomValue");
+  const resetBtn = $("resetBtn");
+  const removeBtn = $("removeBtn");
+  const status = $("status");
 
   let stream = null;
   let facing = "environment";
@@ -296,15 +264,17 @@ input[type=range] {
   let lastX = 0;
   let lastY = 0;
   let imageLoaded = false;
+  let objectURL = null;
 
   function updateImage() {
     referenceImage.style.opacity = opacity / 100;
-    referenceImage.style.transform =
-      `translate(${imageX}px,${imageY}px) scale(${zoom / 100})`;
+    referenceImage.style.setProperty("--zoom", zoom / 100);
+    referenceImage.style.setProperty("--moveX", imageX + "px");
+    referenceImage.style.setProperty("--moveY", imageY + "px");
+    referenceImage.style.display = imageLoaded ? "block" : "none";
 
     opacityValue.textContent = opacity + "%";
     zoomValue.textContent = zoom + "%";
-
     emptyMessage.style.display = imageLoaded ? "none" : "flex";
   }
 
@@ -313,10 +283,10 @@ input[type=range] {
   }
 
   async function startCamera() {
-    stopCamera();
+    stopCamera(false);
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      updateStatus("Din browser understøtter ikke kameraadgang.");
+      updateStatus("Browser understøtter ikke kameraadgang.");
       return;
     }
 
@@ -335,14 +305,14 @@ input[type=range] {
       camera.srcObject = stream;
       await camera.play();
 
-      updateStatus("Kamera aktivt. Placer telefonen i holderen.");
-      cameraBtn.textContent = "KAMERA AKTIVT";
+      cameraBtn.textContent = "STOP KAMERA";
+      updateStatus("Kamera aktivt. Referencebilledet ligger ovenpå.");
     } catch (err) {
       updateStatus("Kamera kunne ikke startes: " + err.message);
     }
   }
 
-  function stopCamera() {
+  function stopCamera(update = true) {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       stream = null;
@@ -350,7 +320,10 @@ input[type=range] {
 
     camera.srcObject = null;
     cameraBtn.textContent = "START KAMERA";
-    updateStatus("Kamera stoppet.");
+
+    if (update) {
+      updateStatus("Kamera stoppet. Referencebilledet forbliver synligt.");
+    }
   }
 
   cameraBtn.addEventListener("click", () => {
@@ -365,7 +338,12 @@ input[type=range] {
 
   flipBtn.addEventListener("click", () => {
     facing = facing === "environment" ? "user" : "environment";
-    if (stream) startCamera();
+
+    if (stream) {
+      startCamera();
+    } else {
+      updateStatus("Valgt " + (facing === "environment" ? "bagkamera" : "frontkamera"));
+    }
   });
 
   fileInput.addEventListener("change", event => {
@@ -377,17 +355,29 @@ input[type=range] {
       return;
     }
 
-    const url = URL.createObjectURL(file);
+    if (objectURL) {
+      URL.revokeObjectURL(objectURL);
+    }
+
+    objectURL = URL.createObjectURL(file);
+
     referenceImage.onload = () => {
       imageLoaded = true;
       imageX = 0;
       imageY = 0;
       zoom = 100;
+      opacity = 65;
       zoomSlider.value = 100;
+      opacitySlider.value = 65;
       updateImage();
-      updateStatus("Referencebillede indlæst.");
+      updateStatus("Referencebillede indlæst og synligt.");
     };
-    referenceImage.src = url;
+
+    referenceImage.onerror = () => {
+      updateStatus("Billedet kunne ikke indlæses.");
+    };
+
+    referenceImage.src = objectURL;
   });
 
   opacitySlider.addEventListener("input", () => {
@@ -419,29 +409,30 @@ input[type=range] {
     zoom = 100;
     zoomSlider.value = 100;
     updateImage();
+
+    if (objectURL) {
+      URL.revokeObjectURL(objectURL);
+      objectURL = null;
+    }
+
     fileInput.value = "";
     updateStatus("Referencebillede fjernet.");
   });
 
-  // Flyt referencebilledet med finger eller mus
   imageLayer.addEventListener("pointerdown", event => {
     if (!imageLoaded) return;
 
     dragging = true;
     lastX = event.clientX;
     lastY = event.clientY;
-
     imageLayer.setPointerCapture(event.pointerId);
   });
 
   imageLayer.addEventListener("pointermove", event => {
     if (!dragging) return;
 
-    const dx = event.clientX - lastX;
-    const dy = event.clientY - lastY;
-
-    imageX += dx;
-    imageY += dy;
+    imageX += event.clientX - lastX;
+    imageY += event.clientY - lastY;
 
     lastX = event.clientX;
     lastY = event.clientY;
@@ -449,15 +440,9 @@ input[type=range] {
     updateImage();
   });
 
-  imageLayer.addEventListener("pointerup", () => {
-    dragging = false;
-  });
+  imageLayer.addEventListener("pointerup", () => dragging = false);
+  imageLayer.addEventListener("pointercancel", () => dragging = false);
 
-  imageLayer.addEventListener("pointercancel", () => {
-    dragging = false;
-  });
-
-  // Hold skærmen aktiv, når muligt
   let wakeLock = null;
 
   async function requestWakeLock() {
