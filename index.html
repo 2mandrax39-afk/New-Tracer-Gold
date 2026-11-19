@@ -14,30 +14,92 @@
   --black:#080808;
   --panel:#151515;
 }
-* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { margin:0;background:var(--black);color:white;font-family:Arial,sans-serif; }
+
+* {
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body {
+  margin:0;
+  background:var(--black);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
 header {
-  padding:16px;background:#050505;border-bottom:1px solid #705522;
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:16px;
+  background:#050505;
+  border-bottom:1px solid #705522;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
 }
-.logo { font-size:21px;font-weight:bold;color:var(--gold); }
+
+.logo {
+  font-size:21px;
+  font-weight:bold;
+  color:var(--gold);
+}
+
 .logo span { color:white; }
-header small { color:var(--gold2);font-size:11px; }
-.container { max-width:800px;margin:auto;padding:12px; }
-.panel { background:var(--panel);border:1px solid #34302a;border-radius:13px;padding:14px;margin-bottom:13px; }
-h3 { color:var(--gold);font-size:16px;margin:0 0 13px; }
+
+header small {
+  color:var(--gold2);
+  font-size:11px;
+}
+
+.container {
+  max-width:800px;
+  margin:auto;
+  padding:12px;
+}
+
+.panel {
+  background:var(--panel);
+  border:1px solid #34302a;
+  border-radius:13px;
+  padding:14px;
+  margin-bottom:13px;
+}
+
+h3 {
+  color:var(--gold);
+  font-size:16px;
+  margin:0 0 13px;
+}
+
 button,select {
-  background:#222;color:white;border:1px solid #80652d;
-  border-radius:9px;padding:12px;font-size:14px;
+  background:#222;
+  color:white;
+  border:1px solid #80652d;
+  border-radius:9px;
+  padding:12px;
+  font-size:14px;
 }
+
 button:active { background:#55421d; }
+
 button:disabled { opacity:.6; }
-.gold-button { background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold; }
-.upload-btn {
-  display:block;text-align:center;width:100%;margin:10px 0;
-  border-radius:9px;padding:13px;
+
+.gold-button {
+  background:linear-gradient(135deg,#d2a64c,#806024);
+  color:#000;
+  font-weight:bold;
 }
+
+.upload-btn {
+  display:block;
+  text-align:center;
+  width:100%;
+  margin:10px 0;
+  border-radius:9px;
+  padding:13px;
+}
+
 input[type=file] { display:none; }
+
 .camera-button {
   display:block !important;
   visibility:visible !important;
@@ -57,18 +119,24 @@ input[type=file] { display:none; }
   box-shadow:0 0 14px rgba(214,173,82,.25);
   z-index:5;
 }
+
 .camera-button:disabled {
   opacity:1 !important;
   color:#000 !important;
 }
+
 .canvas-wrap {
   position:relative;
-  width:100%;height:58vh;min-height:320px;max-height:700px;
+  width:100%;
+  height:58vh;
+  min-height:320px;
+  max-height:700px;
   background:#000;
   border:2px solid #a17b31;
   border-radius:12px;
   overflow:hidden;
 }
+
 #camera {
   position:absolute;
   inset:0;
@@ -78,6 +146,7 @@ input[type=file] { display:none; }
   background:#000;
   z-index:1;
 }
+
 #imageLayer {
   position:absolute;
   inset:0;
@@ -85,6 +154,7 @@ input[type=file] { display:none; }
   overflow:hidden;
   touch-action:none;
 }
+
 #referenceImage {
   position:absolute;
   left:50%;
@@ -95,13 +165,17 @@ input[type=file] { display:none; }
   height:auto;
   object-fit:contain;
   opacity:.65;
-  transform:translate(-50%,-50%) translate(var(--moveX,0px),var(--moveY,0px)) scale(var(--zoom,1));
+  transform:
+    translate(-50%,-50%)
+    translate(var(--moveX,0px),var(--moveY,0px))
+    scale(var(--zoom,1));
   transform-origin:center center;
   pointer-events:none;
   user-select:none;
   -webkit-user-drag:none;
   display:none;
 }
+
 .empty-message {
   position:absolute;
   inset:0;
@@ -115,18 +189,22 @@ input[type=file] { display:none; }
   pointer-events:none;
   font-size:14px;
 }
+
 .control-row {
   display:flex;
   gap:8px;
   flex-wrap:wrap;
 }
+
 .control-row button {
   flex:1;
   min-width:90px;
 }
+
 .control {
   margin:16px 0;
 }
+
 .control label {
   display:flex;
   justify-content:space-between;
@@ -134,17 +212,20 @@ input[type=file] { display:none; }
   margin-bottom:8px;
   color:#eee;
 }
+
 input[type=range] {
   width:100%;
   accent-color:#d6ad52;
   height:28px;
 }
+
 .status {
   font-size:12px;
   color:#d7b866;
   min-height:18px;
   margin-top:8px;
 }
+
 .note {
   color:#aaa;
   font-size:12px;
@@ -268,14 +349,30 @@ input[type=range] {
 
   function updateImage() {
     referenceImage.style.opacity = opacity / 100;
-    referenceImage.style.setProperty("--zoom", zoom / 100);
-    referenceImage.style.setProperty("--moveX", imageX + "px");
-    referenceImage.style.setProperty("--moveY", imageY + "px");
-    referenceImage.style.display = imageLoaded ? "block" : "none";
+
+    referenceImage.style.setProperty(
+      "--zoom",
+      zoom / 100
+    );
+
+    referenceImage.style.setProperty(
+      "--moveX",
+      imageX + "px"
+    );
+
+    referenceImage.style.setProperty(
+      "--moveY",
+      imageY + "px"
+    );
+
+    referenceImage.style.display =
+      imageLoaded ? "block" : "none";
 
     opacityValue.textContent = opacity + "%";
     zoomValue.textContent = zoom + "%";
-    emptyMessage.style.display = imageLoaded ? "none" : "flex";
+
+    emptyMessage.style.display =
+      imageLoaded ? "none" : "flex";
   }
 
   function updateStatus(text) {
@@ -285,7 +382,8 @@ input[type=range] {
   async function startCamera() {
     stopCamera(false);
 
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    if (!navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia) {
       updateStatus("Browser understøtter ikke kameraadgang.");
       return;
     }
@@ -306,9 +404,15 @@ input[type=range] {
       await camera.play();
 
       cameraBtn.textContent = "STOP KAMERA";
-      updateStatus("Kamera aktivt. Referencebilledet ligger ovenpå.");
+
+      updateStatus(
+        "Kamera aktivt. Referencebilledet ligger ovenpå."
+      );
+
     } catch (err) {
-      updateStatus("Kamera kunne ikke startes: " + err.message);
+      updateStatus(
+        "Kamera kunne ikke startes: " + err.message
+      );
     }
   }
 
@@ -322,7 +426,9 @@ input[type=range] {
     cameraBtn.textContent = "START KAMERA";
 
     if (update) {
-      updateStatus("Kamera stoppet. Referencebilledet forbliver synligt.");
+      updateStatus(
+        "Kamera stoppet. Referencebilledet forbliver synligt."
+      );
     }
   }
 
@@ -334,20 +440,30 @@ input[type=range] {
     }
   });
 
-  stopBtn.addEventListener("click", stopCamera);
+  stopBtn.addEventListener("click", () => {
+    stopCamera();
+  });
 
   flipBtn.addEventListener("click", () => {
-    facing = facing === "environment" ? "user" : "environment";
+    facing =
+      facing === "environment" ? "user" : "environment";
 
     if (stream) {
       startCamera();
     } else {
-      updateStatus("Valgt " + (facing === "environment" ? "bagkamera" : "frontkamera"));
+      updateStatus(
+        "Valgt " +
+        (facing === "environment"
+          ? "bagkamera"
+          : "frontkamera")
+      );
     }
   });
 
   fileInput.addEventListener("change", event => {
-    const file = event.target.files && event.target.files[0];
+    const file =
+      event.target.files && event.target.files[0];
+
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
@@ -367,8 +483,10 @@ input[type=range] {
       imageY = 0;
       zoom = 100;
       opacity = 65;
+
       zoomSlider.value = 100;
       opacitySlider.value = 65;
+
       updateImage();
       updateStatus("Referencebillede indlæst og synligt.");
     };
@@ -395,8 +513,10 @@ input[type=range] {
     imageY = 0;
     zoom = 100;
     opacity = 65;
+
     zoomSlider.value = 100;
     opacitySlider.value = 65;
+
     updateImage();
     updateStatus("Placering og indstillinger nulstillet.");
   });
@@ -407,6 +527,7 @@ input[type=range] {
     imageX = 0;
     imageY = 0;
     zoom = 100;
+
     zoomSlider.value = 100;
     updateImage();
 
@@ -416,6 +537,7 @@ input[type=range] {
     }
 
     fileInput.value = "";
+
     updateStatus("Referencebillede fjernet.");
   });
 
@@ -425,6 +547,7 @@ input[type=range] {
     dragging = true;
     lastX = event.clientX;
     lastY = event.clientY;
+
     imageLayer.setPointerCapture(event.pointerId);
   });
 
@@ -440,8 +563,13 @@ input[type=range] {
     updateImage();
   });
 
-  imageLayer.addEventListener("pointerup", () => dragging = false);
-  imageLayer.addEventListener("pointercancel", () => dragging = false);
+  imageLayer.addEventListener("pointerup", () => {
+    dragging = false;
+  });
+
+  imageLayer.addEventListener("pointercancel", () => {
+    dragging = false;
+  });
 
   let wakeLock = null;
 
