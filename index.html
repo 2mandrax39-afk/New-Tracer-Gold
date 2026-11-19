@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -26,7 +25,8 @@ input[type=file]{display:none}
 .canvas-wrap{width:100%;height:58vh;min-height:300px;max-height:650px;background:#111;border:2px solid #b58a38;border-radius:12px;overflow:hidden;position:relative;touch-action:none}
 canvas{width:100%;height:100%;display:block;touch-action:none}
 .canvas-message{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;color:#aaa;text-align:center;padding:25px;pointer-events:none}
-.control{margin-bottom:14px}.control:last-child{margin-bottom:0}
+.control{margin-bottom:14px}
+.control:last-child{margin-bottom:0}
 .control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#eee}
 .value{color:var(--gold2)}
 input[type=range]{width:100%;accent-color:var(--gold);height:24px}
@@ -44,6 +44,7 @@ footer{text-align:center;color:#777;font-size:11px;padding:18px}
 </style>
 </head>
 <body>
+
 <header>
   <div>
     <div class="logo">TRACER <span>STUDIO</span></div>
@@ -64,73 +65,81 @@ footer{text-align:center;color:#777;font-size:11px;padding:18px}
 </header>
 
 <div class="container">
-  <div class="panel">
-    <h3>📷 Kamera og billede</h3>
-    <button id="cameraBtn" class="gold-button camera-button">📷 Start kamera</button>
-    <label class="upload-btn gold-button" for="fileInput">🖼️ Vælg foto fra telefon</label>
-    <input id="fileInput" type="file" accept="image/*">
-    <div class="canvas-wrap" id="canvasWrap">
-      <canvas id="canvas"></canvas>
-      <div class="canvas-message" id="message">Start kameraet og vælg et billede</div>
-    </div>
-    <div class="status" id="status">Klar til brug</div>
-  </div>
 
-  <div class="panel">
-    <h3>✏️ Tegneindstillinger</h3>
-    <div class="control">
-      <label for="mode">Billedtilstand</label>
-      <select id="mode">
-        <option value="original">Original foto</option>
-        <option value="line">Linjetegning</option>
-        <option value="contour">Konturer</option>
-        <option value="pencil">Blyantsskitse</option>
-        <option value="gray">Gråtoner</option>
-      </select>
-    </div>
-    <div class="control">
-      <label>Gennemsigtighed <span class="value" id="opacityValue">50%</span></label>
-      <input type="range" id="opacity" min="5" max="100" value="50">
-    </div>
-    <div class="control">
-      <label>Zoom <span class="value" id="zoomValue">100%</span></label>
-      <input type="range" id="zoom" min="50" max="400" value="100">
-    </div>
-    <div class="control">
-      <label>Kontrast <span class="value" id="contrastValue">100%</span></label>
-      <input type="range" id="contrast" min="50" max="250" value="100">
-    </div>
-    <div class="control">
-      <label>Stregstyrke <span class="value" id="strengthValue">100%</span></label>
-      <input type="range" id="strength" min="50" max="200" value="100">
-    </div>
-  </div>
+<div class="panel">
+<h3>📷 Kamera og billede</h3>
+<button id="cameraBtn" class="gold-button camera-button">📷 Start kamera</button>
+<label class="upload-btn gold-button" for="fileInput">🖼️ Vælg foto fra telefon</label>
+<input id="fileInput" type="file" accept="image/*">
 
-  <div class="panel">
-    <h3>🔧 Billedkontrol</h3>
-    <div class="button-grid">
-      <button id="lockBtn">🔒 Lås billede</button>
-      <button id="resetBtn">↩ Nulstil position</button>
-      <button id="fitBtn">⤢ Tilpas billede</button>
-      <button id="resetControlsBtn">⟲ Nulstil filtre</button>
-    </div>
-    <div class="status" id="lockStatus">Billedet er ulåst</div>
-  </div>
-
-  <div class="panel">
-    <h3>ℹ️ Sådan bruger du Tracer Studio</h3>
-    <div class="tip">
-      1. Sæt telefonen i en holder over bordet.<br><br>
-      2. Tryk Start kamera og tillad kameraadgang.<br><br>
-      3. Læg tegnepapiret på bordet under telefonen.<br><br>
-      4. Vælg et foto fra telefonen.<br><br>
-      5. Juster gennemsigtigheden, så papiret er synligt.<br><br>
-      6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
-      7. Tryk Lås billede, når det ligger rigtigt.<br><br>
-      8. Tegn på papiret, mens du ser fotoet på skærmen.
-    </div>
-  </div>
+<div class="canvas-wrap" id="canvasWrap">
+<canvas id="canvas"></canvas>
+<div class="canvas-message" id="message">Start kameraet og vælg et billede</div>
 </div>
+<div class="status" id="status">Klar til brug</div>
+</div>
+
+<div class="panel">
+<h3>✏️ Tegneindstillinger</h3>
+
+<div class="control">
+<label for="mode">Billedtilstand</label>
+<select id="mode">
+<option value="original">Original foto</option>
+<option value="line">Linjetegning</option>
+<option value="contour">Konturer</option>
+<option value="pencil">Blyantsskitse</option>
+<option value="gray">Gråtoner</option>
+</select>
+</div>
+
+<div class="control">
+<label>Gennemsigtighed <span class="value" id="opacityValue">50%</span></label>
+<input type="range" id="opacity" min="5" max="100" value="50">
+</div>
+
+<div class="control">
+<label>Zoom <span class="value" id="zoomValue">100%</span></label>
+<input type="range" id="zoom" min="50" max="400" value="100">
+</div>
+
+<div class="control">
+<label>Kontrast <span class="value" id="contrastValue">100%</span></label>
+<input type="range" id="contrast" min="50" max="250" value="100">
+</div>
+
+<div class="control">
+<label>Stregstyrke <span class="value" id="strengthValue">100%</span></label>
+<input type="range" id="strength" min="50" max="200" value="100">
+</div>
+</div>
+
+<div class="panel">
+<h3>🔧 Billedkontrol</h3>
+<div class="button-grid">
+<button id="lockBtn">🔒 Lås billede</button>
+<button id="resetBtn">↩ Nulstil position</button>
+<button id="fitBtn">⤢ Tilpas billede</button>
+<button id="resetControlsBtn">⟲ Nulstil filtre</button>
+</div>
+<div class="status" id="lockStatus">Billedet er ulåst</div>
+</div>
+
+<div class="panel">
+<h3>ℹ️ Sådan bruger du Tracer Studio</h3>
+<div class="tip">
+1. Sæt telefonen i en holder over bordet.<br><br>
+2. Tryk Start kamera og tillad kameraadgang.<br><br>
+3. Læg tegnepapiret på bordet under telefonen.<br><br>
+4. Vælg et foto fra telefonen.<br><br>
+5. Juster gennemsigtigheden, så papiret er synligt.<br><br>
+6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
+7. Tryk Lås billede, når det ligger rigtigt.<br><br>
+8. Tegn på papiret, mens du ser fotoet på skærmen.
+</div>
+</div>
+</div>
+
 <footer>TRACER STUDIO GOLD • BLACK & GOLD EDITION</footer>
 
 <script>
@@ -171,244 +180,246 @@ let pinchStartDistance=0,pinchStartZoom=1,pinchCenter=null;
 let renderScheduled=false;
 
 function resizeCanvas(){
-  const rect=wrap.getBoundingClientRect();
-  const dpr=Math.min(window.devicePixelRatio||1,2);
-  canvas.width=Math.round(rect.width*dpr);
-  canvas.height=Math.round(rect.height*dpr);
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  render();
+const rect=wrap.getBoundingClientRect();
+const dpr=Math.min(window.devicePixelRatio||1,2);
+canvas.width=Math.round(rect.width*dpr);
+canvas.height=Math.round(rect.height*dpr);
+ctx.setTransform(dpr,0,0,dpr,0,0);
+render();
 }
 
 function fitImage(){
-  if(!imageLoaded)return;
-  baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
-  zoom=1;offsetX=0;offsetY=0;
-  zoomSlider.value=100;zoomValue.textContent="100%";
-  render();
+if(!imageLoaded)return;
+baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
+zoom=1;offsetX=0;offsetY=0;
+zoomSlider.value=100;zoomValue.textContent="100%";
+render();
 }
 
 function scheduleRender(){
-  if(renderScheduled)return;
-  renderScheduled=true;
-  requestAnimationFrame(()=>{renderScheduled=false;render();});
+if(renderScheduled)return;
+renderScheduled=true;
+requestAnimationFrame(()=>{renderScheduled=false;render();});
 }
 
 function settings(){
-  return{
-    mode:modeSelect.value,
-    opacity:Number(opacitySlider.value)/100,
-    contrast:Number(contrastSlider.value)/100,
-    strength:Number(strengthSlider.value)/100
-  };
+return{
+mode:modeSelect.value,
+opacity:Number(opacitySlider.value)/100,
+contrast:Number(contrastSlider.value)/100,
+strength:Number(strengthSlider.value)/100
+};
 }
 
 function render(){
-  if(!canvas.width||!canvas.height)return;
-  const w=wrap.clientWidth,h=wrap.clientHeight;
-  ctx.clearRect(0,0,w,h);
+if(!canvas.width||!canvas.height)return;
+const w=wrap.clientWidth,h=wrap.clientHeight;
+ctx.clearRect(0,0,w,h);
 
-  // Camera background
-  if(cameraOn&&video.readyState>=2){
-    ctx.globalAlpha=1;
-    ctx.drawImage(video,0,0,w,h);
-  }else{
-    ctx.fillStyle="#111";
-    ctx.fillRect(0,0,w,h);
-  }
-
-  if(!imageLoaded)return;
-  const s=settings();
-  const drawW=img.width*baseScale*zoom,drawH=img.height*baseScale*zoom;
-  const x=(w-drawW)/2+offsetX,y=(h-drawH)/2+offsetY;
-
-  if(s.mode==="original"){
-    ctx.globalAlpha=s.opacity;
-    ctx.drawImage(img,x,y,drawW,drawH);
-    ctx.globalAlpha=1;
-    return;
-  }
-
-  const temp=document.createElement("canvas");
-  temp.width=Math.max(1,Math.round(drawW));
-  temp.height=Math.max(1,Math.round(drawH));
-  const tctx=temp.getContext("2d",{willReadFrequently:true});
-  tctx.drawImage(img,0,0,temp.width,temp.height);
-
-  const data=tctx.getImageData(0,0,temp.width,temp.height);
-  const px=data.data,gray=new Uint8ClampedArray(temp.width*temp.height);
-  for(let i=0;i<px.length;i+=4){
-    gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
-  }
-
-  if(s.mode==="gray"){
-    for(let i=0;i<px.length;i+=4){
-      let g=(gray[i/4]-128)*s.contrast+128;
-      px[i]=px[i+1]=px[i+2]=g;
-    }
-  }
-
-  if(["line","contour","pencil"].includes(s.mode)){
-    const step=s.mode==="contour"?2:1;
-    for(let yy=0;yy<temp.height;yy++){
-      for(let xx=0;xx<temp.width;xx++){
-        const i=yy*temp.width+xx;
-        const l=gray[yy*temp.width+Math.max(0,xx-step)];
-        const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
-        const u=gray[Math.max(0,yy-step)*temp.width+xx];
-        const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
-        let edge=Math.abs(l-r)+Math.abs(u-d);
-        if(s.mode==="contour")edge*=1.5;
-        if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
-        edge=Math.min(255,edge*s.strength*s.contrast);
-        const p=i*4;
-        if(s.mode==="contour"){
-          const v=edge>48?0:255;
-          px[p]=px[p+1]=px[p+2]=v;
-        }else{
-          const v=255-edge;
-          px[p]=px[p+1]=px[p+2]=v;
-        }
-      }
-    }
-  }
-  tctx.putImageData(data,0,0);
-  ctx.globalAlpha=s.opacity;
-  ctx.drawImage(temp,x,y,drawW,drawH);
-  ctx.globalAlpha=1;
+if(cameraOn&&video.readyState>=2){
+ctx.globalAlpha=1;
+ctx.drawImage(video,0,0,w,h);
+}else{
+ctx.fillStyle="#111";
+ctx.fillRect(0,0,w,h);
 }
 
-// Start camera
+if(!imageLoaded)return;
+const s=settings();
+const drawW=img.width*baseScale*zoom,drawH=img.height*baseScale*zoom;
+const x=(w-drawW)/2+offsetX,y=(h-drawH)/2+offsetY;
+
+if(s.mode==="original"){
+ctx.globalAlpha=s.opacity;
+ctx.drawImage(img,x,y,drawW,drawH);
+ctx.globalAlpha=1;
+return;
+}
+
+const temp=document.createElement("canvas");
+temp.width=Math.max(1,Math.round(drawW));
+temp.height=Math.max(1,Math.round(drawH));
+const tctx=temp.getContext("2d",{willReadFrequently:true});
+tctx.drawImage(img,0,0,temp.width,temp.height);
+
+const data=tctx.getImageData(0,0,temp.width,temp.height);
+const px=data.data,gray=new Uint8ClampedArray(temp.width*temp.height);
+for(let i=0;i<px.length;i+=4){
+gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
+}
+
+if(s.mode==="gray"){
+for(let i=0;i<px.length;i+=4){
+let g=(gray[i/4]-128)*s.contrast+128;
+px[i]=px[i+1]=px[i+2]=g;
+}
+}
+
+if(["line","contour","pencil"].includes(s.mode)){
+const step=s.mode==="contour"?2:1;
+for(let yy=0;yy<temp.height;yy++){
+for(let xx=0;xx<temp.width;xx++){
+const i=yy*temp.width+xx;
+const l=gray[yy*temp.width+Math.max(0,xx-step)];
+const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
+const u=gray[Math.max(0,yy-step)*temp.width+xx];
+const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
+let edge=Math.abs(l-r)+Math.abs(u-d);
+if(s.mode==="contour")edge*=1.5;
+if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
+edge=Math.min(255,edge*s.strength*s.contrast);
+const p=i*4;
+if(s.mode==="contour"){
+const v=edge>48?0:255;
+px[p]=px[p+1]=px[p+2]=v;
+}else{
+const v=255-edge;
+px[p]=px[p+1]=px[p+2]=v;
+}
+}
+}
+}
+tctx.putImageData(data,0,0);
+ctx.globalAlpha=s.opacity;
+ctx.drawImage(temp,x,y,drawW,drawH);
+ctx.globalAlpha=1;
+}
+
 cameraBtn.addEventListener("click",async()=>{
-  if(cameraOn)return;
-  try{
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-      throw new Error("Kamera understøttes ikke i denne browser");
-    }
-    status.textContent="Starter kamera...";
-    cameraStream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:"environment"}},audio:false
-    });
-    video.srcObject=cameraStream;
-    await video.play();
-    cameraOn=true;
-    cameraBtn.textContent="✓ Kamera aktiv";
-    cameraBtn.disabled=true;
-    message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
-    if(imageLoaded)message.style.display="none";
-    status.textContent="Kamera aktivt";
-    render();
-    function cameraLoop(){
-      if(!cameraOn)return;
-      render();
-      requestAnimationFrame(cameraLoop);
-    }
-    requestAnimationFrame(cameraLoop);
-  }catch(err){
-    console.error(err);
-    status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
-  }
+if(cameraOn)return;
+try{
+if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+throw new Error("Kamera understøttes ikke i denne browser");
+}
+status.textContent="Starter kamera...";
+cameraStream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:{ideal:"environment"}},audio:false
+});
+video.srcObject=cameraStream;
+await video.play();
+cameraOn=true;
+cameraBtn.textContent="✓ Kamera aktiv";
+cameraBtn.disabled=true;
+message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
+if(imageLoaded)message.style.display="none";
+status.textContent="Kamera aktivt";
+render();
+function cameraLoop(){
+if(!cameraOn)return;
+render();
+requestAnimationFrame(cameraLoop);
+}
+requestAnimationFrame(cameraLoop);
+}catch(err){
+console.error(err);
+status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
+}
 });
 
-// Load picture
 fileInput.addEventListener("change",e=>{
-  const file=e.target.files&&e.target.files[0];
-  if(!file)return;
-  const url=URL.createObjectURL(file);
-  img.onload=()=>{
-    imageLoaded=true;
-    message.style.display="none";
-    fitImage();
-    status.textContent="Foto indlæst";
-    URL.revokeObjectURL(url);
-  };
-  img.onerror=()=>{
-    status.textContent="Kunne ikke åbne billedet";
-    URL.revokeObjectURL(url);
-  };
-  img.src=url;
+const file=e.target.files&&e.target.files[0];
+if(!file)return;
+const url=URL.createObjectURL(file);
+img.onload=()=>{
+imageLoaded=true;
+message.style.display="none";
+fitImage();
+status.textContent="Foto indlæst";
+URL.revokeObjectURL(url);
+};
+img.onerror=()=>{
+status.textContent="Kunne ikke åbne billedet";
+URL.revokeObjectURL(url);
+};
+img.src=url;
 });
 
-// Sliders
 opacitySlider.addEventListener("input",()=>{
-  opacityValue.textContent=opacitySlider.value+"%";scheduleRender();
+opacityValue.textContent=opacitySlider.value+"%";scheduleRender();
 });
 zoomSlider.addEventListener("input",()=>{
-  zoom=Number(zoomSlider.value)/100;zoomValue.textContent=zoomSlider.value+"%";scheduleRender();
+zoom=Number(zoomSlider.value)/100;
+zoomValue.textContent=zoomSlider.value+"%";
+scheduleRender();
 });
 contrastSlider.addEventListener("input",()=>{
-  contrastValue.textContent=contrastSlider.value+"%";scheduleRender();
+contrastValue.textContent=contrastSlider.value+"%";scheduleRender();
 });
 strengthSlider.addEventListener("input",()=>{
-  strengthValue.textContent=strengthSlider.value+"%";scheduleRender();
+strengthValue.textContent=strengthSlider.value+"%";scheduleRender();
 });
 modeSelect.addEventListener("change",render);
 
-// Lock
 lockBtn.addEventListener("click",()=>{
-  locked=!locked;
-  lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
-  lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
-  wrap.classList.toggle("locked",locked);
+locked=!locked;
+lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
+lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
+wrap.classList.toggle("locked",locked);
 });
 
-// Reset position
 resetBtn.addEventListener("click",()=>{
-  offsetX=offsetY=0;zoom=1;
-  zoomSlider.value=100;zoomValue.textContent="100%";render();
+offsetX=offsetY=0;zoom=1;
+zoomSlider.value=100;zoomValue.textContent="100%";render();
 });
 fitBtn.addEventListener("click",fitImage);
 
-// Reset controls
 resetControlsBtn.addEventListener("click",()=>{
-  opacitySlider.value=50;zoomSlider.value=100;contrastSlider.value=100;
-  strengthSlider.value=100;modeSelect.value="original";
-  opacityValue.textContent="50%";zoomValue.textContent="100%";
-  contrastValue.textContent="100%";strengthValue.textContent="100%";
-  zoom=1;render();
+opacitySlider.value=50;zoomSlider.value=100;contrastSlider.value=100;
+strengthSlider.value=100;modeSelect.value="original";
+opacityValue.textContent="50%";zoomValue.textContent="100%";
+contrastValue.textContent="100%";strengthValue.textContent="100%";
+zoom=1;render();
 });
 
-// Pointer helpers
 function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
 function center(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
 
 canvas.addEventListener("pointerdown",e=>{
-  canvas.setPointerCapture(e.pointerId);
-  pointersSet(e.pointerId,e.clientX,e.clientY);
-  if(pointers.size===1)lastPointer={x:e.clientX,y:e.clientY};
-  if(pointers.size===2){
-    const pts=[...pointers.values()];
-    pinchStartDistance=distance(pts[0],pts[1]);
-    pinchStartZoom=zoom;pinchCenter=center(pts[0],pts[1]);
-  }
+canvas.setPointerCapture(e.pointerId);
+pointersSet(e.pointerId,e.clientX,e.clientY);
+if(pointers.size===1)lastPointer={x:e.clientX,y:e.clientY};
+if(pointers.size===2){
+const pts=[...pointers.values()];
+pinchStartDistance=distance(pts[0],pts[1]);
+pinchStartZoom=zoom;pinchCenter=center(pts[0],pts[1]);
+}
 });
 
 function pointersSet(id,x,y){pointers.set(id,{x,y});}
 
 canvas.addEventListener("pointermove",e=>{
-  if(!pointers.has(e.pointerId))return;
-  pointersSet(e.pointerId,e.clientX,e.clientY);
-  if(locked)return;
-  if(pointers.size===1&&lastPointer){
-    offsetX+=e.clientX-lastPointer.x;offsetY+=e.clientY-lastPointer.y;
-    lastPointer={x:e.clientX,y:e.clientY};scheduleRender();
-  }
-  if(pointers.size===2){
-    const pts=[...pointers.values()],dist=distance(pts[0],pts[1]),c=center(pts[0],pts[1]);
-    if(pinchStartDistance>0){
-      zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
-      zoomSlider.value=Math.round(zoom*100);zoomValue.textContent=zoomSlider.value+"%";
-      if(pinchCenter){offsetX+=c.x-pinchCenter.x;offsetY+=c.y-pinchCenter.y;}
-      pinchCenter=c;scheduleRender();
-    }
-  }
+if(!pointers.has(e.pointerId)return;
+pointersSet(e.pointerId,e.clientX,e.clientY);
+if(locked)return;
+if(pointers.size===1&&lastPointer){
+offsetX+=e.clientX-lastPointer.x;
+offsetY+=e.clientY-lastPointer.y;
+lastPointer={x:e.clientX,y:e.clientY};
+scheduleRender();
+}
+if(pointers.size===2){
+const pts=[...pointers.values()],dist=distance(pts[0],pts[1]),c=center(pts[0],pts[1]);
+if(pinchStartDistance>0){
+zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
+zoomSlider.value=Math.round(zoom*100);
+zoomValue.textContent=zoomSlider.value+"%";
+if(pinchCenter){
+offsetX+=c.x-pinchCenter.x;
+offsetY+=c.y-pinchCenter.y;
+}
+pinchCenter=c;
+scheduleRender();
+}
+}
 });
 
 function endPointer(e){
-  pointers.delete(e.pointerId);
-  if(pointers.size===1){
-    const p=[...pointers.values()][0];lastPointer={x:p.x,y:p.y};
-  }else lastPointer=null;
-  if(pointers.size<2){pinchStartDistance=0;pinchCenter=null;}
+pointers.delete(e.pointerId);
+if(pointers.size===1){
+const p=[...pointers.values()][0];
+lastPointer={x:p.x,y:p.y};
+}else lastPointer=null;
+if(pointers.size<2){pinchStartDistance=0;pinchCenter=null;}
 }
 canvas.addEventListener("pointerup",endPointer);
 canvas.addEventListener("pointercancel",endPointer);
@@ -417,34 +428,40 @@ canvas.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 window.addEventListener("resize",resizeCanvas);
 
-// Install button: safe fallback if installation prompt is unavailable
+// Install button
 let installPromptEvent=null;
 const installAppBtn=document.getElementById("installAppBtn");
 
 window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  installPromptEvent=e;
+e.preventDefault();
+installPromptEvent=e;
 });
 
 installAppBtn.addEventListener("click",async()=>{
-  if(!installPromptEvent){
-    alert("Brug browserens menu og vælg 'Føj til startskærm' eller 'Installer app'.");
-    return;
-  }
-  try{
-    installAppBtn.disabled=true;
-    installPromptEvent.prompt();
-    await installPromptEvent.userChoice;
-  }catch(err){
-    console.warn("Install prompt kunne ikke vises",err);
-  }finally{
-    installPromptEvent=null;
-    installAppBtn.disabled=false;
-  }
+if(!installPromptEvent){
+alert("Hvis installation ikke åbner automatisk: Tryk på Chrome-menuen (⋮) og vælg 'Installer app' eller 'Føj til startskærm'.");
+return;
+}
+try{
+installAppBtn.disabled=true;
+installPromptEvent.prompt();
+await installPromptEvent.userChoice;
+}catch(err){
+console.warn("Install prompt kunne ikke vises",err);
+}finally{
+installPromptEvent=null;
+installAppBtn.disabled=false;
+}
 });
 
-// Service worker deliberately skipped inside editor/embedded preview.
-// It can be installed separately when the app is hosted directly.
+// Service Worker: kun på den rigtige HTTPS-side, ikke i editor/preview
+if("serviceWorker" in navigator && location.protocol==="https:" && window.top===window.self){
+window.addEventListener("load",()=>{
+navigator.serviceWorker.register("./service-worker.js")
+.catch(err=>console.warn("Service worker registration skipped:",err));
+});
+}
+
 resizeCanvas();
 </script>
 </body>
