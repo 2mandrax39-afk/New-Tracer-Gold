@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -6,253 +7,77 @@
 <meta name="theme-color" content="#090909">
 <link rel="manifest" href="./manifest.webmanifest">
 <title>Tracer Studio Gold</title>
-
 <style>
-:root {
-  --gold: #d6ad52;
-  --gold2: #f3d78b;
-  --black: #090909;
-  --panel: #151515;
-  --text: #f5f5f5;
-}
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  margin: 0;
-  background: var(--black);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-}
-
-header {
-  padding: 18px 15px;
-  background: #050505;
-  border-bottom: 1px solid #6d5527;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  font-size: 21px;
-  font-weight: bold;
-  color: var(--gold);
-}
-
-.logo span {
-  color: white;
-}
-
-header small {
-  color: var(--gold2);
-  font-size: 11px;
-}
-
-.container {
-  padding: 12px;
-  max-width: 800px;
-  margin: auto;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid #34302a;
-  border-radius: 12px;
-  padding: 13px;
-  margin-bottom: 12px;
-}
-
-h3 {
-  color: var(--gold);
-  font-size: 15px;
-  margin: 0 0 12px;
-}
-
-button, select, .upload-btn {
-  background: #222;
-  color: white;
-  border: 1px solid #80652d;
-  border-radius: 8px;
-  padding: 11px;
-  font-size: 14px;
-}
-
-button:active {
-  background: #55421d;
-}
-
-.gold-button {
-  background: linear-gradient(135deg, #d2a64c, #806024);
-  color: #000;
-  font-weight: bold;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.upload-btn {
-  display: block;
-  text-align: center;
-  width: 100%;
-  color: var(--gold2);
-  margin-bottom: 10px;
-}
-
-.canvas-wrap {
-  width: 100%;
-  height: 58vh;
-  min-height: 300px;
-  max-height: 650px;
-  background: #111;
-  border: 2px solid #b58a38;
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  touch-action: none;
-}
-
-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
-  touch-action: none;
-}
-
-.canvas-message {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #8f8f8f;
-  text-align: center;
-  padding: 25px;
-  pointer-events: none;
-}
-
-.control {
-  margin-bottom: 14px;
-}
-
-.control:last-child {
-  margin-bottom: 0;
-}
-
-.control label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 8px;
-  color: #eee;
-}
-
-.value {
-  color: var(--gold2);
-}
-
-input[type="range"] {
-  width: 100%;
-  accent-color: var(--gold);
-  height: 24px;
-}
-
-select {
-  width: 100%;
-  background: #222;
-}
-
-.button-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.button-grid button {
-  min-height: 44px;
-}
-
-.status {
-  font-size: 12px;
-  text-align: center;
-  color: var(--gold2);
-  padding-top: 9px;
-}
-
-.tip {
-  color: #aaa;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-footer {
-  text-align: center;
-  color: #777;
-  font-size: 11px;
-  padding: 18px;
-}
-
-.locked {
-  border-color: #3eaa68;
-}
-
-.camera-button {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-@media (max-width: 400px) {
-  .canvas-wrap {
-    height: 52vh;
-  }
-}
+:root{--gold:#d6ad52;--gold2:#f3d78b;--black:#090909;--panel:#151515;--text:#f5f5f5}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--black);color:var(--text);font-family:Arial,sans-serif}
+header{padding:18px 15px;background:#050505;border-bottom:1px solid #6d5527;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{font-size:21px;font-weight:bold;color:var(--gold)}
+.logo span{color:white}
+header small{color:var(--gold2);font-size:11px}
+.container{padding:12px;max-width:800px;margin:auto}
+.panel{background:var(--panel);border:1px solid #34302a;border-radius:12px;padding:13px;margin-bottom:12px}
+h3{color:var(--gold);font-size:15px;margin:0 0 12px}
+button,select,.upload-btn{background:#222;color:white;border:1px solid #80652d;border-radius:8px;padding:11px;font-size:14px}
+button:active{background:#55421d}
+.gold-button{background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold}
+input[type=file]{display:none}
+.upload-btn{display:block;text-align:center;width:100%;margin-bottom:10px}
+.canvas-wrap{width:100%;height:58vh;min-height:300px;max-height:650px;background:#111;border:2px solid #b58a38;border-radius:12px;overflow:hidden;position:relative;touch-action:none}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+.canvas-message{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;color:#aaa;text-align:center;padding:25px;pointer-events:none}
+.control{margin-bottom:14px}.control:last-child{margin-bottom:0}
+.control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#eee}
+.value{color:var(--gold2)}
+input[type=range]{width:100%;accent-color:var(--gold);height:24px}
+select{width:100%;background:#222}
+.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.button-grid button{min-height:44px}
+.status{font-size:12px;text-align:center;color:var(--gold2);padding-top:9px}
+.tip{color:#aaa;font-size:12px;line-height:1.5}
+footer{text-align:center;color:#777;font-size:11px;padding:18px}
+.locked{border-color:#3eaa68}
+.camera-button{width:100%;margin-bottom:10px}
+.install-app-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:10px;border:1px solid var(--gold);background:#111;color:var(--gold2);font-weight:bold;font-size:12px;width:100%;margin-top:8px}
+.install-app-btn svg{width:25px;height:25px;flex-shrink:0}
+@media(max-width:400px){.canvas-wrap{height:52vh}}
 </style>
 </head>
-
 <body>
-
 <header>
   <div>
     <div class="logo">TRACER <span>STUDIO</span></div>
     <small>GOLD EDITION</small>
   </div>
-  <div style="color:#d6ad52;font-size:13px">✦ ART TOOLS</div>
+  <div style="text-align:right;color:#d6ad52;font-size:13px">
+    ✦ ART TOOLS
+    <button id="installAppBtn" class="install-app-btn" type="button">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M8 40h32M13 36V10h22v26" stroke="#d6ad52" stroke-width="3" stroke-linecap="round"/>
+        <path d="M18 16h12M18 22h12M18 28h7" stroke="#f3d78b" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="34" cy="34" r="8" fill="#d6ad52" stroke="#090909" stroke-width="2"/>
+        <path d="M34 29v10M29 34h10" stroke="#090909" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      INSTALLER TRACER
+    </button>
+  </div>
 </header>
 
 <div class="container">
-
   <div class="panel">
     <h3>📷 Kamera og billede</h3>
-
-    <button id="cameraBtn" class="gold-button camera-button">
-      📷 Start kamera
-    </button>
-
-    <label class="upload-btn gold-button" for="fileInput">
-      🖼️ Vælg foto fra telefon
-    </label>
-
+    <button id="cameraBtn" class="gold-button camera-button">📷 Start kamera</button>
+    <label class="upload-btn gold-button" for="fileInput">🖼️ Vælg foto fra telefon</label>
     <input id="fileInput" type="file" accept="image/*">
-
     <div class="canvas-wrap" id="canvasWrap">
       <canvas id="canvas"></canvas>
-      <div class="canvas-message" id="message">
-        Start kameraet og vælg et billede
-      </div>
+      <div class="canvas-message" id="message">Start kameraet og vælg et billede</div>
     </div>
-
-    <div class="status" id="status">
-      Klar til brug
-    </div>
+    <div class="status" id="status">Klar til brug</div>
   </div>
 
   <div class="panel">
     <h3>✏️ Tegneindstillinger</h3>
-
     <div class="control">
       <label for="mode">Billedtilstand</label>
       <select id="mode">
@@ -263,560 +88,364 @@ footer {
         <option value="gray">Gråtoner</option>
       </select>
     </div>
-
     <div class="control">
-      <label>
-        Gennemsigtighed
-        <span class="value" id="opacityValue">50%</span>
-      </label>
+      <label>Gennemsigtighed <span class="value" id="opacityValue">50%</span></label>
       <input type="range" id="opacity" min="5" max="100" value="50">
     </div>
-
     <div class="control">
-      <label>
-        Zoom
-        <span class="value" id="zoomValue">100%</span>
-      </label>
+      <label>Zoom <span class="value" id="zoomValue">100%</span></label>
       <input type="range" id="zoom" min="50" max="400" value="100">
     </div>
-
     <div class="control">
-      <label>
-        Kontrast
-        <span class="value" id="contrastValue">100%</span>
-      </label>
+      <label>Kontrast <span class="value" id="contrastValue">100%</span></label>
       <input type="range" id="contrast" min="50" max="250" value="100">
     </div>
-
     <div class="control">
-      <label>
-        Stregstyrke
-        <span class="value" id="strengthValue">100%</span>
-      </label>
+      <label>Stregstyrke <span class="value" id="strengthValue">100%</span></label>
       <input type="range" id="strength" min="50" max="200" value="100">
     </div>
   </div>
 
   <div class="panel">
     <h3>🔧 Billedkontrol</h3>
-
     <div class="button-grid">
       <button id="lockBtn">🔒 Lås billede</button>
       <button id="resetBtn">↩ Nulstil position</button>
       <button id="fitBtn">⤢ Tilpas billede</button>
       <button id="resetControlsBtn">⟲ Nulstil filtre</button>
     </div>
-
-    <div class="status" id="lockStatus">
-      Billedet er ulåst
-    </div>
+    <div class="status" id="lockStatus">Billedet er ulåst</div>
   </div>
 
   <div class="panel">
     <h3>ℹ️ Sådan bruger du Tracer Studio</h3>
     <div class="tip">
       1. Sæt telefonen i en holder over bordet.<br><br>
-      2. Tryk på Start kamera og tillad kameraadgang.<br><br>
+      2. Tryk Start kamera og tillad kameraadgang.<br><br>
       3. Læg tegnepapiret på bordet under telefonen.<br><br>
-      4. Vælg dit foto fra telefonen.<br><br>
-      5. Juster gennemsigtigheden, så papiret er synligt gennem fotoet.<br><br>
+      4. Vælg et foto fra telefonen.<br><br>
+      5. Juster gennemsigtigheden, så papiret er synligt.<br><br>
       6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
       7. Tryk Lås billede, når det ligger rigtigt.<br><br>
       8. Tegn på papiret, mens du ser fotoet på skærmen.
     </div>
   </div>
-
 </div>
-
-<footer>
-  TRACER STUDIO GOLD • BLACK & GOLD EDITION
-</footer>
+<footer>TRACER STUDIO GOLD • BLACK & GOLD EDITION</footer>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
-const wrap = document.getElementById("canvasWrap");
+"use strict";
 
-const fileInput = document.getElementById("fileInput");
-const message = document.getElementById("message");
-const cameraBtn = document.getElementById("cameraBtn");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d",{willReadFrequently:true});
+const wrap=document.getElementById("canvasWrap");
+const fileInput=document.getElementById("fileInput");
+const message=document.getElementById("message");
+const cameraBtn=document.getElementById("cameraBtn");
+const modeSelect=document.getElementById("mode");
+const opacitySlider=document.getElementById("opacity");
+const zoomSlider=document.getElementById("zoom");
+const contrastSlider=document.getElementById("contrast");
+const strengthSlider=document.getElementById("strength");
+const opacityValue=document.getElementById("opacityValue");
+const zoomValue=document.getElementById("zoomValue");
+const contrastValue=document.getElementById("contrastValue");
+const strengthValue=document.getElementById("strengthValue");
+const lockBtn=document.getElementById("lockBtn");
+const resetBtn=document.getElementById("resetBtn");
+const fitBtn=document.getElementById("fitBtn");
+const resetControlsBtn=document.getElementById("resetControlsBtn");
+const lockStatus=document.getElementById("lockStatus");
+const status=document.getElementById("status");
 
-const modeSelect = document.getElementById("mode");
-const opacitySlider = document.getElementById("opacity");
-const zoomSlider = document.getElementById("zoom");
-const contrastSlider = document.getElementById("contrast");
-const strengthSlider = document.getElementById("strength");
+const video=document.createElement("video");
+video.setAttribute("playsinline","");
+video.setAttribute("autoplay","");
+video.muted=true;
 
-const opacityValue = document.getElementById("opacityValue");
-const zoomValue = document.getElementById("zoomValue");
-const contrastValue = document.getElementById("contrastValue");
-const strengthValue = document.getElementById("strengthValue");
+let cameraStream=null,cameraOn=false;
+let img=new Image(),imageLoaded=false;
+let zoom=1,offsetX=0,offsetY=0,baseScale=1,locked=false;
+let pointers=new Map(),lastPointer=null;
+let pinchStartDistance=0,pinchStartZoom=1,pinchCenter=null;
+let renderScheduled=false;
 
-const lockBtn = document.getElementById("lockBtn");
-const resetBtn = document.getElementById("resetBtn");
-const fitBtn = document.getElementById("fitBtn");
-const resetControlsBtn = document.getElementById("resetControlsBtn");
-const lockStatus = document.getElementById("lockStatus");
-const status = document.getElementById("status");
-
-const video = document.createElement("video");
-video.setAttribute("playsinline", "");
-video.setAttribute("autoplay", "");
-video.muted = true;
-
-let cameraStream = null;
-let cameraOn = false;
-
-let img = new Image();
-let imageLoaded = false;
-
-let zoom = 1;
-let offsetX = 0;
-let offsetY = 0;
-let baseScale = 1;
-let locked = false;
-
-let pointers = new Map();
-let lastPointer = null;
-let pinchStartDistance = 0;
-let pinchStartZoom = 1;
-let pinchCenter = null;
-
-let renderScheduled = false;
-
-function resizeCanvas() {
-  const rect = wrap.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-  canvas.width = Math.round(rect.width * dpr);
-  canvas.height = Math.round(rect.height * dpr);
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+function resizeCanvas(){
+  const rect=wrap.getBoundingClientRect();
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
   render();
 }
 
-function fitImage() {
-  if (!imageLoaded) return;
-
-  const w = wrap.clientWidth;
-  const h = wrap.clientHeight;
-
-  baseScale = Math.min(w / img.width, h / img.height);
-
-  zoom = 1;
-  offsetX = 0;
-  offsetY = 0;
-
-  zoomSlider.value = 100;
-  zoomValue.textContent = "100%";
-
+function fitImage(){
+  if(!imageLoaded)return;
+  baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
+  zoom=1;offsetX=0;offsetY=0;
+  zoomSlider.value=100;zoomValue.textContent="100%";
   render();
 }
 
-function scheduleRender() {
-  if (renderScheduled) return;
-
-  renderScheduled = true;
-
-  requestAnimationFrame(() => {
-    renderScheduled = false;
-    render();
-  });
+function scheduleRender(){
+  if(renderScheduled)return;
+  renderScheduled=true;
+  requestAnimationFrame(()=>{renderScheduled=false;render();});
 }
 
-function getSettings() {
-  return {
-    mode: modeSelect.value,
-    opacity: Number(opacitySlider.value) / 100,
-    contrast: Number(contrastSlider.value) / 100,
-    strength: Number(strengthSlider.value) / 100
+function settings(){
+  return{
+    mode:modeSelect.value,
+    opacity:Number(opacitySlider.value)/100,
+    contrast:Number(contrastSlider.value)/100,
+    strength:Number(strengthSlider.value)/100
   };
 }
 
-function render() {
-  if (!canvas.width || !canvas.height) return;
+function render(){
+  if(!canvas.width||!canvas.height)return;
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  ctx.clearRect(0,0,w,h);
 
-  const w = wrap.clientWidth;
-  const h = wrap.clientHeight;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Draw live camera first as the background.
-  if (cameraOn && video.readyState >= 2) {
-    ctx.globalAlpha = 1;
-    ctx.drawImage(video, 0, 0, w, h);
-  } else {
-    ctx.fillStyle = "#111";
-    ctx.fillRect(0, 0, w, h);
+  // Camera background
+  if(cameraOn&&video.readyState>=2){
+    ctx.globalAlpha=1;
+    ctx.drawImage(video,0,0,w,h);
+  }else{
+    ctx.fillStyle="#111";
+    ctx.fillRect(0,0,w,h);
   }
 
-  if (!imageLoaded) return;
+  if(!imageLoaded)return;
+  const s=settings();
+  const drawW=img.width*baseScale*zoom,drawH=img.height*baseScale*zoom;
+  const x=(w-drawW)/2+offsetX,y=(h-drawH)/2+offsetY;
 
-  const s = getSettings();
-
-  const drawW = img.width * baseScale * zoom;
-  const drawH = img.height * baseScale * zoom;
-
-  const x = (w - drawW) / 2 + offsetX;
-  const y = (h - drawH) / 2 + offsetY;
-
-  if (s.mode === "original") {
-    ctx.globalAlpha = s.opacity;
-    ctx.drawImage(img, x, y, drawW, drawH);
-    ctx.globalAlpha = 1;
+  if(s.mode==="original"){
+    ctx.globalAlpha=s.opacity;
+    ctx.drawImage(img,x,y,drawW,drawH);
+    ctx.globalAlpha=1;
     return;
   }
 
-  const temp = document.createElement("canvas");
-  temp.width = Math.max(1, Math.round(drawW));
-  temp.height = Math.max(1, Math.round(drawH));
+  const temp=document.createElement("canvas");
+  temp.width=Math.max(1,Math.round(drawW));
+  temp.height=Math.max(1,Math.round(drawH));
+  const tctx=temp.getContext("2d",{willReadFrequently:true});
+  tctx.drawImage(img,0,0,temp.width,temp.height);
 
-  const tctx = temp.getContext("2d", { willReadFrequently: true });
-  tctx.drawImage(img, 0, 0, temp.width, temp.height);
-
-  let data = tctx.getImageData(0, 0, temp.width, temp.height);
-  let pixels = data.data;
-
-  const gray = new Uint8ClampedArray(temp.width * temp.height);
-
-  for (let i = 0; i < pixels.length; i += 4) {
-    const g = 0.299 * pixels[i] +
-              0.587 * pixels[i + 1] +
-              0.114 * pixels[i + 2];
-
-    gray[i / 4] = g;
+  const data=tctx.getImageData(0,0,temp.width,temp.height);
+  const px=data.data,gray=new Uint8ClampedArray(temp.width*temp.height);
+  for(let i=0;i<px.length;i+=4){
+    gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
   }
 
-  if (s.mode === "gray") {
-    for (let i = 0; i < pixels.length; i += 4) {
-      let g = gray[i / 4];
-      g = (g - 128) * s.contrast + 128;
-
-      pixels[i] = g;
-      pixels[i + 1] = g;
-      pixels[i + 2] = g;
+  if(s.mode==="gray"){
+    for(let i=0;i<px.length;i+=4){
+      let g=(gray[i/4]-128)*s.contrast+128;
+      px[i]=px[i+1]=px[i+2]=g;
     }
   }
 
-  if (s.mode === "line" ||
-      s.mode === "contour" ||
-      s.mode === "pencil") {
-
-    const step = s.mode === "contour" ? 2 : 1;
-
-    for (let yy = 0; yy < temp.height; yy++) {
-      for (let xx = 0; xx < temp.width; xx++) {
-        const i = yy * temp.width + xx;
-
-        const left = gray[yy * temp.width + Math.max(0, xx - step)];
-        const right = gray[yy * temp.width + Math.min(temp.width - 1, xx + step)];
-        const up = gray[Math.max(0, yy - step) * temp.width + xx];
-        const down = gray[Math.min(temp.height - 1, yy + step) * temp.width + xx];
-
-        let edge = Math.abs(left - right) + Math.abs(up - down);
-
-        if (s.mode === "contour") {
-          edge *= 1.5;
-        }
-
-        if (s.mode === "pencil") {
-          edge = edge * 1.25 + (255 - gray[i]) * 0.35;
-        }
-
-        edge = Math.min(255, edge * s.strength * s.contrast);
-
-        const pi = i * 4;
-
-        if (s.mode === "contour") {
-          const v = edge > 48 ? 0 : 255;
-          pixels[pi] = v;
-          pixels[pi + 1] = v;
-          pixels[pi + 2] = v;
-        } else {
-          const v = 255 - edge;
-          pixels[pi] = v;
-          pixels[pi + 1] = v;
-          pixels[pi + 2] = v;
+  if(["line","contour","pencil"].includes(s.mode)){
+    const step=s.mode==="contour"?2:1;
+    for(let yy=0;yy<temp.height;yy++){
+      for(let xx=0;xx<temp.width;xx++){
+        const i=yy*temp.width+xx;
+        const l=gray[yy*temp.width+Math.max(0,xx-step)];
+        const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
+        const u=gray[Math.max(0,yy-step)*temp.width+xx];
+        const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
+        let edge=Math.abs(l-r)+Math.abs(u-d);
+        if(s.mode==="contour")edge*=1.5;
+        if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
+        edge=Math.min(255,edge*s.strength*s.contrast);
+        const p=i*4;
+        if(s.mode==="contour"){
+          const v=edge>48?0:255;
+          px[p]=px[p+1]=px[p+2]=v;
+        }else{
+          const v=255-edge;
+          px[p]=px[p+1]=px[p+2]=v;
         }
       }
     }
   }
-
-  tctx.putImageData(data, 0, 0);
-
-  ctx.globalAlpha = s.opacity;
-  ctx.drawImage(temp, x, y, drawW, drawH);
-  ctx.globalAlpha = 1;
+  tctx.putImageData(data,0,0);
+  ctx.globalAlpha=s.opacity;
+  ctx.drawImage(temp,x,y,drawW,drawH);
+  ctx.globalAlpha=1;
 }
 
 // Start camera
-cameraBtn.addEventListener("click", async () => {
-  if (cameraOn) return;
-
-  try {
-    status.textContent = "Starter kamera...";
-
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" }
-      },
-      audio: false
-    });
-
-    video.srcObject = cameraStream;
-    await video.play();
-
-    cameraOn = true;
-    cameraBtn.textContent = "✓ Kamera aktiv";
-    cameraBtn.disabled = true;
-
-    message.textContent = imageLoaded
-      ? ""
-      : "Kamera aktiv. Vælg et foto for at starte";
-
-    if (imageLoaded) {
-      message.style.display = "none";
+cameraBtn.addEventListener("click",async()=>{
+  if(cameraOn)return;
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      throw new Error("Kamera understøttes ikke i denne browser");
     }
-
-    status.textContent = "Kamera aktivt";
+    status.textContent="Starter kamera...";
+    cameraStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"}},audio:false
+    });
+    video.srcObject=cameraStream;
+    await video.play();
+    cameraOn=true;
+    cameraBtn.textContent="✓ Kamera aktiv";
+    cameraBtn.disabled=true;
+    message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
+    if(imageLoaded)message.style.display="none";
+    status.textContent="Kamera aktivt";
     render();
-
-    // Refresh camera background continuously.
-    function cameraLoop() {
-      if (!cameraOn) return;
+    function cameraLoop(){
+      if(!cameraOn)return;
       render();
       requestAnimationFrame(cameraLoop);
     }
-
     requestAnimationFrame(cameraLoop);
-
-  } catch (error) {
-    console.error(error);
-    status.textContent = "Kamera kunne ikke startes. Tillad kameraadgang.";
+  }catch(err){
+    console.error(err);
+    status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
   }
 });
 
-// Load image
-fileInput.addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  img.onload = () => {
-    imageLoaded = true;
-    message.style.display = "none";
-
+// Load picture
+fileInput.addEventListener("change",e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+  const url=URL.createObjectURL(file);
+  img.onload=()=>{
+    imageLoaded=true;
+    message.style.display="none";
     fitImage();
-
-    status.textContent = "Foto indlæst";
+    status.textContent="Foto indlæst";
     URL.revokeObjectURL(url);
   };
-
-  img.onerror = () => {
-    status.textContent = "Kunne ikke åbne billedet";
+  img.onerror=()=>{
+    status.textContent="Kunne ikke åbne billedet";
     URL.revokeObjectURL(url);
   };
-
-  img.src = url;
+  img.src=url;
 });
 
-opacitySlider.addEventListener("input", () => {
-  opacityValue.textContent = opacitySlider.value + "%";
-  scheduleRender();
+// Sliders
+opacitySlider.addEventListener("input",()=>{
+  opacityValue.textContent=opacitySlider.value+"%";scheduleRender();
 });
-
-zoomSlider.addEventListener("input", () => {
-  zoom = Number(zoomSlider.value) / 100;
-  zoomValue.textContent = zoomSlider.value + "%";
-  scheduleRender();
+zoomSlider.addEventListener("input",()=>{
+  zoom=Number(zoomSlider.value)/100;zoomValue.textContent=zoomSlider.value+"%";scheduleRender();
 });
-
-contrastSlider.addEventListener("input", () => {
-  contrastValue.textContent = contrastSlider.value + "%";
-  scheduleRender();
+contrastSlider.addEventListener("input",()=>{
+  contrastValue.textContent=contrastSlider.value+"%";scheduleRender();
 });
-
-strengthSlider.addEventListener("input", () => {
-  strengthValue.textContent = strengthSlider.value + "%";
-  scheduleRender();
+strengthSlider.addEventListener("input",()=>{
+  strengthValue.textContent=strengthSlider.value+"%";scheduleRender();
 });
+modeSelect.addEventListener("change",render);
 
-modeSelect.addEventListener("change", render);
-
-// Lock image
-lockBtn.addEventListener("click", () => {
-  locked = !locked;
-
-  lockBtn.textContent = locked
-    ? "🔓 Lås billede op"
-    : "🔒 Lås billede";
-
-  lockStatus.textContent = locked
-    ? "Billedet er låst"
-    : "Billedet er ulåst";
-
-  wrap.classList.toggle("locked", locked);
+// Lock
+lockBtn.addEventListener("click",()=>{
+  locked=!locked;
+  lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
+  lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
+  wrap.classList.toggle("locked",locked);
 });
 
 // Reset position
-resetBtn.addEventListener("click", () => {
-  offsetX = 0;
-  offsetY = 0;
-  zoom = 1;
-
-  zoomSlider.value = 100;
-  zoomValue.textContent = "100%";
-
-  render();
+resetBtn.addEventListener("click",()=>{
+  offsetX=offsetY=0;zoom=1;
+  zoomSlider.value=100;zoomValue.textContent="100%";render();
 });
-
-// Fit image
-fitBtn.addEventListener("click", fitImage);
+fitBtn.addEventListener("click",fitImage);
 
 // Reset controls
-resetControlsBtn.addEventListener("click", () => {
-  opacitySlider.value = 50;
-  zoomSlider.value = 100;
-  contrastSlider.value = 100;
-  strengthSlider.value = 100;
-  modeSelect.value = "original";
-
-  opacityValue.textContent = "50%";
-  zoomValue.textContent = "100%";
-  contrastValue.textContent = "100%";
-  strengthValue.textContent = "100%";
-
-  zoom = 1;
-  render();
+resetControlsBtn.addEventListener("click",()=>{
+  opacitySlider.value=50;zoomSlider.value=100;contrastSlider.value=100;
+  strengthSlider.value=100;modeSelect.value="original";
+  opacityValue.textContent="50%";zoomValue.textContent="100%";
+  contrastValue.textContent="100%";strengthValue.textContent="100%";
+  zoom=1;render();
 });
 
-// Touch and pointer control
-// One finger moves the photo.
-// Two fingers zoom and move the photo.
-// Lock disables photo movement.
+// Pointer helpers
+function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function center(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
 
-function pointerDistance(a, b) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-function pointerCenter(a, b) {
-  return {
-    x: (a.x + b.x) / 2,
-    y: (a.y + b.y) / 2
-  };
-}
-
-canvas.addEventListener("pointerdown", e => {
+canvas.addEventListener("pointerdown",e=>{
   canvas.setPointerCapture(e.pointerId);
-
-  pointers.set(e.pointerId, {
-    x: e.clientX,
-    y: e.clientY
-  });
-
-  if (pointers.size === 1) {
-    lastPointer = {
-      x: e.clientX,
-      y: e.clientY
-    };
-  }
-
-  if (pointers.size === 2) {
-    const pts = Array.from(pointers.values());
-
-    pinchStartDistance = pointerDistance(pts[0], pts[1]);
-    pinchStartZoom = zoom;
-    pinchCenter = pointerCenter(pts[0], pts[1]);
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+  if(pointers.size===1)lastPointer={x:e.clientX,y:e.clientY};
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    pinchStartDistance=distance(pts[0],pts[1]);
+    pinchStartZoom=zoom;pinchCenter=center(pts[0],pts[1]);
   }
 });
 
-canvas.addEventListener("pointermove", e => {
-  if (!pointers.has(e.pointerId)) return;
+function pointersSet(id,x,y){pointers.set(id,{x,y});}
 
-  pointers.set(e.pointerId, {
-    x: e.clientX,
-    y: e.clientY
-  });
-
-  if (locked) return;
-
-  if (pointers.size === 1 && lastPointer) {
-    offsetX += e.clientX - lastPointer.x;
-    offsetY += e.clientY - lastPointer.y;
-
-    lastPointer = {
-      x: e.clientX,
-      y: e.clientY
-    };
-
-    scheduleRender();
+canvas.addEventListener("pointermove",e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+  if(locked)return;
+  if(pointers.size===1&&lastPointer){
+    offsetX+=e.clientX-lastPointer.x;offsetY+=e.clientY-lastPointer.y;
+    lastPointer={x:e.clientX,y:e.clientY};scheduleRender();
   }
-
-  if (pointers.size === 2) {
-    const pts = Array.from(pointers.values());
-
-    const distance = pointerDistance(pts[0], pts[1]);
-    const center = pointerCenter(pts[0], pts[1]);
-
-    if (pinchStartDistance > 0) {
-      const ratio = distance / pinchStartDistance;
-
-      zoom = Math.max(0.5, Math.min(4, pinchStartZoom * ratio));
-
-      zoomSlider.value = Math.round(zoom * 100);
-      zoomValue.textContent = zoomSlider.value + "%";
-
-      if (pinchCenter) {
-        offsetX += center.x - pinchCenter.x;
-        offsetY += center.y - pinchCenter.y;
-      }
-
-      pinchCenter = center;
-      scheduleRender();
+  if(pointers.size===2){
+    const pts=[...pointers.values()],dist=distance(pts[0],pts[1]),c=center(pts[0],pts[1]);
+    if(pinchStartDistance>0){
+      zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
+      zoomSlider.value=Math.round(zoom*100);zoomValue.textContent=zoomSlider.value+"%";
+      if(pinchCenter){offsetX+=c.x-pinchCenter.x;offsetY+=c.y-pinchCenter.y;}
+      pinchCenter=c;scheduleRender();
     }
   }
 });
 
-function endPointer(e) {
+function endPointer(e){
   pointers.delete(e.pointerId);
-
-  if (pointers.size === 1) {
-    const remaining = Array.from(pointers.values())[0];
-    lastPointer = {
-      x: remaining.x,
-      y: remaining.y
-    };
-  } else {
-    lastPointer = null;
-  }
-
-  if (pointers.size < 2) {
-    pinchStartDistance = 0;
-    pinchCenter = null;
-  }
+  if(pointers.size===1){
+    const p=[...pointers.values()][0];lastPointer={x:p.x,y:p.y};
+  }else lastPointer=null;
+  if(pointers.size<2){pinchStartDistance=0;pinchCenter=null;}
 }
+canvas.addEventListener("pointerup",endPointer);
+canvas.addEventListener("pointercancel",endPointer);
+canvas.addEventListener("lostpointercapture",endPointer);
+canvas.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
+window.addEventListener("resize",resizeCanvas);
 
-canvas.addEventListener("pointerup", endPointer);
-canvas.addEventListener("pointercancel", endPointer);
-canvas.addEventListener("lostpointercapture", endPointer);
+// Install button: safe fallback if installation prompt is unavailable
+let installPromptEvent=null;
+const installAppBtn=document.getElementById("installAppBtn");
 
-canvas.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
-canvas.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  installPromptEvent=e;
+});
 
-window.addEventListener("resize", resizeCanvas);
+installAppBtn.addEventListener("click",async()=>{
+  if(!installPromptEvent){
+    alert("Brug browserens menu og vælg 'Føj til startskærm' eller 'Installer app'.");
+    return;
+  }
+  try{
+    installAppBtn.disabled=true;
+    installPromptEvent.prompt();
+    await installPromptEvent.userChoice;
+  }catch(err){
+    console.warn("Install prompt kunne ikke vises",err);
+  }finally{
+    installPromptEvent=null;
+    installAppBtn.disabled=false;
+  }
+});
 
-// PWA service worker
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch(console.error);
-  });
-}
-
+// Service worker deliberately skipped inside editor/embedded preview.
+// It can be installed separately when the app is hosted directly.
 resizeCanvas();
 </script>
-
 </body>
 </html>
