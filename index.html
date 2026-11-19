@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
@@ -27,6 +26,8 @@ header small { color:var(--gold2);font-size:11px; }
 .container { max-width:800px;margin:auto;padding:12px; }
 .panel { background:var(--panel);border:1px solid #34302a;border-radius:13px;padding:14px;margin-bottom:13px; }
 h3 { color:var(--gold);font-size:16px;margin:0 0 13px; }
+
+/* BUTTONS */
 button,select {
   background:#222;color:white;border:1px solid #80652d;
   border-radius:9px;padding:12px;font-size:14px;
@@ -39,7 +40,32 @@ button:disabled { opacity:.6; }
   border-radius:9px;padding:13px;
 }
 input[type=file] { display:none; }
-.camera-button { width:100%;margin-bottom:10px; }
+
+/* CAMERA BUTTON FIX */
+.camera-button {
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:relative;
+  width:100% !important;
+  min-height:60px;
+  margin:10px 0 14px;
+  padding:16px;
+  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24) !important;
+  color:#000 !important;
+  border:2px solid #f3d78b !important;
+  border-radius:12px;
+  font-size:18px !important;
+  font-weight:bold;
+  text-align:center;
+  box-shadow:0 0 14px rgba(214,173,82,.25);
+  z-index:5;
+}
+.camera-button:disabled {
+  opacity:1 !important;
+  color:#000 !important;
+}
+
 .canvas-wrap {
   width:100%;height:58vh;min-height:320px;max-height:700px;
   background:#111;border:2px solid #b58a38;border-radius:12px;
@@ -64,6 +90,7 @@ select { width:100%; }
 .tip { color:#bbb;font-size:13px;line-height:1.6; }
 footer { text-align:center;color:#777;font-size:11px;padding:18px; }
 .install { width:100%;margin-top:8px;background:#111;color:var(--gold2); }
+
 @media(max-width:400px) {
   .canvas-wrap { height:53vh; }
 }
@@ -88,7 +115,7 @@ footer { text-align:center;color:#777;font-size:11px;padding:18px; }
 <div class="panel">
 <h3>📷 Kamera og tegnefoto</h3>
 
-<button id="cameraBtn" class="gold-button camera-button">📷 START KAMERA</button>
+<button id="cameraBtn" class="camera-button">📷 START KAMERA</button>
 
 <label class="upload-btn gold-button" for="fileInput">
 🖼️ VÆLG FOTO FRA TELEFON
@@ -388,13 +415,15 @@ async function startCamera() {
   if(cameraOn) return;
 
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    status.textContent="Denne browser understøtter ikke kamera";
+    status.textContent="Browser understøtter ikke kamera. Prøv Chrome.";
     return;
   }
 
-  try {
-    status.textContent="Starter kamera...";
+  cameraBtn.disabled=true;
+  cameraBtn.textContent="⏳ STARTER KAMERA...";
+  status.textContent="Anmoder om adgang til kamera...";
 
+  try {
     stream = await navigator.mediaDevices.getUserMedia({
       video:{
         facingMode:{ideal:"environment"},
@@ -409,7 +438,7 @@ async function startCamera() {
 
     cameraOn=true;
     cameraBtn.textContent="✓ KAMERA AKTIV";
-    cameraBtn.disabled=true;
+    cameraBtn.disabled=false;
     message.style.display="none";
     status.textContent="Kamera aktivt. Vælg dit foto.";
 
@@ -417,7 +446,9 @@ async function startCamera() {
 
   } catch(error) {
     console.error(error);
-    status.textContent="Kamera kunne ikke startes. Tillad kamera i browseren.";
+    cameraBtn.disabled=false;
+    cameraBtn.textContent="📷 PRØV KAMERA IGEN";
+    status.textContent="Kamera kunne ikke startes. Tillad kamera i browserens indstillinger.";
   }
 }
 
@@ -545,7 +576,6 @@ canvas.addEventListener("pointermove",e=>{
   if(!pointers[e.pointerId]) return;
   if(locked) return;
 
-  const previous={...pointers[e.pointerId]};
   pointers[e.pointerId]={x:e.clientX,y:e.clientY};
 
   const count=Object.keys(pointers).length;
