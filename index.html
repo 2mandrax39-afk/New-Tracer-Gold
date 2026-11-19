@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#080808">
-<link rel="manifest" href="./manifest.webmanifest">
 <title>Tracer Studio Gold</title>
 
 <style>
@@ -14,58 +14,471 @@
   --black:#080808;
   --panel:#151515;
 }
-* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { margin:0;background:var(--black);color:white;font-family:Arial,sans-serif; }
-header {
-  padding:16px;background:#050505;border-bottom:1px solid #705522;
-  display:flex;justify-content:space-between;align-items:center;gap:12px;
+* {
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
-.logo { font-size:21px;font-weight:bold;color:var(--gold); }
+body {
+  margin:0;
+  background:var(--black);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+header {
+  padding:16px;
+  background:#050505;
+  border-bottom:1px solid #705522;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.logo {
+  font-size:21px;
+  font-weight:bold;
+  color:var(--gold);
+}
 .logo span { color:white; }
-header small { color:var(--gold2);font-size:11px; }
-.container { max-width:800px;margin:auto;padding:12px; }
-.panel { background:var(--panel);border:1px solid #34302a;border-radius:13px;padding:14px;margin-bottom:13px; }
-h3 { color:var(--gold);font-size:16px;margin:0 0 13px; }
-
-/* BUTTONS */
+header small {
+  color:var(--gold2);
+  font-size:11px;
+}
+.container {
+  max-width:800px;
+  margin:auto;
+  padding:12px;
+}
+.panel {
+  background:var(--panel);
+  border:1px solid #34302a;
+  border-radius:13px;
+  padding:14px;
+  margin-bottom:13px;
+}
+h3 {
+  color:var(--gold);
+  font-size:16px;
+  margin:0 0 13px;
+}
 button,select {
-  background:#222;color:white;border:1px solid #80652d;
-  border-radius:9px;padding:12px;font-size:14px;
+  background:#222;
+  color:white;
+  border:1px solid #80652d;
+  border-radius:9px;
+  padding:12px;
+  font-size:14px;
 }
 button:active { background:#55421d; }
-button:disabled { opacity:.6; }
-.gold-button { background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold; }
+.gold-button {
+  background:linear-gradient(135deg,#d2a64c,#806024);
+  color:#000;
+  font-weight:bold;
+}
 .upload-btn {
-  display:block;text-align:center;width:100%;margin:10px 0;
-  border-radius:9px;padding:13px;
+  display:block;
+  text-align:center;
+  width:100%;
+  margin:10px 0;
+  border-radius:9px;
+  padding:13px;
 }
 input[type=file] { display:none; }
-
-/* CAMERA BUTTON FIX */
 .camera-button {
-  display:block !important;
-  visibility:visible !important;
-  opacity:1 !important;
-  position:relative;
-  width:100% !important;
+  display:block;
+  width:100%;
   min-height:60px;
   margin:10px 0 14px;
   padding:16px;
-  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24) !important;
-  color:#000 !important;
-  border:2px solid #f3d78b !important;
+  background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24);
+  color:#000;
+  border:2px solid #f3d78b;
   border-radius:12px;
-  font-size:18px !important;
+  font-size:18px;
   font-weight:bold;
   text-align:center;
   box-shadow:0 0 14px rgba(214,173,82,.25);
-  z-index:5;
 }
-.camera-button:disabled {
-  opacity:1 !important;
-  color:#000 !important;
-}
-
 .canvas-wrap {
-  width:100%;height:58vh;min-height:320px;max-height:700px;
-  background
+  position:relative;
+  width:100%;
+  height:58vh;
+  min-height:320px;
+  max-height:700px;
+  background:#000;
+  border:2px solid #a17b31;
+  border-radius:12px;
+  overflow:hidden;
+}
+#camera {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#000;
+}
+#imageLayer {
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  touch-action:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#referenceImage {
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  opacity:.65;
+  transform:translate(0px,0px) scale(1);
+  transform-origin:center center;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.empty-message {
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:#aaa;
+  padding:20px;
+  pointer-events:none;
+  font-size:14px;
+}
+.control-row {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.control-row button {
+  flex:1;
+  min-width:90px;
+}
+.control {
+  margin:16px 0;
+}
+.control label {
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:8px;
+  color:#eee;
+}
+input[type=range] {
+  width:100%;
+  accent-color:#d6ad52;
+  height:28px;
+}
+.status {
+  font-size:12px;
+  color:#d7b866;
+  min-height:18px;
+  margin-top:8px;
+}
+.note {
+  color:#aaa;
+  font-size:12px;
+  line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">TRACER <span>STUDIO</span> GOLD</div>
+  <small>DRAWING ASSISTANT</small>
+</header>
+
+<div class="container">
+
+  <div class="panel">
+    <h3>📷 Kamera</h3>
+
+    <button class="camera-button" id="cameraBtn">
+      START KAMERA
+    </button>
+
+    <div class="control-row">
+      <button id="flipBtn">🔄 Skift kamera</button>
+      <button id="stopBtn">⏹ Stop kamera</button>
+    </div>
+
+    <div id="status" class="status">
+      Kameraet er ikke startet.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🖼️ Referencebillede</h3>
+
+    <label class="upload-btn gold-button" for="fileInput">
+      VÆLG BILLEDE
+    </label>
+
+    <input type="file" id="fileInput" accept="image/*">
+
+    <div class="control-row">
+      <button id="resetBtn">↩ Nulstil</button>
+      <button id="removeBtn">🗑 Fjern billede</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>✏️ Tegnevisning</h3>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <video id="camera" autoplay playsinline muted></video>
+
+      <div id="imageLayer">
+        <img id="referenceImage" alt="Reference">
+      </div>
+
+      <div id="emptyMessage" class="empty-message">
+        Start kameraet og vælg et referencebillede.
+      </div>
+    </div>
+
+    <div class="control">
+      <label>
+        <span>Gennemsigtighed</span>
+        <span id="opacityValue">65%</span>
+      </label>
+      <input id="opacitySlider" type="range" min="0" max="100" value="65">
+    </div>
+
+    <div class="control">
+      <label>
+        <span>Zoom</span>
+        <span id="zoomValue">100%</span>
+      </label>
+      <input id="zoomSlider" type="range" min="25" max="300" value="100">
+    </div>
+
+    <p class="note">
+      Stil telefonen i en holder over papiret. Start kameraet, vælg dit
+      referencebillede og juster gennemsigtigheden. Træk billedet på
+      skærmen for at flytte det. Brug zoom til at ændre størrelsen.
+    </p>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const camera = document.getElementById("camera");
+  const cameraBtn = document.getElementById("cameraBtn");
+  const flipBtn = document.getElementById("flipBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const fileInput = document.getElementById("fileInput");
+  const referenceImage = document.getElementById("referenceImage");
+  const imageLayer = document.getElementById("imageLayer");
+  const emptyMessage = document.getElementById("emptyMessage");
+  const opacitySlider = document.getElementById("opacitySlider");
+  const zoomSlider = document.getElementById("zoomSlider");
+  const opacityValue = document.getElementById("opacityValue");
+  const zoomValue = document.getElementById("zoomValue");
+  const resetBtn = document.getElementById("resetBtn");
+  const removeBtn = document.getElementById("removeBtn");
+  const status = document.getElementById("status");
+
+  let stream = null;
+  let facing = "environment";
+  let opacity = 65;
+  let zoom = 100;
+  let imageX = 0;
+  let imageY = 0;
+  let dragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let imageLoaded = false;
+
+  function updateImage() {
+    referenceImage.style.opacity = opacity / 100;
+    referenceImage.style.transform =
+      `translate(${imageX}px,${imageY}px) scale(${zoom / 100})`;
+
+    opacityValue.textContent = opacity + "%";
+    zoomValue.textContent = zoom + "%";
+
+    emptyMessage.style.display = imageLoaded ? "none" : "flex";
+  }
+
+  function updateStatus(text) {
+    status.textContent = text;
+  }
+
+  async function startCamera() {
+    stopCamera();
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      updateStatus("Din browser understøtter ikke kameraadgang.");
+      return;
+    }
+
+    try {
+      updateStatus("Starter kamera...");
+
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: facing },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        },
+        audio: false
+      });
+
+      camera.srcObject = stream;
+      await camera.play();
+
+      updateStatus("Kamera aktivt. Placer telefonen i holderen.");
+      cameraBtn.textContent = "KAMERA AKTIVT";
+    } catch (err) {
+      updateStatus("Kamera kunne ikke startes: " + err.message);
+    }
+  }
+
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+    }
+
+    camera.srcObject = null;
+    cameraBtn.textContent = "START KAMERA";
+    updateStatus("Kamera stoppet.");
+  }
+
+  cameraBtn.addEventListener("click", () => {
+    if (stream) {
+      stopCamera();
+    } else {
+      startCamera();
+    }
+  });
+
+  stopBtn.addEventListener("click", stopCamera);
+
+  flipBtn.addEventListener("click", () => {
+    facing = facing === "environment" ? "user" : "environment";
+    if (stream) startCamera();
+  });
+
+  fileInput.addEventListener("change", event => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      updateStatus("Vælg venligst et billedformat.");
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    referenceImage.onload = () => {
+      imageLoaded = true;
+      imageX = 0;
+      imageY = 0;
+      zoom = 100;
+      zoomSlider.value = 100;
+      updateImage();
+      updateStatus("Referencebillede indlæst.");
+    };
+    referenceImage.src = url;
+  });
+
+  opacitySlider.addEventListener("input", () => {
+    opacity = Number(opacitySlider.value);
+    updateImage();
+  });
+
+  zoomSlider.addEventListener("input", () => {
+    zoom = Number(zoomSlider.value);
+    updateImage();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    imageX = 0;
+    imageY = 0;
+    zoom = 100;
+    opacity = 65;
+    zoomSlider.value = 100;
+    opacitySlider.value = 65;
+    updateImage();
+    updateStatus("Placering og indstillinger nulstillet.");
+  });
+
+  removeBtn.addEventListener("click", () => {
+    referenceImage.removeAttribute("src");
+    imageLoaded = false;
+    imageX = 0;
+    imageY = 0;
+    zoom = 100;
+    zoomSlider.value = 100;
+    updateImage();
+    fileInput.value = "";
+    updateStatus("Referencebillede fjernet.");
+  });
+
+  // Flyt referencebilledet med finger eller mus
+  imageLayer.addEventListener("pointerdown", event => {
+    if (!imageLoaded) return;
+
+    dragging = true;
+    lastX = event.clientX;
+    lastY = event.clientY;
+
+    imageLayer.setPointerCapture(event.pointerId);
+  });
+
+  imageLayer.addEventListener("pointermove", event => {
+    if (!dragging) return;
+
+    const dx = event.clientX - lastX;
+    const dy = event.clientY - lastY;
+
+    imageX += dx;
+    imageY += dy;
+
+    lastX = event.clientX;
+    lastY = event.clientY;
+
+    updateImage();
+  });
+
+  imageLayer.addEventListener("pointerup", () => {
+    dragging = false;
+  });
+
+  imageLayer.addEventListener("pointercancel", () => {
+    dragging = false;
+  });
+
+  // Hold skærmen aktiv, når muligt
+  let wakeLock = null;
+
+  async function requestWakeLock() {
+    try {
+      if ("wakeLock" in navigator) {
+        wakeLock = await navigator.wakeLock.request("screen");
+      }
+    } catch (e) {}
+  }
+
+  camera.addEventListener("playing", requestWakeLock);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && stream) {
+      requestWakeLock();
+    }
+  });
+
+  updateImage();
+})();
+</script>
+
+</body>
+</html>
