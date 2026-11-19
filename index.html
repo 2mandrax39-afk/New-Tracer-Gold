@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#090909">
 <link rel="manifest" href="./manifest.webmanifest">
 <title>Tracer Studio Gold</title>
+
 <style>
 :root{--gold:#d6ad52;--gold2:#f3d78b;--black:#090909;--panel:#151515;--text:#f5f5f5}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -19,6 +20,7 @@ header small{color:var(--gold2);font-size:11px}
 h3{color:var(--gold);font-size:15px;margin:0 0 12px}
 button,select,.upload-btn{background:#222;color:white;border:1px solid #80652d;border-radius:8px;padding:11px;font-size:14px}
 button:active{background:#55421d}
+button:disabled{opacity:.6}
 .gold-button{background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold}
 input[type=file]{display:none}
 .upload-btn{display:block;text-align:center;width:100%;margin-bottom:10px}
@@ -40,9 +42,15 @@ footer{text-align:center;color:#777;font-size:11px;padding:18px}
 .camera-button{width:100%;margin-bottom:10px}
 .install-app-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:10px;border:1px solid var(--gold);background:#111;color:var(--gold2);font-weight:bold;font-size:12px;width:100%;margin-top:8px}
 .install-app-btn svg{width:25px;height:25px;flex-shrink:0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:#171717;border:1px solid var(--gold);border-radius:14px;padding:20px;max-width:360px;width:100%;color:white}
+.modal-box h2{color:var(--gold);margin-top:0}
+.modal-box p{line-height:1.6;font-size:14px}
+.modal-box button{width:100%;margin-top:8px}
 @media(max-width:400px){.canvas-wrap{height:52vh}}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -138,9 +146,26 @@ footer{text-align:center;color:#777;font-size:11px;padding:18px}
 8. Tegn på papiret, mens du ser fotoet på skærmen.
 </div>
 </div>
+
 </div>
 
 <footer>TRACER STUDIO GOLD • BLACK & GOLD EDITION</footer>
+
+<!-- Installationsvejledning fallback -->
+<div class="modal" id="installModal">
+  <div class="modal-box">
+    <h2>Installer Tracer Studio</h2>
+    <p id="installText">
+      Hvis installationen ikke åbner automatisk, kan du installere appen gennem browseren.
+    </p>
+    <p>
+      <strong>1.</strong> Tryk på Chrome-menuen ⋮ øverst.<br><br>
+      <strong>2.</strong> Vælg <em>Installer app</em> eller <em>Føj til startskærm</em>.<br><br>
+      <strong>3.</strong> Bekræft installationen.
+    </p>
+    <button class="gold-button" id="closeInstallModal">LUK</button>
+  </div>
+</div>
 
 <script>
 "use strict";
@@ -180,286 +205,368 @@ let pinchStartDistance=0,pinchStartZoom=1,pinchCenter=null;
 let renderScheduled=false;
 
 function resizeCanvas(){
-const rect=wrap.getBoundingClientRect();
-const dpr=Math.min(window.devicePixelRatio||1,2);
-canvas.width=Math.round(rect.width*dpr);
-canvas.height=Math.round(rect.height*dpr);
-ctx.setTransform(dpr,0,0,dpr,0,0);
-render();
+  const rect=wrap.getBoundingClientRect();
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  render();
 }
 
 function fitImage(){
-if(!imageLoaded)return;
-baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
-zoom=1;offsetX=0;offsetY=0;
-zoomSlider.value=100;zoomValue.textContent="100%";
-render();
+  if(!imageLoaded)return;
+  baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
+  zoom=1;
+  offsetX=0;
+  offsetY=0;
+  zoomSlider.value=100;
+  zoomValue.textContent="100%";
+  render();
 }
 
 function scheduleRender(){
-if(renderScheduled)return;
-renderScheduled=true;
-requestAnimationFrame(()=>{renderScheduled=false;render();});
+  if(renderScheduled)return;
+  renderScheduled=true;
+  requestAnimationFrame(()=>{
+    renderScheduled=false;
+    render();
+  });
 }
 
 function settings(){
-return{
-mode:modeSelect.value,
-opacity:Number(opacitySlider.value)/100,
-contrast:Number(contrastSlider.value)/100,
-strength:Number(strengthSlider.value)/100
-};
+  return{
+    mode:modeSelect.value,
+    opacity:Number(opacitySlider.value)/100,
+    contrast:Number(contrastSlider.value)/100,
+    strength:Number(strengthSlider.value)/100
+  };
 }
 
 function render(){
-if(!canvas.width||!canvas.height)return;
-const w=wrap.clientWidth,h=wrap.clientHeight;
-ctx.clearRect(0,0,w,h);
+  if(!canvas.width||!canvas.height)return;
 
-if(cameraOn&&video.readyState>=2){
-ctx.globalAlpha=1;
-ctx.drawImage(video,0,0,w,h);
-}else{
-ctx.fillStyle="#111";
-ctx.fillRect(0,0,w,h);
-}
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  ctx.clearRect(0,0,w,h);
 
-if(!imageLoaded)return;
-const s=settings();
-const drawW=img.width*baseScale*zoom,drawH=img.height*baseScale*zoom;
-const x=(w-drawW)/2+offsetX,y=(h-drawH)/2+offsetY;
+  if(cameraOn&&video.readyState>=2){
+    ctx.globalAlpha=1;
+    ctx.drawImage(video,0,0,w,h);
+  }else{
+    ctx.fillStyle="#111";
+    ctx.fillRect(0,0,w,h);
+  }
 
-if(s.mode==="original"){
-ctx.globalAlpha=s.opacity;
-ctx.drawImage(img,x,y,drawW,drawH);
-ctx.globalAlpha=1;
-return;
-}
+  if(!imageLoaded)return;
 
-const temp=document.createElement("canvas");
-temp.width=Math.max(1,Math.round(drawW));
-temp.height=Math.max(1,Math.round(drawH));
-const tctx=temp.getContext("2d",{willReadFrequently:true});
-tctx.drawImage(img,0,0,temp.width,temp.height);
+  const s=settings();
+  const drawW=img.width*baseScale*zoom;
+  const drawH=img.height*baseScale*zoom;
+  const x=(w-drawW)/2+offsetX;
+  const y=(h-drawH)/2+offsetY;
 
-const data=tctx.getImageData(0,0,temp.width,temp.height);
-const px=data.data,gray=new Uint8ClampedArray(temp.width*temp.height);
-for(let i=0;i<px.length;i+=4){
-gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
-}
+  if(s.mode==="original"){
+    ctx.globalAlpha=s.opacity;
+    ctx.drawImage(img,x,y,drawW,drawH);
+    ctx.globalAlpha=1;
+    return;
+  }
 
-if(s.mode==="gray"){
-for(let i=0;i<px.length;i+=4){
-let g=(gray[i/4]-128)*s.contrast+128;
-px[i]=px[i+1]=px[i+2]=g;
-}
-}
+  const temp=document.createElement("canvas");
+  temp.width=Math.max(1,Math.round(drawW));
+  temp.height=Math.max(1,Math.round(drawH));
+  const tctx=temp.getContext("2d",{willReadFrequently:true});
+  tctx.drawImage(img,0,0,temp.width,temp.height);
 
-if(["line","contour","pencil"].includes(s.mode)){
-const step=s.mode==="contour"?2:1;
-for(let yy=0;yy<temp.height;yy++){
-for(let xx=0;xx<temp.width;xx++){
-const i=yy*temp.width+xx;
-const l=gray[yy*temp.width+Math.max(0,xx-step)];
-const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
-const u=gray[Math.max(0,yy-step)*temp.width+xx];
-const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
-let edge=Math.abs(l-r)+Math.abs(u-d);
-if(s.mode==="contour")edge*=1.5;
-if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
-edge=Math.min(255,edge*s.strength*s.contrast);
-const p=i*4;
-if(s.mode==="contour"){
-const v=edge>48?0:255;
-px[p]=px[p+1]=px[p+2]=v;
-}else{
-const v=255-edge;
-px[p]=px[p+1]=px[p+2]=v;
-}
-}
-}
-}
-tctx.putImageData(data,0,0);
-ctx.globalAlpha=s.opacity;
-ctx.drawImage(temp,x,y,drawW,drawH);
-ctx.globalAlpha=1;
+  const data=tctx.getImageData(0,0,temp.width,temp.height);
+  const px=data.data;
+  const gray=new Uint8Array(temp.width*temp.height);
+
+  for(let i=0;i<px.length;i+=4){
+    gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
+  }
+
+  if(s.mode==="gray"){
+    for(let i=0;i<px.length;i+=4){
+      let g=(gray[i/4]-128)*s.contrast+128;
+      px[i]=px[i+1]=px[i+2]=g;
+    }
+  }
+
+  if(["line","contour","pencil"].includes(s.mode)){
+    const step=s.mode==="contour"?2:1;
+
+    for(let yy=0;yy<temp.height;yy++){
+      for(let xx=0;xx<temp.width;xx++){
+        const i=yy*temp.width+xx;
+        const l=gray[yy*temp.width+Math.max(0,xx-step)];
+        const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
+        const u=gray[Math.max(0,yy-step)*temp.width+xx];
+        const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
+
+        let edge=Math.abs(l-r)+Math.abs(u-d);
+        if(s.mode==="contour")edge*=1.5;
+        if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
+        edge=Math.min(255,edge*s.strength*s.contrast);
+
+        const p=i*4;
+        if(s.mode==="contour"){
+          const v=edge>48?0:255;
+          px[p]=px[p+1]=px[p+2]=v;
+        }else{
+          const v=255-edge;
+          px[p]=px[p+1]=px[p+2]=v;
+        }
+      }
+    }
+  }
+
+  tctx.putImageData(data,0,0);
+  ctx.globalAlpha=s.opacity;
+  ctx.drawImage(temp,x,y,drawW,drawH);
+  ctx.globalAlpha=1;
 }
 
 cameraBtn.addEventListener("click",async()=>{
-if(cameraOn)return;
-try{
-if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-throw new Error("Kamera understøttes ikke i denne browser");
-}
-status.textContent="Starter kamera...";
-cameraStream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:{ideal:"environment"}},audio:false
-});
-video.srcObject=cameraStream;
-await video.play();
-cameraOn=true;
-cameraBtn.textContent="✓ Kamera aktiv";
-cameraBtn.disabled=true;
-message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
-if(imageLoaded)message.style.display="none";
-status.textContent="Kamera aktivt";
-render();
-function cameraLoop(){
-if(!cameraOn)return;
-render();
-requestAnimationFrame(cameraLoop);
-}
-requestAnimationFrame(cameraLoop);
-}catch(err){
-console.error(err);
-status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
-}
+  if(cameraOn)return;
+
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      throw new Error("Kamera understøttes ikke i denne browser");
+    }
+
+    status.textContent="Starter kamera...";
+    cameraStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"}},
+      audio:false
+    });
+
+    video.srcObject=cameraStream;
+    await video.play();
+    cameraOn=true;
+    cameraBtn.textContent="✓ Kamera aktiv";
+    cameraBtn.disabled=true;
+    message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
+    if(imageLoaded)message.style.display="none";
+    status.textContent="Kamera aktivt";
+    render();
+
+    function cameraLoop(){
+      if(!cameraOn)return;
+      render();
+      requestAnimationFrame(cameraLoop);
+    }
+    requestAnimationFrame(cameraLoop);
+
+  }catch(err){
+    console.error(err);
+    status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
+  }
 });
 
 fileInput.addEventListener("change",e=>{
-const file=e.target.files&&e.target.files[0];
-if(!file)return;
-const url=URL.createObjectURL(file);
-img.onload=()=>{
-imageLoaded=true;
-message.style.display="none";
-fitImage();
-status.textContent="Foto indlæst";
-URL.revokeObjectURL(url);
-};
-img.onerror=()=>{
-status.textContent="Kunne ikke åbne billedet";
-URL.revokeObjectURL(url);
-};
-img.src=url;
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
+
+  const url=URL.createObjectURL(file);
+  img.onload=()=>{
+    imageLoaded=true;
+    message.style.display="none";
+    fitImage();
+    status.textContent="Foto indlæst";
+    URL.revokeObjectURL(url);
+  };
+  img.onerror=()=>{
+    status.textContent="Kunne ikke åbne billedet";
+    URL.revokeObjectURL(url);
+  };
+  img.src=url;
 });
 
 opacitySlider.addEventListener("input",()=>{
-opacityValue.textContent=opacitySlider.value+"%";scheduleRender();
+  opacityValue.textContent=opacitySlider.value+"%";
+  scheduleRender();
 });
+
 zoomSlider.addEventListener("input",()=>{
-zoom=Number(zoomSlider.value)/100;
-zoomValue.textContent=zoomSlider.value+"%";
-scheduleRender();
+  zoom=Number(zoomSlider.value)/100;
+  zoomValue.textContent=zoomSlider.value+"%";
+  scheduleRender();
 });
+
 contrastSlider.addEventListener("input",()=>{
-contrastValue.textContent=contrastSlider.value+"%";scheduleRender();
+  contrastValue.textContent=contrastSlider.value+"%";
+  scheduleRender();
 });
+
 strengthSlider.addEventListener("input",()=>{
-strengthValue.textContent=strengthSlider.value+"%";scheduleRender();
+  strengthValue.textContent=strengthSlider.value+"%";
+  scheduleRender();
 });
+
 modeSelect.addEventListener("change",render);
 
 lockBtn.addEventListener("click",()=>{
-locked=!locked;
-lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
-lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
-wrap.classList.toggle("locked",locked);
+  locked=!locked;
+  lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
+  lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
+  wrap.classList.toggle("locked",locked);
 });
 
 resetBtn.addEventListener("click",()=>{
-offsetX=offsetY=0;zoom=1;
-zoomSlider.value=100;zoomValue.textContent="100%";render();
+  offsetX=offsetY=0;
+  zoom=1;
+  zoomSlider.value=100;
+  zoomValue.textContent="100%";
+  render();
 });
+
 fitBtn.addEventListener("click",fitImage);
 
 resetControlsBtn.addEventListener("click",()=>{
-opacitySlider.value=50;zoomSlider.value=100;contrastSlider.value=100;
-strengthSlider.value=100;modeSelect.value="original";
-opacityValue.textContent="50%";zoomValue.textContent="100%";
-contrastValue.textContent="100%";strengthValue.textContent="100%";
-zoom=1;render();
+  opacitySlider.value=50;
+  zoomSlider.value=100;
+  contrastSlider.value=100;
+  strengthSlider.value=100;
+  modeSelect.value="original";
+
+  opacityValue.textContent="50%";
+  zoomValue.textContent="100%";
+  contrastValue.textContent="100%";
+  strengthValue.textContent="100%";
+  zoom=1;
+  render();
 });
 
-function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function center(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+function distance(a,b){
+  return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function center(a,b){
+  return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+}
+
+function pointersSet(id,x,y){
+  pointers.set(id,{x,y});
+}
 
 canvas.addEventListener("pointerdown",e=>{
-canvas.setPointerCapture(e.pointerId);
-pointersSet(e.pointerId,e.clientX,e.clientY);
-if(pointers.size===1)lastPointer={x:e.clientX,y:e.clientY};
-if(pointers.size===2){
-const pts=[...pointers.values()];
-pinchStartDistance=distance(pts[0],pts[1]);
-pinchStartZoom=zoom;pinchCenter=center(pts[0],pts[1]);
-}
+  canvas.setPointerCapture(e.pointerId);
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+
+  if(pointers.size===1){
+    lastPointer={x:e.clientX,y:e.clientY};
+  }
+
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    pinchStartDistance=distance(pts[0],pts[1]);
+    pinchStartZoom=zoom;
+    pinchCenter=center(pts[0],pts[1]);
+  }
 });
 
-function pointersSet(id,x,y){pointers.set(id,{x,y});}
-
 canvas.addEventListener("pointermove",e=>{
-if(!pointers.has(e.pointerId)return;
-pointersSet(e.pointerId,e.clientX,e.clientY);
-if(locked)return;
-if(pointers.size===1&&lastPointer){
-offsetX+=e.clientX-lastPointer.x;
-offsetY+=e.clientY-lastPointer.y;
-lastPointer={x:e.clientX,y:e.clientY};
-scheduleRender();
-}
-if(pointers.size===2){
-const pts=[...pointers.values()],dist=distance(pts[0],pts[1]),c=center(pts[0],pts[1]);
-if(pinchStartDistance>0){
-zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
-zoomSlider.value=Math.round(zoom*100);
-zoomValue.textContent=zoomSlider.value+"%";
-if(pinchCenter){
-offsetX+=c.x-pinchCenter.x;
-offsetY+=c.y-pinchCenter.y;
-}
-pinchCenter=c;
-scheduleRender();
-}
-}
+  if(!pointers.has(e.pointerId))return;
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+  if(locked)return;
+
+  if(pointers.size===1&&lastPointer){
+    offsetX+=e.clientX-lastPointer.x;
+    offsetY+=e.clientY-lastPointer.y;
+    lastPointer={x:e.clientX,y:e.clientY};
+    scheduleRender();
+  }
+
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    const dist=distance(pts[0],pts[1]);
+    const c=center(pts[0],pts[1]);
+
+    if(pinchStartDistance>0){
+      zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
+      zoomSlider.value=Math.round(zoom*100);
+      zoomValue.textContent=zoomSlider.value+"%";
+
+      if(pinchCenter){
+        offsetX+=c.x-pinchCenter.x;
+        offsetY+=c.y-pinchCenter.y;
+      }
+
+      pinchCenter=c;
+      scheduleRender();
+    }
+  }
 });
 
 function endPointer(e){
-pointers.delete(e.pointerId);
-if(pointers.size===1){
-const p=[...pointers.values()][0];
-lastPointer={x:p.x,y:p.y};
-}else lastPointer=null;
-if(pointers.size<2){pinchStartDistance=0;pinchCenter=null;}
+  pointers.delete(e.pointerId);
+
+  if(pointers.size===1){
+    const p=[...pointers.values()][0];
+    lastPointer={x:p.x,y:p.y};
+  }else{
+    lastPointer=null;
+  }
+
+  if(pointers.size<2){
+    pinchStartDistance=0;
+    pinchCenter=null;
+  }
 }
+
 canvas.addEventListener("pointerup",endPointer);
 canvas.addEventListener("pointercancel",endPointer);
 canvas.addEventListener("lostpointercapture",endPointer);
+
 canvas.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 window.addEventListener("resize",resizeCanvas);
 
-// Install button
+/* INSTALLATION */
 let installPromptEvent=null;
 const installAppBtn=document.getElementById("installAppBtn");
+const installModal=document.getElementById("installModal");
+const closeInstallModal=document.getElementById("closeInstallModal");
 
 window.addEventListener("beforeinstallprompt",e=>{
-e.preventDefault();
-installPromptEvent=e;
+  e.preventDefault();
+  installPromptEvent=e;
 });
 
 installAppBtn.addEventListener("click",async()=>{
-if(!installPromptEvent){
-alert("Hvis installation ikke åbner automatisk: Tryk på Chrome-menuen (⋮) og vælg 'Installer app' eller 'Føj til startskærm'.");
-return;
-}
-try{
-installAppBtn.disabled=true;
-installPromptEvent.prompt();
-await installPromptEvent.userChoice;
-}catch(err){
-console.warn("Install prompt kunne ikke vises",err);
-}finally{
-installPromptEvent=null;
-installAppBtn.disabled=false;
-}
+  if(installPromptEvent){
+    try{
+      installAppBtn.disabled=true;
+      installPromptEvent.prompt();
+      await installPromptEvent.userChoice;
+    }catch(err){
+      console.warn("Install prompt fejl:",err);
+    }finally{
+      installPromptEvent=null;
+      installAppBtn.disabled=false;
+    }
+  }else{
+    installModal.style.display="flex";
+  }
 });
 
-// Service Worker: kun på den rigtige HTTPS-side, ikke i editor/preview
-if("serviceWorker" in navigator && location.protocol==="https:" && window.top===window.self){
-window.addEventListener("load",()=>{
-navigator.serviceWorker.register("./service-worker.js")
-.catch(err=>console.warn("Service worker registration skipped:",err));
+closeInstallModal.addEventListener("click",()=>{
+  installModal.style.display="none";
 });
+
+installModal.addEventListener("click",e=>{
+  if(e.target===installModal){
+    installModal.style.display="none";
+  }
+});
+
+/* SERVICE WORKER */
+if("serviceWorker" in navigator && location.protocol==="https:" && window.top===window.self){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(()=>console.log("Tracer Service Worker aktiv"))
+      .catch(err=>console.warn("Service Worker fejl:",err));
+  });
 }
 
 resizeCanvas();
