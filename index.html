@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#090909">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>Tracer Studio Gold</title>
 
 <style>
@@ -200,6 +200,11 @@ footer {
   border-color: #3eaa68;
 }
 
+.camera-button {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
 @media (max-width: 400px) {
   .canvas-wrap {
     height: 52vh;
@@ -221,10 +226,14 @@ footer {
 <div class="container">
 
   <div class="panel">
-    <h3>📷 Vælg billede</h3>
+    <h3>📷 Kamera og billede</h3>
+
+    <button id="cameraBtn" class="gold-button camera-button">
+      📷 Start kamera
+    </button>
 
     <label class="upload-btn gold-button" for="fileInput">
-      Vælg foto fra telefon
+      🖼️ Vælg foto fra telefon
     </label>
 
     <input id="fileInput" type="file" accept="image/*">
@@ -232,7 +241,7 @@ footer {
     <div class="canvas-wrap" id="canvasWrap">
       <canvas id="canvas"></canvas>
       <div class="canvas-message" id="message">
-        Vælg et billede for at starte
+        Start kameraet og vælg et billede
       </div>
     </div>
 
@@ -245,9 +254,7 @@ footer {
     <h3>✏️ Tegneindstillinger</h3>
 
     <div class="control">
-      <label for="mode">
-        Billedtilstand
-      </label>
+      <label for="mode">Billedtilstand</label>
       <select id="mode">
         <option value="original">Original foto</option>
         <option value="line">Linjetegning</option>
@@ -260,9 +267,9 @@ footer {
     <div class="control">
       <label>
         Gennemsigtighed
-        <span class="value" id="opacityValue">70%</span>
+        <span class="value" id="opacityValue">50%</span>
       </label>
-      <input type="range" id="opacity" min="5" max="100" value="70">
+      <input type="range" id="opacity" min="5" max="100" value="50">
     </div>
 
     <div class="control">
@@ -309,12 +316,13 @@ footer {
     <h3>ℹ️ Sådan bruger du Tracer Studio</h3>
     <div class="tip">
       1. Sæt telefonen i en holder over bordet.<br><br>
-      2. Læg tegnepapiret på bordet under telefonen.<br><br>
-      3. Vælg dit foto.<br><br>
-      4. Juster gennemsigtigheden, så du kan se papiret og billedet samtidig.<br><br>
-      5. Brug to fingre til at zoome og flytte billedet.<br><br>
-      6. Tryk på <b>Lås billede</b>, når billedet ligger rigtigt.<br><br>
-      7. Tegn på papiret.
+      2. Tryk på Start kamera og tillad kameraadgang.<br><br>
+      3. Læg tegnepapiret på bordet under telefonen.<br><br>
+      4. Vælg dit foto fra telefonen.<br><br>
+      5. Juster gennemsigtigheden, så papiret er synligt gennem fotoet.<br><br>
+      6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
+      7. Tryk Lås billede, når det ligger rigtigt.<br><br>
+      8. Tegn på papiret, mens du ser fotoet på skærmen.
     </div>
   </div>
 
@@ -331,6 +339,7 @@ const wrap = document.getElementById("canvasWrap");
 
 const fileInput = document.getElementById("fileInput");
 const message = document.getElementById("message");
+const cameraBtn = document.getElementById("cameraBtn");
 
 const modeSelect = document.getElementById("mode");
 const opacitySlider = document.getElementById("opacity");
@@ -349,6 +358,14 @@ const fitBtn = document.getElementById("fitBtn");
 const resetControlsBtn = document.getElementById("resetControlsBtn");
 const lockStatus = document.getElementById("lockStatus");
 const status = document.getElementById("status");
+
+const video = document.createElement("video");
+video.setAttribute("playsinline", "");
+video.setAttribute("autoplay", "");
+video.muted = true;
+
+let cameraStream = null;
+let cameraOn = false;
 
 let img = new Image();
 let imageLoaded = false;
@@ -423,6 +440,15 @@ function render() {
   const h = wrap.clientHeight;
 
   ctx.clearRect(0, 0, w, h);
+
+  // Draw live camera first as the background.
+  if (cameraOn && video.readyState >= 2) {
+    ctx.globalAlpha = 1;
+    ctx.drawImage(video, 0, 0, w, h);
+  } else {
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, w, h);
+  }
 
   if (!imageLoaded) return;
 
@@ -523,6 +549,54 @@ function render() {
   ctx.globalAlpha = 1;
 }
 
+// Start camera
+cameraBtn.addEventListener("click", async () => {
+  if (cameraOn) return;
+
+  try {
+    status.textContent = "Starter kamera...";
+
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: "environment" }
+      },
+      audio: false
+    });
+
+    video.srcObject = cameraStream;
+    await video.play();
+
+    cameraOn = true;
+    cameraBtn.textContent = "✓ Kamera aktiv";
+    cameraBtn.disabled = true;
+
+    message.textContent = imageLoaded
+      ? ""
+      : "Kamera aktiv. Vælg et foto for at starte";
+
+    if (imageLoaded) {
+      message.style.display = "none";
+    }
+
+    status.textContent = "Kamera aktivt";
+    render();
+
+    // Refresh camera background continuously.
+    function cameraLoop() {
+      if (!cameraOn) return;
+      render();
+      requestAnimationFrame(cameraLoop);
+    }
+
+    requestAnimationFrame(cameraLoop);
+
+  } catch (error) {
+    console.error(error);
+    status.textContent = "Kamera kunne ikke startes. Tillad kameraadgang.";
+  }
+});
+
+// Load image
 fileInput.addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -570,6 +644,7 @@ strengthSlider.addEventListener("input", () => {
 
 modeSelect.addEventListener("change", render);
 
+// Lock image
 lockBtn.addEventListener("click", () => {
   locked = !locked;
 
@@ -584,6 +659,7 @@ lockBtn.addEventListener("click", () => {
   wrap.classList.toggle("locked", locked);
 });
 
+// Reset position
 resetBtn.addEventListener("click", () => {
   offsetX = 0;
   offsetY = 0;
@@ -595,16 +671,18 @@ resetBtn.addEventListener("click", () => {
   render();
 });
 
+// Fit image
 fitBtn.addEventListener("click", fitImage);
 
+// Reset controls
 resetControlsBtn.addEventListener("click", () => {
-  opacitySlider.value = 70;
+  opacitySlider.value = 50;
   zoomSlider.value = 100;
   contrastSlider.value = 100;
   strengthSlider.value = 100;
   modeSelect.value = "original";
 
-  opacityValue.textContent = "70%";
+  opacityValue.textContent = "50%";
   zoomValue.textContent = "100%";
   contrastValue.textContent = "100%";
   strengthValue.textContent = "100%";
@@ -613,10 +691,10 @@ resetControlsBtn.addEventListener("click", () => {
   render();
 });
 
-// POINTER / TOUCH CONTROL
-// One finger moves image.
-// Two fingers zoom and pan.
-// Lock disables movement.
+// Touch and pointer control
+// One finger moves the photo.
+// Two fingers zoom and move the photo.
+// Lock disables photo movement.
 
 function pointerDistance(a, b) {
   const dx = a.x - b.x;
@@ -657,8 +735,6 @@ canvas.addEventListener("pointerdown", e => {
 
 canvas.addEventListener("pointermove", e => {
   if (!pointers.has(e.pointerId)) return;
-
-  const previous = pointers.get(e.pointerId);
 
   pointers.set(e.pointerId, {
     x: e.clientX,
@@ -727,11 +803,17 @@ canvas.addEventListener("pointerup", endPointer);
 canvas.addEventListener("pointercancel", endPointer);
 canvas.addEventListener("lostpointercapture", endPointer);
 
-// Prevent browser gestures from interfering with drawing
-canvas.addEventListener("touchstart", e => e.preventDefault(), {passive:false});
-canvas.addEventListener("touchmove", e => e.preventDefault(), {passive:false});
+canvas.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
+canvas.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 
 window.addEventListener("resize", resizeCanvas);
+
+// PWA service worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+  });
+}
 
 resizeCanvas();
 </script>
