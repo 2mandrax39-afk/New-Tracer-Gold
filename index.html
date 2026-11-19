@@ -372,10 +372,6 @@ input[type=range] {
   let gridOn = false;
   let guidesOn = false;
 
-  let dragging = false;
-  let lastX = 0;
-  let lastY = 0;
-
   function statusText(text) {
     status.textContent = text;
   }
@@ -392,7 +388,7 @@ input[type=range] {
     $("empty").style.display = loaded ? "none" : "flex";
 
     $("opacityText").textContent = opacity + "%";
-    $("zoomText").textContent = zoom + "%";
+    $("zoomText").textContent = Math.round(zoom) + "%";
     $("rotationText").textContent = rotation + "°";
 
     $("grid").style.display = gridOn ? "block" : "none";
@@ -599,36 +595,150 @@ input[type=range] {
     );
   });
 
-  // MOVE IMAGE BY TOUCH
+  // --------------------------------------------------
+  // FIXED TOUCH: ONE FINGER DRAG / TWO FINGER PINCH ZOOM
+  // --------------------------------------------------
+
+  const activePointers = new Map();
+
+  let gestureMode = "none";
+  let pinchStartDistance = 0;
+  let pinchStartZoom = 100;
+  let pinchStartX = 0;
+  let pinchStartY = 0;
+  let pinchStartMidX = 0;
+  let pinchStartMidY = 0;
+
+  function midpoint(a, b) {
+    return {
+      x: (a.x + b.x) / 2,
+      y: (a.y + b.y) / 2
+    };
+  }
+
+  function distance(a, b) {
+    return Math.hypot(b.x - a.x, b.y - a.y);
+  }
+
+  function beginPinch() {
+    if (activePointers.size !== 2) return;
+
+    const pts = [...activePointers.values()];
+    const mid = midpoint(pts[0], pts[1]);
+    const rect = stage.getBoundingClientRect();
+
+    gestureMode = "pinch";
+    pinchStartDistance = distance(pts[0], pts[1]);
+    pinchStartZoom = zoom;
+    pinchStartX = x;
+    pinchStartY = y;
+
+    pinchStartMidX = mid.x - rect.left - rect.width / 2;
+    pinchStartMidY = mid.y - rect.top - rect.height / 2;
+  }
+
   ref.addEventListener("pointerdown", event => {
     if (!loaded) return;
 
-    dragging = true;
-    lastX = event.clientX;
-    lastY = event.clientY;
+    event.preventDefault();
 
-    ref.setPointerCapture(event.pointerId);
+    activePointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY
+    });
+
+    try {
+      ref.setPointerCapture(event.pointerId);
+    } catch (e) {}
+
+    if (activePointers.size === 1) {
+      gestureMode = "drag";
+      lastX = event.clientX;
+      lastY = event.clientY;
+    } else if (activePointers.size === 2) {
+      beginPinch();
+    }
   });
 
   ref.addEventListener("pointermove", event => {
-    if (!dragging) return;
+    if (!activePointers.has(event.pointerId)) return;
 
-    x += event.clientX - lastX;
-    y += event.clientY - lastY;
+    event.preventDefault();
 
-    lastX = event.clientX;
-    lastY = event.clientY;
+    activePointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY
+    });
 
-    render();
+    // ONE FINGER: MOVE IMAGE
+    if (activePointers.size === 1 && gestureMode === "drag") {
+      x += event.clientX - lastX;
+      y += event.clientY - lastY;
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+
+      render();
+      return;
+    }
+
+    // TWO FINGERS: PINCH ZOOM AROUND FINGER MIDPOINT
+    if (activePointers.size === 2 && gestureMode === "pinch") {
+      const pts = [...activePointers.values()];
+      const mid = midpoint(pts[0], pts[1]);
+      const currentDistance = distance(pts[0], pts[1]);
+
+      if (pinchStartDistance <= 0) return;
+
+      const rect = stage.getBoundingClientRect();
+
+      const currentMidX = mid.x - rect.left - rect.width / 2;
+      const currentMidY = mid.y - rect.top - rect.height / 2;
+
+      const ratio = currentDistance / pinchStartDistance;
+
+      const newZoom = Math.max(
+        20,
+        Math.min(300, pinchStartZoom * ratio)
+      );
+
+      const scaleRatio = newZoom / pinchStartZoom;
+
+      // Keep the image point beneath the fingers anchored.
+      x = pinchStartX
+        + (currentMidX - pinchStartMidX)
+        + (pinchStartMidX - pinchStartX) * (1 - scaleRatio);
+
+      y = pinchStartY
+        + (currentMidY - pinchStartMidY)
+        + (pinchStartMidY - pinchStartY) * (1 - scaleRatio);
+
+      zoom = newZoom;
+      $("zoom").value = Math.round(zoom);
+
+      render();
+    }
   });
 
-  ref.addEventListener("pointerup", () => {
-    dragging = false;
-  });
+  function finishPointer(event) {
+    if (!activePointers.has(event.pointerId)) return;
 
-  ref.addEventListener("pointercancel", () => {
-    dragging = false;
-  });
+    activePointers.delete(event.pointerId);
+
+    if (activePointers.size === 1) {
+      // Continue smoothly as one-finger drag after releasing one finger.
+      const remaining = [...activePointers.values()][0];
+      gestureMode = "drag";
+      lastX = remaining.x;
+      lastY = remaining.y;
+    } else {
+      gestureMode = "none";
+    }
+  }
+
+  ref.addEventListener("pointerup", finishPointer);
+  ref.addEventListener("pointercancel", finishPointer);
+  ref.addEventListener("lostpointercapture", finishPointer);
 
   // PNG DOWNLOAD
   $("downloadBtn").onclick = () => {
