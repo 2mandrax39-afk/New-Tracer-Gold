@@ -7,8 +7,14 @@
 <title>New Tracer Gold</title>
 
 <style>
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+:root {
+  --gold: #d4af37;
+  --gold2: #b8860b;
+  --black: #080808;
+  --panel: #111111;
+  --panel2: #181818;
 }
 
 html, body {
@@ -16,199 +22,243 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #111;
-  color: white;
+  background: var(--black);
+  color: var(--gold);
   font-family: Arial, sans-serif;
 }
 
 body {
   height: 100dvh;
-  display: grid;
-  grid-template-rows: 44px 32dvh minmax(0, 1fr);
-}
-
-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #b8860b;
-  color: #111;
+  flex-direction: column;
+}
+
+/* TOP MENU */
+#topMenu {
+  flex: 0 0 auto;
+  background: #080808;
+  border-bottom: 1px solid #5c4710;
+  padding: 5px;
+}
+
+#brand {
+  text-align: center;
+  font-size: 16px;
   font-weight: bold;
-  font-size: 17px;
-  padding: 4px;
+  letter-spacing: 2px;
+  padding: 5px 2px;
+  color: var(--gold);
 }
 
+.toolbar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+button {
+  background: #101010;
+  border: 1px solid var(--gold2);
+  color: var(--gold);
+  border-radius: 6px;
+  padding: 8px 9px;
+  font-size: 12px;
+  font-weight: bold;
+  min-height: 36px;
+}
+
+button.active {
+  background: var(--gold);
+  color: #000;
+}
+
+button:active {
+  background: #e6c85c;
+  color: #000;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+/* CAMERA IN THE MIDDLE */
 #stage {
-  position: relative;
+  flex: 0 0 40dvh;
   min-height: 0;
-  overflow: hidden;
+  width: 100%;
   background: #000;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid #29210d;
+  border-bottom: 1px solid #29210d;
 }
 
-#cameraCanvas {
+canvas {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
-  object-fit: contain;
 }
 
 #overlayCanvas {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   touch-action: none;
 }
 
-#controls {
+/* BOTTOM MENU */
+#bottomMenu {
+  flex: 1 1 0;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 10px;
-  background: #202020;
+  background: #080808;
+  padding: 7px;
 }
 
-.section {
-  margin-bottom: 12px;
-  padding: 10px;
+.group {
+  border: 1px solid #33280d;
   border-radius: 8px;
-  background: #2b2b2b;
+  background: #111;
+  padding: 8px;
+  margin-bottom: 7px;
 }
 
-button {
-  background: #c99b24;
-  color: #111;
-  border: 0;
-  border-radius: 7px;
-  padding: 12px 9px;
-  font-size: 15px;
-  font-weight: bold;
-  margin: 3px;
+.groupTitle {
+  font-size: 11px;
+  color: #9b812e;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
 }
 
-button:active {
-  background: #f2cf67;
-}
-
-.row {
+.controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 5px;
 }
 
-.row button {
-  flex: 1 1 110px;
+.controls button {
+  flex: 1 1 auto;
 }
 
-label {
-  display: block;
+.sliderLine {
   margin: 7px 0;
-  font-size: 14px;
+}
+
+.sliderLine label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 3px;
 }
 
 input[type="range"] {
   width: 100%;
-  margin: 8px 0;
-  accent-color: #d6a629;
-}
-
-input[type="file"] {
-  width: 100%;
-  color: white;
-  margin-top: 8px;
+  accent-color: var(--gold);
+  height: 24px;
 }
 
 #status {
-  color: #f2cf67;
-  font-size: 13px;
-  margin-top: 8px;
-}
-
-.small {
-  font-size: 12px;
-  color: #bbb;
+  text-align: center;
+  color: #9b812e;
+  font-size: 11px;
+  padding: 4px;
 }
 
 @media (max-height: 650px) {
-  body {
-    grid-template-rows: 40px 27dvh minmax(0, 1fr);
-  }
-
-  button {
-    padding: 9px 6px;
-  }
-
-  #controls {
-    padding: 6px;
-  }
+  #stage { flex-basis: 35dvh; }
+  #brand { font-size: 14px; padding: 3px; }
+  button { min-height: 31px; padding: 6px; font-size: 11px; }
+  #topMenu { padding: 3px; }
 }
 </style>
 </head>
 
 <body>
 
-<header>NEW TRACER GOLD</header>
+<!-- MENU ABOVE CAMERA -->
+<div id="topMenu">
+  <div id="brand">NEW TRACER GOLD</div>
 
+  <div class="toolbar">
+    <button id="cameraBtn">📷 Kamera</button>
+    <button id="switchBtn">🔄 Skift</button>
+    <button id="chooseBtn">🖼 Reference</button>
+    <button id="fitBtn">Fit</button>
+    <button id="lockBtn">🔓 Lås</button>
+  </div>
+
+  <input type="file" id="imageInput" accept="image/*">
+</div>
+
+<!-- CAMERA IN THE MIDDLE -->
 <div id="stage">
   <canvas id="cameraCanvas"></canvas>
   <canvas id="overlayCanvas"></canvas>
 </div>
 
-<div id="controls">
+<!-- MENU BELOW CAMERA -->
+<div id="bottomMenu">
 
-  <div class="section">
-    <div class="row">
-      <button id="cameraBtn">📷 Start kamera</button>
-      <button id="switchBtn">🔄 Skift kamera</button>
-    </div>
-    <div id="status">Kamera ikke startet</div>
-  </div>
-
-  <div class="section">
-    <b>Referencebillede</b>
-    <input type="file" id="imageInput" accept="image/*">
-
-    <div class="row">
-      <button id="fitBtn">Tilpas billede</button>
-      <button id="lockBtn">🔓 Lås billede</button>
-      <button id="resetBtn">Nulstil</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <label>Reference zoom
-      <input type="range" id="zoomSlider" min="0.1" max="5" step="0.01" value="1">
-    </label>
-
-    <label>Transparens
-      <input type="range" id="opacitySlider" min="0" max="100" value="50">
-    </label>
-  </div>
-
-  <div class="section">
-    <div class="row">
+  <div class="group">
+    <div class="groupTitle">IMAGE TOOLS</div>
+    <div class="controls">
+      <button id="bwBtn">Sort / Hvid</button>
       <button id="grayBtn">Gråtoner</button>
+      <button id="pencilBtn">Blyant</button>
       <button id="contourBtn">Konturer</button>
+      <button id="edgeBtn">Kanter</button>
+      <button id="contrastBtn">Kontrast</button>
     </div>
-    <p class="small">
-      Flyt referencebilledet med én finger. Zoom med to fingre.
-      Kameraet bruges til at se papiret.
-    </p>
   </div>
 
+  <div class="group">
+    <div class="groupTitle">REFERENCE</div>
+
+    <div class="sliderLine">
+      <label>Reference zoom <span id="zoomValue">100%</span></label>
+      <input type="range" id="zoomSlider" min="10" max="500" value="100">
+    </div>
+
+    <div class="sliderLine">
+      <label>Transparens <span id="opacityValue">50%</span></label>
+      <input type="range" id="opacitySlider" min="0" max="100" value="50">
+    </div>
+
+    <div class="sliderLine">
+      <label>Kamera zoom <span id="cameraZoomValue">1.0×</span></label>
+      <input type="range" id="cameraZoomSlider" min="1" max="5" step="0.1" value="1">
+    </div>
+
+    <div class="sliderLine">
+      <label>Kontrast <span id="contrastValue">100%</span></label>
+      <input type="range" id="contrastSlider" min="50" max="250" value="100">
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="groupTitle">POSITION</div>
+    <div class="controls">
+      <button id="resetBtn">↩ Nulstil</button>
+      <button id="centerBtn">⊙ Center</button>
+    </div>
+  </div>
+
+  <div id="status">Klar · Start kamera eller vælg referencebillede</div>
 </div>
 
 <script>
 const cameraCanvas = document.getElementById("cameraCanvas");
 const overlayCanvas = document.getElementById("overlayCanvas");
+
 const cameraCtx = cameraCanvas.getContext("2d");
 const overlayCtx = overlayCanvas.getContext("2d");
 
 const video = document.createElement("video");
 video.autoplay = true;
-video.playsInline;
+video.playsInline = true;
 video.muted = true;
 
 let stream = null;
@@ -221,29 +271,42 @@ let overlayX = 0;
 let overlayY = 0;
 let overlayScale = 1;
 let fitScale = 1;
-
 let opacity = 0.5;
 let locked = false;
+
+let blackWhite = false;
 let grayscale = false;
+let pencil = false;
 let contours = false;
+let edges = false;
+let contrast = 100;
+
+let cameraZoom = 1;
 
 let pointers = new Map();
 let pinchStartDistance = 0;
 let pinchStartScale = 1;
-let pinchStartCenter = null;
 let pinchStartX = 0;
 let pinchStartY = 0;
+let pinchStartMid = null;
+
+let cameraReady = false;
+
+const status = document.getElementById("status");
+
+function setStatus(text) {
+  status.textContent = text;
+}
 
 function resize() {
   const stage = document.getElementById("stage");
   const rect = stage.getBoundingClientRect();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  cameraCanvas.width = Math.round(rect.width * dpr);
-  cameraCanvas.height = Math.round(rect.height * dpr);
-
-  overlayCanvas.width = Math.round(rect.width * dpr);
-  overlayCanvas.height = Math.round(rect.height * dpr);
+  cameraCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+  cameraCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+  overlayCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+  overlayCanvas.height = Math.max(1, Math.round(rect.height * dpr));
 
   cameraCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -251,109 +314,18 @@ function resize() {
   drawOverlay();
 }
 
-function drawCamera() {
-  if (video.readyState >= 2) {
-    const w = cameraCanvas.clientWidth;
-    const h = cameraCanvas.clientHeight;
-
-    cameraCtx.clearRect(0, 0, w, h);
-
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-
-    if (vw && vh) {
-      const scale = Math.max(w / vw, h / vh);
-      const dw = vw * scale;
-      const dh = vh * scale;
-
-      cameraCtx.save();
-
-      if (grayscale) {
-        cameraCtx.filter = "grayscale(1)";
-      }
-
-      cameraCtx.drawImage(
-        video,
-        (w - dw) / 2,
-        (h - dh) / 2,
-        dw,
-        dh
-      );
-
-      cameraCtx.restore();
-
-      if (contours) {
-        drawContourEffect(w, h);
-      }
-    }
-  }
-
-  requestAnimationFrame(drawCamera);
-}
-
-function drawContourEffect(w, h) {
-  const imageData = cameraCtx.getImageData(0, 0, cameraCanvas.width, cameraCanvas.height);
-  const data = imageData.data;
-  const width = cameraCanvas.width;
-  const height = cameraCanvas.height;
-
-  for (let y = 1; y < height - 1; y += 3) {
-    for (let x = 1; x < width - 1; x += 3) {
-      const i = (y * width + x) * 4;
-
-      const current = data[i];
-      const right = data[i + 4];
-      const below = data[i + width * 4];
-
-      const diff = Math.abs(current - right) + Math.abs(current - below);
-
-      if (diff > 55) {
-        data[i] = 255;
-        data[i + 1] = 210;
-        data[i + 2] = 40;
-        data[i + 3] = 255;
-      }
-    }
-  }
-
-  cameraCtx.putImageData(imageData, 0, 0);
-}
-
-function drawOverlay() {
-  const w = overlayCanvas.clientWidth;
-  const h = overlayCanvas.clientHeight;
-
-  overlayCtx.clearRect(0, 0, w, h);
-
-  if (!imageLoaded || !referenceImage) return;
-
-  overlayCtx.save();
-
-  overlayCtx.globalAlpha = opacity;
-
-  const iw = referenceImage.width * overlayScale;
-  const ih = referenceImage.height * overlayScale;
-
-  overlayCtx.drawImage(
-    referenceImage,
-    overlayX,
-    overlayY,
-    iw,
-    ih
-  );
-
-  overlayCtx.restore();
-}
-
+/* CAMERA */
 async function startCamera() {
   try {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
     }
 
+    setStatus("Starter kamera...");
+
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: facingMode,
+        facingMode: { ideal: facingMode },
         width: { ideal: 1920 },
         height: { ideal: 1080 }
       },
@@ -361,30 +333,37 @@ async function startCamera() {
     });
 
     video.srcObject = stream;
-
     await video.play();
 
-    document.getElementById("status").textContent =
-      "Kamera aktiv";
+    cameraReady = true;
+    setStatus("Kamera aktiv");
 
-  } catch (error) {
-    document.getElementById("status").textContent =
-      "Kamera fejl: " + error.message;
+  } catch (err) {
+    setStatus("Kamera fejl: " + err.message);
   }
 }
 
 document.getElementById("cameraBtn").onclick = startCamera;
 
 document.getElementById("switchBtn").onclick = async () => {
-  facingMode = facingMode === "environment"
-    ? "user"
-    : "environment";
-
+  facingMode = facingMode === "environment" ? "user" : "environment";
   await startCamera();
 };
 
-document.getElementById("imageInput").onchange = (e) => {
-  const file = e.target.files[0];
+/* CAMERA ZOOM */
+document.getElementById("cameraZoomSlider").oninput = e => {
+  cameraZoom = Number(e.target.value);
+  document.getElementById("cameraZoomValue").textContent =
+    cameraZoom.toFixed(1) + "×";
+};
+
+/* IMAGE LOADING */
+document.getElementById("chooseBtn").onclick = () => {
+  document.getElementById("imageInput").click();
+};
+
+document.getElementById("imageInput").onchange = e => {
+  const file = e.target.files && e.target.files[0];
   if (!file) return;
 
   const img = new Image();
@@ -392,10 +371,11 @@ document.getElementById("imageInput").onchange = (e) => {
   img.onload = () => {
     referenceImage = img;
     imageLoaded = true;
-
     fitImage();
-    drawOverlay();
+    setStatus("Referencebillede indlæst");
   };
+
+  img.onerror = () => setStatus("Kunne ikke åbne billedet");
 
   img.src = URL.createObjectURL(file);
 };
@@ -406,27 +386,25 @@ function fitImage() {
   const w = overlayCanvas.clientWidth;
   const h = overlayCanvas.clientHeight;
 
-  fitScale = Math.min(
-    w / referenceImage.width,
-    h / referenceImage.height
-  );
-
+  fitScale = Math.min(w / referenceImage.width, h / referenceImage.height);
   overlayScale = fitScale;
 
   overlayX = (w - referenceImage.width * overlayScale) / 2;
   overlayY = (h - referenceImage.height * overlayScale) / 2;
 
-  document.getElementById("zoomSlider").value = 1;
+  document.getElementById("zoomSlider").value = 100;
+  document.getElementById("zoomValue").textContent = "100%";
 
   drawOverlay();
 }
 
 document.getElementById("fitBtn").onclick = fitImage;
 
-document.getElementById("zoomSlider").oninput = (e) => {
+/* IMAGE ZOOM SLIDER */
+document.getElementById("zoomSlider").oninput = e => {
   if (!imageLoaded) return;
 
-  const value = Number(e.target.value);
+  const value = Number(e.target.value) / 100;
   const newScale = fitScale * value;
 
   const centerX = overlayCanvas.clientWidth / 2;
@@ -439,58 +417,229 @@ document.getElementById("zoomSlider").oninput = (e) => {
 
   overlayScale = newScale;
 
+  document.getElementById("zoomValue").textContent =
+    Math.round(value * 100) + "%";
+
   drawOverlay();
 };
 
-document.getElementById("opacitySlider").oninput = (e) => {
+/* OPACITY */
+document.getElementById("opacitySlider").oninput = e => {
   opacity = Number(e.target.value) / 100;
+  document.getElementById("opacityValue").textContent =
+    e.target.value + "%";
   drawOverlay();
 };
 
+/* LOCK */
 document.getElementById("lockBtn").onclick = () => {
   locked = !locked;
 
-  document.getElementById("lockBtn").textContent =
-    locked ? "🔒 Låst" : "🔓 Lås billede";
+  const btn = document.getElementById("lockBtn");
+  btn.textContent = locked ? "🔒 Låst" : "🔓 Lås";
+  btn.classList.toggle("active", locked);
 };
 
+/* CENTER IMAGE */
+document.getElementById("centerBtn").onclick = () => {
+  if (!imageLoaded) return;
+
+  overlayX = (overlayCanvas.clientWidth -
+    referenceImage.width * overlayScale) / 2;
+
+  overlayY = (overlayCanvas.clientHeight -
+    referenceImage.height * overlayScale) / 2;
+
+  drawOverlay();
+};
+
+/* RESET */
 document.getElementById("resetBtn").onclick = () => {
   locked = false;
+  blackWhite = false;
   grayscale = false;
+  pencil = false;
   contours = false;
+  edges = false;
+  contrast = 100;
+  cameraZoom = 1;
 
-  overlayX = 0;
-  overlayY = 0;
-  overlayScale = 1;
-  fitScale = 1;
+  document.getElementById("lockBtn").textContent = "🔓 Lås";
+  document.getElementById("lockBtn").classList.remove("active");
 
-  document.getElementById("lockBtn").textContent = "🔓 Lås billede";
-  document.getElementById("grayBtn").textContent = "Gråtoner";
-  document.getElementById("contourBtn").textContent = "Konturer";
+  [
+    "bwBtn", "grayBtn", "pencilBtn",
+    "contourBtn", "edgeBtn", "contrastBtn"
+  ].forEach(id => document.getElementById(id).classList.remove("active"));
+
+  document.getElementById("cameraZoomSlider").value = 1;
+  document.getElementById("cameraZoomValue").textContent = "1.0×";
+  document.getElementById("contrastSlider").value = 100;
+  document.getElementById("contrastValue").textContent = "100%";
 
   if (imageLoaded) fitImage();
 
   drawOverlay();
 };
 
+/* FILTER BUTTONS */
+function toggleButton(id, state) {
+  document.getElementById(id).classList.toggle("active", state);
+}
+
+document.getElementById("bwBtn").onclick = () => {
+  blackWhite = !blackWhite;
+  grayscale = false;
+  toggleButton("bwBtn", blackWhite);
+  toggleButton("grayBtn", false);
+};
+
 document.getElementById("grayBtn").onclick = () => {
   grayscale = !grayscale;
+  blackWhite = false;
+  toggleButton("grayBtn", grayscale);
+  toggleButton("bwBtn", false);
+};
 
-  document.getElementById("grayBtn").textContent =
-    grayscale ? "Gråtoner: ON" : "Gråtoner";
-
+document.getElementById("pencilBtn").onclick = () => {
+  pencil = !pencil;
+  toggleButton("pencilBtn", pencil);
 };
 
 document.getElementById("contourBtn").onclick = () => {
   contours = !contours;
-
-  document.getElementById("contourBtn").textContent =
-    contours ? "Konturer: ON" : "Konturer";
+  toggleButton("contourBtn", contours);
 };
 
-// Pointer control: move and zoom reference image only
-overlayCanvas.addEventListener("pointerdown", (e) => {
-  if (locked) return;
+document.getElementById("edgeBtn").onclick = () => {
+  edges = !edges;
+  toggleButton("edgeBtn", edges);
+};
+
+/* CONTRAST */
+document.getElementById("contrastSlider").oninput = e => {
+  contrast = Number(e.target.value);
+  document.getElementById("contrastValue").textContent =
+    contrast + "%";
+};
+
+/* CAMERA DRAW LOOP */
+function drawCamera() {
+  const w = cameraCanvas.clientWidth;
+  const h = cameraCanvas.clientHeight;
+
+  cameraCtx.clearRect(0, 0, w, h);
+
+  if (cameraReady && video.readyState >= 2 &&
+      video.videoWidth && video.videoHeight) {
+
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+
+    const baseScale = Math.max(w / vw, h / vh);
+    const scale = baseScale * cameraZoom;
+
+    const dw = vw * scale;
+    const dh = vh * scale;
+
+    const dx = (w - dw) / 2;
+    const dy = (h - dh) / 2;
+
+    cameraCtx.save();
+
+    let filterParts = [];
+
+    if (blackWhite) filterParts.push("grayscale(1)");
+    else if (grayscale) filterParts.push("grayscale(1)");
+
+    if (pencil) filterParts.push("grayscale(1)");
+    if (contrast !== 100) filterParts.push("contrast(" + contrast + "%)");
+
+    cameraCtx.filter = filterParts.length ? filterParts.join(" ") : "none";
+
+    cameraCtx.drawImage(video, dx, dy, dw, dh);
+
+    cameraCtx.restore();
+
+    if (edges || contours || pencil) {
+      drawEdges(w, h);
+    }
+  }
+
+  requestAnimationFrame(drawCamera);
+}
+
+/* EDGE / PENCIL / CONTOUR EFFECT */
+function drawEdges(w, h) {
+  try {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const pw = cameraCanvas.width;
+    const ph = cameraCanvas.height;
+
+    const data = cameraCtx.getImageData(0, 0, pw, ph);
+    const pixels = data.data;
+
+    const step = 4;
+
+    for (let y = step; y < ph - step; y += step) {
+      for (let x = step; x < pw - step; x += step) {
+        const i = (y * pw + x) * 4;
+
+        const right = ((y * pw + x + step) * 4);
+        const down = (((y + step) * pw + x) * 4);
+
+        const diff =
+          Math.abs(pixels[i] - pixels[right]) +
+          Math.abs(pixels[i] - pixels[down]);
+
+        if (diff > 55) {
+          if (pencil) {
+            pixels[i] = 30;
+            pixels[i + 1] = 30;
+            pixels[i + 2] = 30;
+          } else {
+            pixels[i] = 212;
+            pixels[i + 1] = 175;
+            pixels[i + 2] = 55;
+          }
+
+          pixels[i + 3] = 255;
+        }
+      }
+    }
+
+    cameraCtx.putImageData(data, 0, 0);
+  } catch (err) {
+    // Effect skipped if image processing is unavailable
+  }
+}
+
+/* DRAW REFERENCE */
+function drawOverlay() {
+  const w = overlayCanvas.clientWidth;
+  const h = overlayCanvas.clientHeight;
+
+  overlayCtx.clearRect(0, 0, w, h);
+
+  if (!imageLoaded || !referenceImage) return;
+
+  overlayCtx.save();
+  overlayCtx.globalAlpha = opacity;
+
+  overlayCtx.drawImage(
+    referenceImage,
+    overlayX,
+    overlayY,
+    referenceImage.width * overlayScale,
+    referenceImage.height * overlayScale
+  );
+
+  overlayCtx.restore();
+}
+
+/* TOUCH AND POINTER GESTURES */
+overlayCanvas.addEventListener("pointerdown", e => {
+  if (locked || !imageLoaded) return;
 
   overlayCanvas.setPointerCapture(e.pointerId);
 
@@ -502,24 +651,22 @@ overlayCanvas.addEventListener("pointerdown", (e) => {
   if (pointers.size === 2) {
     const pts = [...pointers.values()];
 
-    pinchStartDistance = Math.hypot(
-      pts[0].x - pts[1].x,
-      pts[0].y - pts[1].y
-    );
+    pinchStartDistance = Math.max(1,
+      Math.hypot(pts[0].x - pts[1].x,
+                 pts[0].y - pts[1].y));
 
     pinchStartScale = overlayScale;
+    pinchStartX = overlayX;
+    pinchStartY = overlayY;
 
-    pinchStartCenter = {
+    pinchStartMid = {
       x: (pts[0].x + pts[1].x) / 2,
       y: (pts[0].y + pts[1].y) / 2
     };
-
-    pinchStartX = overlayX;
-    pinchStartY = overlayY;
   }
 });
 
-overlayCanvas.addEventListener("pointermove", (e) => {
+overlayCanvas.addEventListener("pointermove", e => {
   if (locked || !pointers.has(e.pointerId)) return;
 
   const previous = pointers.get(e.pointerId);
@@ -532,7 +679,6 @@ overlayCanvas.addEventListener("pointermove", (e) => {
   if (pointers.size === 1) {
     overlayX += e.clientX - previous.x;
     overlayY += e.clientY - previous.y;
-
     drawOverlay();
   }
 
@@ -544,28 +690,32 @@ overlayCanvas.addEventListener("pointermove", (e) => {
       pts[0].y - pts[1].y
     );
 
-    const center = {
+    const mid = {
       x: (pts[0].x + pts[1].x) / 2,
       y: (pts[0].y + pts[1].y) / 2
     };
 
     const ratio = distance / pinchStartDistance;
 
-    overlayScale = Math.max(
+    const newScale = Math.max(
       fitScale * 0.1,
       Math.min(fitScale * 5, pinchStartScale * ratio)
     );
 
     const rect = overlayCanvas.getBoundingClientRect();
+    const midX = pinchStartMid.x - rect.left;
+    const midY = pinchStartMid.y - rect.top;
 
-    const centerX = pinchStartCenter.x - rect.left;
-    const centerY = pinchStartCenter.y - rect.top;
+    overlayScale = newScale;
 
-    overlayX = pinchStartX + (centerX - pinchStartCenter.x);
-    overlayY = pinchStartY + (centerY - pinchStartCenter.y);
+    overlayX = pinchStartX + (mid.x - pinchStartMid.x);
+    overlayY = pinchStartY + (mid.y - pinchStartMid.y);
 
     document.getElementById("zoomSlider").value =
-      overlayScale / fitScale;
+      Math.max(10, Math.min(500, Math.round(overlayScale / fitScale * 100)));
+
+    document.getElementById("zoomValue").textContent =
+      Math.round(overlayScale / fitScale * 100) + "%";
 
     drawOverlay();
   }
@@ -581,13 +731,12 @@ function removePointer(e) {
 
 overlayCanvas.addEventListener("pointerup", removePointer);
 overlayCanvas.addEventListener("pointercancel", removePointer);
-overlayCanvas.addEventListener("pointerleave", removePointer);
 
+/* START */
 window.addEventListener("resize", resize);
-
 resize();
 requestAnimationFrame(drawCamera);
-</script>
 
+</script>
 </body>
 </html>
