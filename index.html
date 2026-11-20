@@ -1,12 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#080808">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>New Tracer Gold</title>
+<title>Tracer Studio - New Tracer Gold</title>
 
 <style>
 :root{
@@ -82,6 +84,14 @@ footer{text-align:center;color:#777;font-size:11px;padding:20px}
 .startTitle{font-size:30px;color:var(--gold);font-weight:bold;margin-bottom:6px}
 .startSub{color:var(--gold2);font-size:13px;margin-bottom:25px}
 .startButton{width:100%;padding:17px;font-size:18px;border-radius:12px;margin-top:8px}
+.installButton{
+  display:none;width:100%;padding:14px;font-size:15px;
+  border-radius:12px;margin-top:12px;background:#1b160c;
+  color:var(--gold2);border:1px solid #b58a38;font-weight:bold
+}
+.installHint{
+  color:#999;font-size:12px;line-height:1.5;margin-top:14px
+}
 #program{display:none}
 @media(max-width:400px){.canvas-wrap{height:52vh}}
 </style>
@@ -91,10 +101,12 @@ footer{text-align:center;color:#777;font-size:11px;padding:20px}
 <!-- START SCREEN -->
 <section id="startScreen">
   <div class="startBox">
-    <img class="appIcon" src="icon-192.png" alt="Tracer Studio icon">
+    <img class="appIcon" src="./icon-192.png" alt="Tracer Studio icon">
     <div class="startTitle">NEW TRACER GOLD</div>
     <div class="startSub">BLACK & GOLD EDITION</div>
     <button class="gold startButton" onclick="enterProgram()">✏️ START TRACER</button>
+    <button id="installBtn" class="installButton" type="button">📲 FØJ KNAP TIL HJEMMESKÆRM</button>
+    <div id="installHint" class="installHint"></div>
   </div>
 </section>
 
@@ -214,6 +226,8 @@ const opacity=document.getElementById("opacity");
 const zoomSlider=document.getElementById("zoom");
 const contrast=document.getElementById("contrast");
 const strength=document.getElementById("strength");
+const installBtn=document.getElementById("installBtn");
+const installHint=document.getElementById("installHint");
 
 const video=document.createElement("video");
 video.setAttribute("playsinline","");
@@ -305,15 +319,20 @@ function render(){
     return;
   }
 
-  const temp=document.createElement("canvas");
-  temp.width=Math.max(1,Math.round(drawW));
-  temp.height=Math.max(1,Math.round(drawH));
-  const t=temp.getContext("2d",{willReadFrequently:true});
-  t.drawImage(img,0,0,temp.width,temp.height);
+  const maxDim=900;
+  const scale=Math.min(1,maxDim/Math.max(1,drawW),maxDim/Math.max(1,drawH));
+  const tw=Math.max(1,Math.round(drawW*scale));
+  const th=Math.max(1,Math.round(drawH*scale));
 
-  const data=t.getImageData(0,0,temp.width,temp.height);
+  const temp=document.createElement("canvas");
+  temp.width=tw;
+  temp.height=th;
+  const t=temp.getContext("2d",{willReadFrequently:true});
+  t.drawImage(img,0,0,tw,th);
+
+  const data=t.getImageData(0,0,tw,th);
   const px=data.data;
-  const gray=new Uint8ClampedArray(temp.width*temp.height);
+  const gray=new Uint8ClampedArray(tw*th);
 
   for(let i=0;i<px.length;i+=4){
     gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
@@ -322,20 +341,20 @@ function render(){
   if(s.mode==="gray"){
     for(let i=0;i<px.length;i+=4){
       const g=(gray[i/4]-128)*s.contrast+128;
-      px[i]=px[i+1]=px[i+2]=g;
+      px[i]=px[i+1]=px[i+2]=Math.max(0,Math.min(255,g));
     }
   }
 
   if(["line","contour","pencil"].includes(s.mode)){
     const step=s.mode==="contour"?2:1;
 
-    for(let yy=0;yy<temp.height;yy++){
-      for(let xx=0;xx<temp.width;xx++){
-        const i=yy*temp.width+xx;
-        const l=gray[yy*temp.width+Math.max(0,xx-step)];
-        const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
-        const u=gray[Math.max(0,yy-step)*temp.width+xx];
-        const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
+    for(let yy=0;yy<th;yy++){
+      for(let xx=0;xx<tw;xx++){
+        const i=yy*tw+xx;
+        const l=gray[yy*tw+Math.max(0,xx-step)];
+        const r=gray[yy*tw+Math.min(tw-1,xx+step)];
+        const u=gray[Math.max(0,yy-step)*tw+xx];
+        const d=gray[Math.min(th-1,yy+step)*tw+xx];
 
         let edge=Math.abs(l-r)+Math.abs(u-d);
         if(s.mode==="contour")edge*=1.5;
@@ -544,13 +563,47 @@ canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 /* RESIZE */
 window.addEventListener("resize",resizeCanvas);
 
-/* PWA INSTALL PROMPT */
+/* PWA INSTALL PROMPT & SERVICE WORKER */
 let installPrompt=null;
+const isStandalone=window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+const isIos=/iphone|ipad|ipod/i.test(navigator.userAgent);
+
+if(isStandalone){
+  installHint.textContent="Åbnet som app på hjemmeskærmen.";
+}else if(isIos){
+  installHint.textContent="På iPhone/iPad: Tryk Del (firkant med pil op) og vælg 'Føj til hjemmeskærm'.";
+}
+
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   installPrompt=e;
+  installBtn.style.display="block";
 });
-window.addEventListener("appinstalled",()=>installPrompt=null);
+
+installBtn.addEventListener("click",async()=>{
+  if(!installPrompt)return;
+  installPrompt.prompt();
+  const choice=await installPrompt.userChoice;
+  installPrompt=null;
+  installBtn.style.display="none";
+  if(choice.outcome==="accepted"){
+    installHint.textContent="Knappen er tilføjet til din hjemmeskærm.";
+  }
+});
+
+window.addEventListener("appinstalled",()=>{
+  installPrompt=null;
+  installBtn.style.display="none";
+  installHint.textContent="Knappen er tilføjet til din hjemmeskærm.";
+});
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js").catch(err=>{
+      console.error("Service worker fejl:",err);
+    });
+  });
+}
 
 /* INIT */
 resizeCanvas();
