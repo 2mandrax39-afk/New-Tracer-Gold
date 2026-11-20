@@ -1,476 +1,631 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#080808">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#090909">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>Tracer Studio Gold</title>
 <style>
-:root{--gold:#d6ad52;--gold2:#f3d78b;--black:#080808;--panel:#151515}
+:root{--gold:#d6ad52;--gold2:#f3d78b;--black:#090909;--panel:#151515;--text:#f5f5f5}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--black);color:white;font-family:Arial,sans-serif}
-header{padding:16px;background:#050505;border-bottom:1px solid #705522;display:flex;justify-content:space-between;align-items:center;gap:12px}
+body{margin:0;background:var(--black);color:var(--text);font-family:Arial,sans-serif}
+header{padding:18px 15px;background:#050505;border-bottom:1px solid #6d5527;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .logo{font-size:21px;font-weight:bold;color:var(--gold)}
 .logo span{color:white}
-header small{color:var(--gold2);font-size:11px;text-align:right}
-.container{max-width:850px;margin:auto;padding:12px}
-.panel{background:var(--panel);border:1px solid #34302a;border-radius:13px;padding:14px;margin-bottom:13px}
-h3{color:var(--gold);font-size:16px;margin:0 0 13px}
-button,select{background:#222;color:white;border:1px solid #80652d;border-radius:9px;padding:12px;font-size:14px}
+header small{color:var(--gold2);font-size:11px}
+.container{padding:12px;max-width:800px;margin:auto}
+.panel{background:var(--panel);border:1px solid #34302a;border-radius:12px;padding:13px;margin-bottom:12px}
+h3{color:var(--gold);font-size:15px;margin:0 0 12px}
+button,select,.upload-btn{background:#222;color:white;border:1px solid #80652d;border-radius:8px;padding:11px;font-size:14px}
 button:active{background:#55421d}
 .gold-button{background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row button{flex:1;min-width:100px}
-.upload-btn{display:block;text-align:center;width:100%;margin:10px 0;border-radius:9px;padding:13px}
 input[type=file]{display:none}
-.camera-button{display:block!important;visibility:visible!important;opacity:1!important;position:relative;width:100%!important;min-height:60px;margin:10px 0 14px;padding:16px;background:linear-gradient(135deg,#ffe18a,#d2a64c,#916b24)!important;color:#000!important;border:2px solid #f3d78b!important;border-radius:12px;font-size:18px!important;font-weight:bold;text-align:center;box-shadow:0 0 14px rgba(214,173,82,.25);z-index:5}
-.camera-button:disabled{opacity:1!important;color:#000!important}
-.stage{position:relative;width:100%;height:62vh;min-height:340px;max-height:750px;background:#000;border:2px solid #a17b31;border-radius:13px;overflow:hidden;isolation:isolate}
-#camera{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;z-index:1}
-#ref{position:absolute;left:50%;top:50%;max-width:100%;max-height:100%;object-fit:contain;opacity:.65;transform:translate(-50%,-50%) translate(var(--x),var(--y)) rotate(var(--rot)) scale(var(--zoom));transform-origin:center;z-index:2;touch-action:none;user-select:none;-webkit-user-drag:none;display:none}
-#grid{position:absolute;inset:0;z-index:3;pointer-events:none;display:none;background-image:linear-gradient(to right,rgba(255,255,255,.25) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.25) 1px,transparent 1px);background-size:40px 40px}
-#guides{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
-#guides:before,#guides:after{content:"";position:absolute;background:rgba(255,215,90,.65)}
-#guides:before{width:1px;height:100%;left:50%}
-#guides:after{height:1px;width:100%;top:50%}
-#empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#999;padding:20px;z-index:5;pointer-events:none}
-.control{margin:15px 0}
-.control label{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:7px}
-input[type=range]{width:100%;accent-color:#d6ad52;height:28px}
-.status{font-size:12px;color:#d7b866;min-height:18px;margin-top:8px}
-.note{font-size:12px;color:#aaa;line-height:1.5}
-.fullscreen{height:90vh;max-height:none}
+.upload-btn{display:block;text-align:center;width:100%;margin-bottom:10px}
+.canvas-wrap{width:100%;height:58vh;min-height:300px;max-height:650px;background:#111;border:2px solid #b58a38;border-radius:12px;overflow:hidden;position:relative;touch-action:none}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+.canvas-message{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;color:#aaa;text-align:center;padding:25px;pointer-events:none}
+.control{margin-bottom:14px}
+.control:last-child{margin-bottom:0}
+.control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#eee}
+.value{color:var(--gold2)}
+input[type=range]{width:100%;accent-color:var(--gold);height:24px}
+select{width:100%;background:#222}
+.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.button-grid button{min-height:44px}
+.status{font-size:12px;text-align:center;color:var(--gold2);padding-top:9px}
+.tip{color:#aaa;font-size:12px;line-height:1.5}
+footer{text-align:center;color:#777;font-size:11px;padding:18px}
+.locked{border-color:#3eaa68}
+.camera-button{width:100%;margin-bottom:10px}
+.install-app-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:10px;border:1px solid var(--gold);background:#111;color:var(--gold2);font-weight:bold;font-size:12px;width:100%;margin-top:8px}
+.install-app-btn svg{width:25px;height:25px;flex-shrink:0}
+.install-app-btn:disabled{opacity:.6}
+
+.new-tracer-button{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+padding:10px 12px;
+border-radius:10px;
+border:1px solid #d6ad52;
+background:linear-gradient(135deg,#f3d78b,#a77924);
+color:#090909;
+font-weight:bold;
+font-size:12px;
+width:100%;
+margin-top:8px;
+text-decoration:none
+}
+.new-tracer-button svg{width:22px;height:22px;flex-shrink:0}
+.new-tracer-button:active{transform:scale(.98);filter:brightness(.9)}
+@media(max-width:400px){.canvas-wrap{height:52vh}}
 </style>
 </head>
 <body>
+
 <header>
-<div class="logo">TRACER <span>STUDIO GOLD</span></div>
-<small>DRAWING<br>ASSISTANT</small>
+  <div>
+    <div class="logo">TRACER <span>STUDIO</span></div>
+    <small>GOLD EDITION</small>
+  </div>
+
+  <div style="text-align:right;color:#d6ad52;font-size:13px">
+    ✦ ART TOOLS
+
+    <a class="new-tracer-button"
+       href="https://new-tracer-gold.2mandrax39.workers.dev"
+       target="_blank"
+       rel="noopener noreferrer">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M8 40L32 16L38 22L14 46L8 40Z"
+        fill="#090909" stroke="#090909" stroke-width="2"/>
+        <path d="M32 16L37 11L43 17L38 22"
+        fill="#d6ad52" stroke="#090909" stroke-width="2"/>
+        <path d="M8 40L5 46L14 46"
+        fill="#f3d78b" stroke="#090909" stroke-width="2"/>
+      </svg>
+      NEW TRACER GOLD
+    </a>
+
+    <button id="installAppBtn" class="install-app-btn" type="button" aria-label="Installer Tracer Studio Gold">
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <path d="M8 40h32M13 36V10h22v26"
+        stroke="#d6ad52" stroke-width="3" stroke-linecap="round"/>
+        <path d="M18 16h12M18 22h12M18 28h7"
+        stroke="#f3d78b" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="34" cy="34" r="8"
+        fill="#d6ad52" stroke="#090909" stroke-width="2"/>
+        <path d="M34 29v10M29 34h10"
+        stroke="#090909" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      INSTALLER TRACER
+    </button>
+  </div>
 </header>
 
 <div class="container">
 
-<div class="panel">
-<h3>📷 Kamera</h3>
-<button id="cameraBtn" class="camera-button">▶ START KAMERA</button>
-<div class="row">
-<button id="flipBtn">🔄 Skift kamera</button>
-<button id="stopBtn">⏹ Stop kamera</button>
-</div>
-<div id="status" class="status">Kamera ikke startet. Du kan stadig bruge referencefoto.</div>
+  <div class="panel">
+    <h3>📷 Kamera og billede</h3>
+
+    <button id="cameraBtn" class="gold-button camera-button">
+      📷 Start kamera
+    </button>
+
+    <label class="upload-btn gold-button" for="fileInput">
+      🖼️ Vælg foto fra telefon
+    </label>
+
+    <input id="fileInput" type="file" accept="image/*">
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="canvas"></canvas>
+      <div class="canvas-message" id="message">
+        Start kameraet og vælg et billede
+      </div>
+    </div>
+
+    <div class="status" id="status">Klar til brug</div>
+  </div>
+
+  <div class="panel">
+    <h3>✏️ Tegneindstillinger</h3>
+
+    <div class="control">
+      <label for="mode">Billedtilstand</label>
+      <select id="mode">
+        <option value="original">Original foto</option>
+        <option value="line">Linjetegning</option>
+        <option value="contour">Konturer</option>
+        <option value="pencil">Blyantsskitse</option>
+        <option value="gray">Gråtoner</option>
+      </select>
+    </div>
+
+    <div class="control">
+      <label>Gennemsigtighed
+        <span class="value" id="opacityValue">50%</span>
+      </label>
+      <input type="range" id="opacity" min="5" max="100" value="50">
+    </div>
+
+    <div class="control">
+      <label>Zoom
+        <span class="value" id="zoomValue">100%</span>
+      </label>
+      <input type="range" id="zoom" min="50" max="400" value="100">
+    </div>
+
+    <div class="control">
+      <label>Kontrast
+        <span class="value" id="contrastValue">100%</span>
+      </label>
+      <input type="range" id="contrast" min="50" max="250" value="100">
+    </div>
+
+    <div class="control">
+      <label>Stregstyrke
+        <span class="value" id="strengthValue">100%</span>
+      </label>
+      <input type="range" id="strength" min="50" max="200" value="100">
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🔧 Billedkontrol</h3>
+
+    <div class="button-grid">
+      <button id="lockBtn">🔒 Lås billede</button>
+      <button id="resetBtn">↩ Nulstil position</button>
+      <button id="fitBtn">⤢ Tilpas billede</button>
+      <button id="resetControlsBtn">⟲ Nulstil filtre</button>
+    </div>
+
+    <div class="status" id="lockStatus">Billedet er ulåst</div>
+  </div>
+
+  <div class="panel">
+    <h3>ℹ️ Sådan bruger du Tracer Studio</h3>
+
+    <div class="tip">
+      1. Sæt telefonen i en holder over bordet.<br><br>
+      2. Tryk Start kamera og tillad kameraadgang.<br><br>
+      3. Læg tegnepapiret på bordet under telefonen.<br><br>
+      4. Vælg et foto fra telefonen.<br><br>
+      5. Juster gennemsigtigheden, så papiret er synligt.<br><br>
+      6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
+      7. Tryk Lås billede, når det ligger rigtigt.<br><br>
+      8. Tegn på papiret, mens du ser fotoet på skærmen.
+    </div>
+  </div>
+
 </div>
 
-<div class="panel">
-<h3>🖼️ Referencebillede</h3>
-<label class="upload-btn gold-button" for="fileInput">📁 VÆLG BILLEDE</label>
-<input id="fileInput" type="file" accept="image/*">
-<div class="row">
-<button id="resetBtn">↩ Nulstil</button>
-<button id="removeBtn">🗑 Fjern billede</button>
-</div>
-</div>
-
-<!-- FILTERS -->
-<div class="panel">
-<h3>🎨 Tegnefiltre</h3>
-<div class="control">
-<label><span>Effekt</span></label>
-<select id="filterSelect" style="width:100%">
-<option value="original">Original</option>
-<option value="pencil">✏️ Pencil / Blyant</option>
-<option value="contours">Contours / Konturer</option>
-<option value="edges">Edges / Kanter</option>
-<option value="bw">Black & White</option>
-<option value="threshold">Threshold / Sort-hvid</option>
-</select>
-</div>
-<div class="control">
-<label><span>Filterstyrke</span><span id="filterStrengthText">55%</span></label>
-<input id="filterStrength" type="range" min="0" max="100" value="55">
-</div>
-<p class="note">Vælg et filter for at gøre billedet lettere at tegne efter.</p>
-</div>
-
-<!-- DRAWING AREA -->
-<div class="panel">
-<h3>✏️ Tegnevisning</h3>
-<div id="stage" class="stage">
-<video id="camera" autoplay playsinline muted></video>
-<img id="ref" alt="Referencebillede">
-<div id="grid"></div>
-<div id="guides"></div>
-<div id="empty">Vælg et referencebillede for at starte</div>
-</div>
-
-<div class="control">
-<label><span>Gennemsigtighed</span><span id="opacityText">65%</span></label>
-<input id="opacity" type="range" min="0" max="100" value="65">
-</div>
-
-<div class="control">
-<label><span>Zoom</span><span id="zoomText">100%</span></label>
-<input id="zoom" type="range" min="20" max="300" value="100">
-</div>
-
-<div class="control">
-<label><span>Rotation</span><span id="rotationText">0°</span></label>
-<input id="rotation" type="range" min="-180" max="180" value="0">
-</div>
-
-<div class="row">
-<button id="gridBtn">▦ Gitter: FRA</button>
-<button id="guideBtn">＋ Guides: FRA</button>
-</div>
-
-<div class="control">
-<label><span>Gitterstørrelse</span><span id="gridText">40 px</span></label>
-<input id="gridSize" type="range" min="15" max="120" value="40">
-</div>
-
-<div class="row">
-<button id="fullscreenBtn">⛶ Fuldskærm</button>
-<button id="downloadBtn">⬇ Gem PNG</button>
-</div>
-
-<p class="note">Sæt mobilen i en holder over papiret. Start kameraet, vælg referencefoto og juster gennemsigtighed og zoom. Træk billedet med en finger eller brug to fingre til zoom.</p>
-</div>
-</div>
+<footer>TRACER STUDIO GOLD • BLACK & GOLD EDITION</footer>
 
 <script>
-(() => {
-const $=id=>document.getElementById(id);
-const video=$("camera");
-const ref=$("ref");
-const stage=$("stage");
-const status=$("status");
+"use strict";
 
-let stream=null;
-let facing="environment";
-let loaded=false;
-let originalImage=null;
-let selectedFilter="original";
-let filterStrength=55;
-let objectURL=null;
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d",{willReadFrequently:true});
+const wrap=document.getElementById("canvasWrap");
+const fileInput=document.getElementById("fileInput");
+const message=document.getElementById("message");
+const cameraBtn=document.getElementById("cameraBtn");
+const modeSelect=document.getElementById("mode");
+const opacitySlider=document.getElementById("opacity");
+const zoomSlider=document.getElementById("zoom");
+const contrastSlider=document.getElementById("contrast");
+const strengthSlider=document.getElementById("strength");
+const opacityValue=document.getElementById("opacityValue");
+const zoomValue=document.getElementById("zoomValue");
+const contrastValue=document.getElementById("contrastValue");
+const strengthValue=document.getElementById("strengthValue");
+const lockBtn=document.getElementById("lockBtn");
+const resetBtn=document.getElementById("resetBtn");
+const fitBtn=document.getElementById("fitBtn");
+const resetControlsBtn=document.getElementById("resetControlsBtn");
+const lockStatus=document.getElementById("lockStatus");
+const status=document.getElementById("status");
 
-let opacity=65;
-let zoom=100;
-let rotation=0;
-let x=0,y=0;
-let gridOn=false,guidesOn=false;
+const video=document.createElement("video");
+video.setAttribute("playsinline","");
+video.setAttribute("autoplay","");
+video.muted=true;
 
-let lastX=0,lastY=0;
+let cameraStream=null;
+let cameraOn=false;
+let img=new Image();
+let imageLoaded=false;
+let zoom=1;
+let offsetX=0;
+let offsetY=0;
+let baseScale=1;
+let locked=false;
+let pointers=new Map();
+let lastPointer=null;
+let pinchStartDistance=0;
+let pinchStartZoom=1;
+let pinchCenter=null;
+let renderScheduled=false;
 
-function statusText(t){status.textContent=t}
+function resizeCanvas(){
+  const rect=wrap.getBoundingClientRect();
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(rect.width*dpr);
+  canvas.height=Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  render();
+}
+
+function fitImage(){
+  if(!imageLoaded)return;
+  baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
+  zoom=1;
+  offsetX=0;
+  offsetY=0;
+  zoomSlider.value=100;
+  zoomValue.textContent="100%";
+  render();
+}
+
+function scheduleRender(){
+  if(renderScheduled)return;
+  renderScheduled=true;
+  requestAnimationFrame(()=>{
+    renderScheduled=false;
+    render();
+  });
+}
+
+function settings(){
+  return{
+    mode:modeSelect.value,
+    opacity:Number(opacitySlider.value)/100,
+    contrast:Number(contrastSlider.value)/100,
+    strength:Number(strengthSlider.value)/100
+  };
+}
 
 function render(){
-ref.style.opacity=opacity/100;
-ref.style.setProperty("--zoom",zoom/100);
-ref.style.setProperty("--rot",rotation+"deg");
-ref.style.setProperty("--x",x+"px");
-ref.style.setProperty("--y",y+"px");
-ref.style.display=loaded?"block":"none";
-$("empty").style.display=loaded?"none":"flex";
-$("opacityText").textContent=opacity+"%";
-$("zoomText").textContent=Math.round(zoom)+"%";
-$("rotationText").textContent=rotation+"°";
-$("grid").style.display=gridOn?"block":"none";
-$("guides").style.display=guidesOn?"block":"none";
-$("gridText").textContent=$("gridSize").value+" px";
-$("grid").style.backgroundSize=$("gridSize").value+"px "+$("gridSize").value+"px";
-$("gridBtn").textContent="▦ Gitter: "+(gridOn?"TIL":"FRA");
-$("guideBtn").textContent="＋ Guides: "+(guidesOn?"TIL":"FRA");
+  if(!canvas.width||!canvas.height)return;
+
+  const w=wrap.clientWidth;
+  const h=wrap.clientHeight;
+
+  ctx.clearRect(0,0,w,h);
+
+  if(cameraOn&&video.readyState>=2){
+    ctx.globalAlpha=1;
+    ctx.drawImage(video,0,0,w,h);
+  }else{
+    ctx.fillStyle="#111";
+    ctx.fillRect(0,0,w,h);
+  }
+
+  if(!imageLoaded)return;
+
+  const s=settings();
+  const drawW=img.width*baseScale*zoom;
+  const drawH=img.height*baseScale*zoom;
+  const x=(w-drawW)/2+offsetX;
+  const y=(h-drawH)/2+offsetY;
+
+  if(s.mode==="original"){
+    ctx.globalAlpha=s.opacity;
+    ctx.drawImage(img,x,y,drawW,drawH);
+    ctx.globalAlpha=1;
+    return;
+  }
+
+  const temp=document.createElement("canvas");
+  temp.width=Math.max(1,Math.round(drawW));
+  temp.height=Math.max(1,Math.round(drawH));
+
+  const tctx=temp.getContext("2d",{willReadFrequently:true});
+  tctx.drawImage(img,0,0,temp.width,temp.height);
+
+  const data=tctx.getImageData(0,0,temp.width,temp.height);
+  const px=data.data;
+  const gray=new Uint8ClampedArray(temp.width*temp.height);
+
+  for(let i=0;i<px.length;i+=4){
+    gray[i/4]=.299*px[i]+.587*px[i+1]+.114*px[i+2];
+  }
+
+  if(s.mode==="gray"){
+    for(let i=0;i<px.length;i+=4){
+      let g=(gray[i/4]-128)*s.contrast+128;
+      px[i]=px[i+1]=px[i+2]=g;
+    }
+  }
+
+  if(["line","contour","pencil"].includes(s.mode)){
+    const step=s.mode==="contour"?2:1;
+
+    for(let yy=0;yy<temp.height;yy++){
+      for(let xx=0;xx<temp.width;xx++){
+        const i=yy*temp.width+xx;
+        const l=gray[yy*temp.width+Math.max(0,xx-step)];
+        const r=gray[yy*temp.width+Math.min(temp.width-1,xx+step)];
+        const u=gray[Math.max(0,yy-step)*temp.width+xx];
+        const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
+
+        let edge=Math.abs(l-r)+Math.abs(u-d);
+
+        if(s.mode==="contour")edge*=1.5;
+        if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
+
+        edge=Math.min(255,edge*s.strength*s.contrast);
+
+        const p=i*4;
+
+        if(s.mode==="contour"){
+          const v=edge>48?0:255;
+          px[p]=px[p+1]=px[p+2]=v;
+        }else{
+          const v=255-edge;
+          px[p]=px[p+1]=px[p+2]=v;
+        }
+      }
+    }
+  }
+
+  tctx.putImageData(data,0,0);
+  ctx.globalAlpha=s.opacity;
+  ctx.drawImage(temp,x,y,drawW,drawH);
+  ctx.globalAlpha=1;
 }
 
-// FILTER ENGINE
-function applyFilter(){
-if(!originalImage||!loaded)return;
-const w=originalImage.naturalWidth||originalImage.width;
-const h=originalImage.naturalHeight||originalImage.height;
-const canvas=document.createElement("canvas");
-canvas.width=w;canvas.height=h;
-const ctx=canvas.getContext("2d",{willReadFrequently:true});
-ctx.drawImage(originalImage,0,0,w,h);
+cameraBtn.addEventListener("click",async()=>{
+  if(cameraOn)return;
 
-if(selectedFilter==="original"){
-ref.src=objectURL;
-return;
-}
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      throw new Error("Kamera understøttes ikke i denne browser");
+    }
 
-const img=ctx.getImageData(0,0,w,h);
-const d=img.data;
-const gray=new Uint8ClampedArray(w*h);
+    status.textContent="Starter kamera...";
 
-for(let i=0,p=0;i<d.length;i+=4,p++){
-gray[p]=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);
-}
+    cameraStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"}},
+      audio:false
+    });
 
-const strength=filterStrength/100;
+    video.srcObject=cameraStream;
+    await video.play();
 
-if(selectedFilter==="bw"){
-for(let i=0;i<gray.length;i++){
-const v=gray[i];
-d[i*4]=d[i*4+1]=d[i*4+2]=v;
-}
-}
-else if(selectedFilter==="threshold"){
-const cut=255-filterStrength*2.55;
-for(let i=0;i<gray.length;i++){
-const v=gray[i]>cut?255:0;
-d[i*4]=d[i*4+1]=d[i*4+2]=v;
-}
-}
-else{
-const edges=new Uint8ClampedArray(gray.length);
+    cameraOn=true;
+    cameraBtn.textContent="✓ Kamera aktiv";
+    cameraBtn.disabled=true;
+    message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
 
-for(let yy=1;yy<h-1;yy++){
-for(let xx=1;xx<w-1;xx++){
-const p=yy*w+xx;
-const gx=-gray[p-w-1]-2*gray[p-1]-gray[p+w-1]+gray[p-w+1]+2*gray[p+1]+gray[p+w+1];
-const gy=-gray[p-w-1]-2*gray[p-w]-gray[p-w+1]+gray[p+w-1]+2*gray[p+w]+gray[p+w+1];
-edges[p]=Math.min(255,Math.sqrt(gx*gx+gy*gy));
-}
-}
+    if(imageLoaded)message.style.display="none";
 
-if(selectedFilter==="edges"||selectedFilter==="contours"){
-const cutoff=selectedFilter==="contours"?90+filterStrength*1.3:35+filterStrength*1.8;
-for(let i=0;i<gray.length;i++){
-const edge=edges[i]>cutoff?0:255;
-const v=selectedFilter==="contours"?edge:255-edge;
-d[i*4]=d[i*4+1]=d[i*4+2]=v;
-}
-}
-else if(selectedFilter==="pencil"){
-for(let i=0;i<gray.length;i++){
-const sketch=Math.max(0,Math.min(255,255-gray[i]+edges[i]*(.7+strength*1.3)));
-d[i*4]=d[i*4+1]=d[i*4+2]=sketch;
-}
-}
-}
+    status.textContent="Kamera aktivt";
+    render();
 
-ctx.putImageData(img,0,0);
-ref.src=canvas.toDataURL("image/png");
-}
+    function cameraLoop(){
+      if(!cameraOn)return;
+      render();
+      requestAnimationFrame(cameraLoop);
+    }
 
-// CAMERA
-async function startCamera(){
-stopCamera(false);
-try{
-statusText("Starter kamera...");
-stream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:{ideal:facing}},audio:false
-});
-video.srcObject=stream;
-await video.play();
-$("cameraBtn").textContent="⏹ STOP KAMERA";
-statusText("Kamera aktiv. Referencebilledet kan lægges ovenpå.");
-}catch(error){
-statusText("Kamera-fejl: "+error.message);
-}
-}
+    requestAnimationFrame(cameraLoop);
 
-function stopCamera(show=true){
-if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
-video.srcObject=null;
-$("cameraBtn").textContent="▶ START KAMERA";
-if(show)statusText("Kamera stoppet.");
-}
-
-$("cameraBtn").onclick=()=>stream?stopCamera():startCamera();
-$("stopBtn").onclick=()=>stopCamera();
-$("flipBtn").onclick=()=>{
-facing=facing==="environment"?"user":"environment";
-if(stream)startCamera();
-else statusText("Kamera valgt: "+(facing==="environment"?"bagkamera":"frontkamera"));
-};
-
-// IMAGE UPLOAD
-$("fileInput").onchange=e=>{
-const file=e.target.files?.[0];
-if(!file)return;
-if(!file.type.startsWith("image/")){statusText("Vælg en billedfil.");return}
-if(objectURL)URL.revokeObjectURL(objectURL);
-objectURL=URL.createObjectURL(file);
-
-originalImage=new Image();
-originalImage.onload=()=>{
-loaded=true;x=0;y=0;zoom=100;rotation=0;opacity=65;
-$("zoom").value=100;$("rotation").value=0;$("opacity").value=65;
-render();
-applyFilter();
-statusText("Referencebillede indlæst.");
-};
-originalImage.onerror=()=>statusText("Billedet kunne ikke indlæses.");
-originalImage.src=objectURL;
-};
-
-// FILTER CONTROLS
-$("filterSelect").onchange=()=>{
-selectedFilter=$("filterSelect").value;
-applyFilter();
-};
-$("filterStrength").oninput=()=>{
-filterStrength=Number($("filterStrength").value);
-$("filterStrengthText").textContent=filterStrength+"%";
-applyFilter();
-};
-
-// SLIDERS
-$("opacity").oninput=()=>{opacity=Number($("opacity").value);render()};
-$("zoom").oninput=()=>{zoom=Number($("zoom").value);render()};
-$("rotation").oninput=()=>{rotation=Number($("rotation").value);render()};
-$("gridSize").oninput=render;
-
-// GRID & GUIDES
-$("gridBtn").onclick=()=>{gridOn=!gridOn;render()};
-$("guideBtn").onclick=()=>{guidesOn=!guidesOn;render()};
-
-// RESET
-$("resetBtn").onclick=()=>{
-opacity=65;zoom=100;rotation=0;x=0;y=0;
-$("opacity").value=65;$("zoom").value=100;$("rotation").value=0;
-render();statusText("Indstillinger nulstillet.");
-};
-
-// REMOVE IMAGE
-$("removeBtn").onclick=()=>{
-ref.src="";originalImage=null;loaded=false;x=0;y=0;
-if(objectURL)URL.revokeObjectURL(objectURL);
-objectURL=null;$("fileInput").value="";
-render();statusText("Referencefoto fjernet.");
-};
-
-// FULLSCREEN
-$("fullscreenBtn").onclick=async()=>{
-try{
-if(!document.fullscreenElement)await stage.requestFullscreen();
-else await document.exitFullscreen();
-}catch(error){statusText("Fuldskærm understøttes ikke her.")}
-};
-document.addEventListener("fullscreenchange",()=>{
-stage.classList.toggle("fullscreen",!!document.fullscreenElement);
+  }catch(err){
+    console.error(err);
+    status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
+  }
 });
 
-// TOUCH: DRAG AND PINCH
-const activePointers=new Map();
-let gestureMode="none";
-let pinchStartDistance=0;
-let pinchStartZoom=100;
-let pinchStartX=0,pinchStartY=0;
-let pinchStartMidX=0,pinchStartMidY=0;
+fileInput.addEventListener("change",e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file)return;
 
-function midpoint(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2}}
-function distance(a,b){return Math.hypot(b.x-a.x,b.y-a.y)}
+  const url=URL.createObjectURL(file);
 
-function beginPinch(){
-if(activePointers.size!==2)return;
-const pts=[...activePointers.values()];
-const mid=midpoint(pts[0],pts[1]);
-const rect=stage.getBoundingClientRect();
-gestureMode="pinch";
-pinchStartDistance=distance(pts[0],pts[1]);
-pinchStartZoom=zoom;
-pinchStartX=x;pinchStartY=y;
-pinchStartMidX=mid.x-rect.left-rect.width/2;
-pinchStartMidY=mid.y-rect.top-rect.height/2;
-}
+  img.onload=()=>{
+    imageLoaded=true;
+    message.style.display="none";
+    fitImage();
+    status.textContent="Foto indlæst";
+    URL.revokeObjectURL(url);
+  };
 
-ref.addEventListener("pointerdown",e=>{
-if(!loaded)return;
-e.preventDefault();
-activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-try{ref.setPointerCapture(e.pointerId)}catch(err){}
-if(activePointers.size===1){
-gestureMode="drag";lastX=e.clientX;lastY=e.clientY;
-}else if(activePointers.size===2)beginPinch();
+  img.onerror=()=>{
+    status.textContent="Kunne ikke åbne billedet";
+    URL.revokeObjectURL(url);
+  };
+
+  img.src=url;
 });
 
-ref.addEventListener("pointermove",e=>{
-if(!activePointers.has(e.pointerId))return;
-e.preventDefault();
-activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-
-if(activePointers.size===1&&gestureMode==="drag"){
-x+=e.clientX-lastX;y+=e.clientY-lastY;
-lastX=e.clientX;lastY=e.clientY;
-render();return;
-}
-
-if(activePointers.size===2&&gestureMode==="pinch"){
-const pts=[...activePointers.values()];
-const mid=midpoint(pts[0],pts[1]);
-const currentDistance=distance(pts[0],pts[1]);
-if(pinchStartDistance<=0)return;
-const rect=stage.getBoundingClientRect();
-const currentMidX=mid.x-rect.left-rect.width/2;
-const currentMidY=mid.y-rect.top-rect.height/2;
-const ratio=currentDistance/pinchStartDistance;
-const newZoom=Math.max(20,Math.min(300,pinchStartZoom*ratio));
-const scaleRatio=newZoom/pinchStartZoom;
-
-x=pinchStartX+(currentMidX-pinchStartMidX)+(pinchStartMidX-pinchStartX)*(1-scaleRatio);
-y=pinchStartY+(currentMidY-pinchStartMidY)+(pinchStartMidY-pinchStartY)*(1-scaleRatio);
-zoom=newZoom;
-$("zoom").value=Math.round(zoom);
-render();
-}
+opacitySlider.addEventListener("input",()=>{
+  opacityValue.textContent=opacitySlider.value+"%";
+  scheduleRender();
 });
 
-function finishPointer(e){
-if(!activePointers.has(e.pointerId))return;
-activePointers.delete(e.pointerId);
-if(activePointers.size===1){
-const remaining=[...activePointers.values()][0];
-gestureMode="drag";lastX=remaining.x;lastY=remaining.y;
-}else gestureMode="none";
+zoomSlider.addEventListener("input",()=>{
+  zoom=Number(zoomSlider.value)/100;
+  zoomValue.textContent=zoomSlider.value+"%";
+  scheduleRender();
+});
+
+contrastSlider.addEventListener("input",()=>{
+  contrastValue.textContent=contrastSlider.value+"%";
+  scheduleRender();
+});
+
+strengthSlider.addEventListener("input",()=>{
+  strengthValue.textContent=strengthSlider.value+"%";
+  scheduleRender();
+});
+
+modeSelect.addEventListener("change",render);
+
+lockBtn.addEventListener("click",()=>{
+  locked=!locked;
+  lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
+  lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
+  wrap.classList.toggle("locked",locked);
+});
+
+resetBtn.addEventListener("click",()=>{
+  offsetX=offsetY=0;
+  zoom=1;
+  zoomSlider.value=100;
+  zoomValue.textContent="100%";
+  render();
+});
+
+fitBtn.addEventListener("click",fitImage);
+
+resetControlsBtn.addEventListener("click",()=>{
+  opacitySlider.value=50;
+  zoomSlider.value=100;
+  contrastSlider.value=100;
+  strengthSlider.value=100;
+  modeSelect.value="original";
+
+  opacityValue.textContent="50%";
+  zoomValue.textContent="100%";
+  contrastValue.textContent="100%";
+  strengthValue.textContent="100%";
+
+  zoom=1;
+  render();
+});
+
+function distance(a,b){
+  return Math.hypot(a.x-b.x,a.y-b.y);
 }
-ref.addEventListener("pointerup",finishPointer);
-ref.addEventListener("pointercancel",finishPointer);
-ref.addEventListener("lostpointercapture",finishPointer);
 
-// SAVE PNG
-$("downloadBtn").onclick=()=>{
-if(!loaded){statusText("Vælg et billede før du gemmer.");return}
-const w=stage.clientWidth,h=stage.clientHeight;
-const canvas=document.createElement("canvas");
-canvas.width=w*2;canvas.height=h*2;
-const ctx=canvas.getContext("2d");
-ctx.scale(2,2);
-ctx.fillStyle="#000";ctx.fillRect(0,0,w,h);
-if(video.readyState>=2&&stream)ctx.drawImage(video,0,0,w,h);
-
-const image=new Image();
-image.onload=()=>{
-ctx.save();
-ctx.translate(w/2+x,h/2+y);
-ctx.rotate(rotation*Math.PI/180);
-ctx.globalAlpha=opacity/100;
-const scale=Math.min(w/image.width,h/image.height)*zoom/100;
-const iw=image.width*scale,ih=image.height*scale;
-ctx.drawImage(image,-iw/2,-ih/2,iw,ih);
-ctx.restore();
-
-if(gridOn){
-ctx.strokeStyle="rgba(255,255,255,.3)";ctx.lineWidth=1;
-const size=Number($("gridSize").value);
-for(let xx=0;xx<w;xx+=size){ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,h);ctx.stroke()}
-for(let yy=0;yy<h;yy+=size){ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(w,yy);ctx.stroke()}
+function center(a,b){
+  return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};
 }
-if(guidesOn){
-ctx.strokeStyle="rgba(255,215,90,.65)";
-ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
-}
-const link=document.createElement("a");
-link.download="Tracer-Studio.png";
-link.href=canvas.toDataURL("image/png");
-link.click();
-statusText("PNG gemt.");
-};
-image.src=ref.src;
-};
 
-render();
-})();
+canvas.addEventListener("pointerdown",e=>{
+  canvas.setPointerCapture(e.pointerId);
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+
+  if(pointers.size===1){
+    lastPointer={x:e.clientX,y:e.clientY};
+  }
+
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    pinchStartDistance=distance(pts[0],pts[1]);
+    pinchStartZoom=zoom;
+    pinchCenter=center(pts[0],pts[1]);
+  }
+});
+
+function pointersSet(id,x,y){
+  pointers.set(id,{x,y});
+}
+
+canvas.addEventListener("pointermove",e=>{
+  if(!pointers.has(e.pointerId))return;
+
+  pointersSet(e.pointerId,e.clientX,e.clientY);
+
+  if(locked)return;
+
+  if(pointers.size===1&&lastPointer){
+    offsetX+=e.clientX-lastPointer.x;
+    offsetY+=e.clientY-lastPointer.y;
+    lastPointer={x:e.clientX,y:e.clientY};
+    scheduleRender();
+  }
+
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    const dist=distance(pts[0],pts[1]);
+    const c=center(pts[0],pts[1]);
+
+    if(pinchStartDistance>0){
+      zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
+      zoomSlider.value=Math.round(zoom*100);
+      zoomValue.textContent=zoomSlider.value+"%";
+
+      if(pinchCenter){
+        offsetX+=c.x-pinchCenter.x;
+        offsetY+=c.y-pinchCenter.y;
+      }
+
+      pinchCenter=c;
+      scheduleRender();
+    }
+  }
+});
+
+function endPointer(e){
+  pointers.delete(e.pointerId);
+
+  if(pointers.size===1){
+    const p=[...pointers.values()][0];
+    lastPointer={x:p.x,y:p.y};
+  }else{
+    lastPointer=null;
+  }
+
+  if(pointers.size<2){
+    pinchStartDistance=0;
+    pinchCenter=null;
+  }
+}
+
+canvas.addEventListener("pointerup",endPointer);
+canvas.addEventListener("pointercancel",endPointer);
+canvas.addEventListener("lostpointercapture",endPointer);
+
+canvas.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
+
+window.addEventListener("resize",resizeCanvas);
+
+/* PWA INSTALL */
+let installPromptEvent=null;
+const installAppBtn=document.getElementById("installAppBtn");
+
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  installPromptEvent=e;
+  installAppBtn.textContent="INSTALLER TRACER";
+});
+
+installAppBtn.addEventListener("click",async()=>{
+  if(installPromptEvent){
+    try{
+      installAppBtn.disabled=true;
+      installPromptEvent.prompt();
+      await installPromptEvent.userChoice;
+    }catch(err){
+      console.warn("Install prompt fejl",err);
+    }finally{
+      installPromptEvent=null;
+      installAppBtn.disabled=false;
+    }
+    return;
+  }
+
+  alert("Hvis Chrome ikke viser installation automatisk: Tryk på Chrome-menuen (⋮) og vælg 'Installer app' eller 'Føj til startskærm'.");
+});
+
+/* SERVICE WORKER */
+if("serviceWorker" in navigator &&
+   location.protocol==="https:" &&
+   window.top===window.self){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(err=>console.warn("Service Worker registration skipped",err));
+  });
+}
+
+resizeCanvas();
 </script>
 </body>
 </html>
