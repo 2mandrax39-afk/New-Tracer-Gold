@@ -1,142 +1,132 @@
+
 <!DOCTYPE html>
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#090909">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080808">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>Tracer Studio Gold</title>
-<style>
-:root{--gold:#d6ad52;--gold2:#f3d78b;--black:#090909;--panel:#151515;--text:#f5f5f5}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--black);color:var(--text);font-family:Arial,sans-serif}
-header{padding:18px 15px;background:#050505;border-bottom:1px solid #6d5527;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.logo{font-size:21px;font-weight:bold;color:var(--gold)}
-.logo span{color:white}
-header small{color:var(--gold2);font-size:11px}
-.container{padding:12px;max-width:800px;margin:auto}
-.panel{background:var(--panel);border:1px solid #34302a;border-radius:12px;padding:13px;margin-bottom:12px}
-h3{color:var(--gold);font-size:15px;margin:0 0 12px}
-button,select,.upload-btn{background:#222;color:white;border:1px solid #80652d;border-radius:8px;padding:11px;font-size:14px}
-button:active{background:#55421d}
-.gold-button{background:linear-gradient(135deg,#d2a64c,#806024);color:#000;font-weight:bold}
-input[type=file]{display:none}
-.upload-btn{display:block;text-align:center;width:100%;margin-bottom:10px}
-.canvas-wrap{width:100%;height:58vh;min-height:300px;max-height:650px;background:#111;border:2px solid #b58a38;border-radius:12px;overflow:hidden;position:relative;touch-action:none}
-canvas{width:100%;height:100%;display:block;touch-action:none}
-.canvas-message{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;color:#aaa;text-align:center;padding:25px;pointer-events:none}
-.control{margin-bottom:14px}
-.control:last-child{margin-bottom:0}
-.control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#eee}
-.value{color:var(--gold2)}
-input[type=range]{width:100%;accent-color:var(--gold);height:24px}
-select{width:100%;background:#222}
-.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.button-grid button{min-height:44px}
-.status{font-size:12px;text-align:center;color:var(--gold2);padding-top:9px}
-.tip{color:#aaa;font-size:12px;line-height:1.5}
-footer{text-align:center;color:#777;font-size:11px;padding:18px}
-.locked{border-color:#3eaa68}
-.camera-button{width:100%;margin-bottom:10px}
-.install-app-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;border-radius:10px;border:1px solid var(--gold);background:#111;color:var(--gold2);font-weight:bold;font-size:12px;width:100%;margin-top:8px}
-.install-app-btn svg{width:25px;height:25px;flex-shrink:0}
-.install-app-btn:disabled{opacity:.6}
+<title>New Tracer Gold</title>
 
-.new-tracer-button{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:8px;
-padding:10px 12px;
-border-radius:10px;
-border:1px solid #d6ad52;
-background:linear-gradient(135deg,#f3d78b,#a77924);
-color:#090909;
-font-weight:bold;
-font-size:12px;
-width:100%;
-margin-top:8px;
-text-decoration:none
+<style>
+:root{
+  --gold:#d6ad52;
+  --gold2:#f5dc9b;
+  --black:#080808;
+  --panel:#151515;
 }
-.new-tracer-button svg{width:22px;height:22px;flex-shrink:0}
-.new-tracer-button:active{transform:scale(.98);filter:brightness(.9)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--black);color:white;font-family:Arial,sans-serif}
+button,input,select{font:inherit}
+header{
+  padding:15px;background:#050505;border-bottom:1px solid #695020;
+  text-align:center
+}
+header h1{margin:0;color:var(--gold);font-size:23px}
+header small{color:var(--gold2)}
+.container{padding:12px;max-width:850px;margin:auto}
+.panel{
+  background:var(--panel);border:1px solid #403621;
+  border-radius:12px;padding:14px;margin-bottom:12px
+}
+h3{color:var(--gold);margin:0 0 12px;font-size:16px}
+button{
+  background:#222;color:white;border:1px solid #80652d;
+  border-radius:9px;padding:12px;cursor:pointer
+}
+button:active{filter:brightness(.8)}
+.gold{
+  background:linear-gradient(135deg,#f3d78b,#a77924);
+  color:#080808;font-weight:bold
+}
+.full{width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input[type=file]{display:none}
+.upload{
+  display:block;width:100%;text-align:center;padding:12px;
+  border:1px solid #b58a38;border-radius:9px;margin-bottom:9px;
+  background:#242424
+}
+.canvas-wrap{
+  width:100%;height:60vh;min-height:300px;max-height:700px;
+  background:#111;border:2px solid var(--gold);border-radius:12px;
+  overflow:hidden;position:relative;touch-action:none
+}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+.message{
+  position:absolute;inset:0;display:flex;justify-content:center;
+  align-items:center;text-align:center;padding:20px;color:#aaa;
+  pointer-events:none
+}
+.control{margin:15px 0}
+.control label{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px}
+.value{color:var(--gold2)}
+input[type=range]{width:100%;accent-color:var(--gold)}
+select{
+  width:100%;padding:11px;border-radius:8px;
+  background:#222;color:white;border:1px solid #80652d
+}
+.status{color:var(--gold2);font-size:12px;text-align:center;padding-top:10px}
+.tip{font-size:12px;color:#aaa;line-height:1.6}
+footer{text-align:center;color:#777;font-size:11px;padding:20px}
+#startScreen{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;text-align:center;padding:20px
+}
+.startBox{width:100%;max-width:400px}
+.appIcon{
+  display:block;width:min(70vw,280px);height:auto;
+  margin:0 auto 18px;border-radius:28px;
+  border:2px solid #b58a38;box-shadow:0 0 25px #8b692b55
+}
+.startTitle{font-size:30px;color:var(--gold);font-weight:bold;margin-bottom:6px}
+.startSub{color:var(--gold2);font-size:13px;margin-bottom:25px}
+.startButton{width:100%;padding:17px;font-size:18px;border-radius:12px;margin-top:8px}
+#program{display:none}
 @media(max-width:400px){.canvas-wrap{height:52vh}}
 </style>
 </head>
 <body>
 
+<!-- START SCREEN -->
+<section id="startScreen">
+  <div class="startBox">
+    <img class="appIcon" src="icon-192.png" alt="Tracer Studio icon">
+    <div class="startTitle">NEW TRACER GOLD</div>
+    <div class="startSub">BLACK & GOLD EDITION</div>
+    <button class="gold startButton" onclick="enterProgram()">✏️ START TRACER</button>
+  </div>
+</section>
+
+<!-- TRACING PROGRAM -->
+<div id="program">
 <header>
-  <div>
-    <div class="logo">TRACER <span>STUDIO</span></div>
-    <small>GOLD EDITION</small>
-  </div>
-
-  <div style="text-align:right;color:#d6ad52;font-size:13px">
-    ✦ ART TOOLS
-
-    <a class="new-tracer-button"
-       href="https://new-tracer-gold.2mandrax39.workers.dev"
-       target="_blank"
-       rel="noopener noreferrer">
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="M8 40L32 16L38 22L14 46L8 40Z"
-        fill="#090909" stroke="#090909" stroke-width="2"/>
-        <path d="M32 16L37 11L43 17L38 22"
-        fill="#d6ad52" stroke="#090909" stroke-width="2"/>
-        <path d="M8 40L5 46L14 46"
-        fill="#f3d78b" stroke="#090909" stroke-width="2"/>
-      </svg>
-      NEW TRACER GOLD
-    </a>
-
-    <button id="installAppBtn" class="install-app-btn" type="button" aria-label="Installer Tracer Studio Gold">
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="M8 40h32M13 36V10h22v26"
-        stroke="#d6ad52" stroke-width="3" stroke-linecap="round"/>
-        <path d="M18 16h12M18 22h12M18 28h7"
-        stroke="#f3d78b" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="34" cy="34" r="8"
-        fill="#d6ad52" stroke="#090909" stroke-width="2"/>
-        <path d="M34 29v10M29 34h10"
-        stroke="#090909" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-      INSTALLER TRACER
-    </button>
-  </div>
+  <h1>NEW TRACER GOLD</h1>
+  <small>BLACK & GOLD EDITION</small>
 </header>
 
 <div class="container">
-
   <div class="panel">
-    <h3>📷 Kamera og billede</h3>
+    <h3>📷 Kamera & Foto</h3>
+    <button class="gold full" id="cameraBtn">📷 START KAMERA</button>
 
-    <button id="cameraBtn" class="gold-button camera-button">
-      📷 Start kamera
-    </button>
-
-    <label class="upload-btn gold-button" for="fileInput">
-      🖼️ Vælg foto fra telefon
-    </label>
-
+    <label class="upload gold" for="fileInput">🖼️ VÆLG FOTO</label>
     <input id="fileInput" type="file" accept="image/*">
 
-    <div class="canvas-wrap" id="canvasWrap">
+    <div class="canvas-wrap" id="wrap">
       <canvas id="canvas"></canvas>
-      <div class="canvas-message" id="message">
-        Start kameraet og vælg et billede
-      </div>
+      <div class="message" id="message">Start kameraet eller vælg et foto</div>
     </div>
-
-    <div class="status" id="status">Klar til brug</div>
+    <div class="status" id="status">Klar</div>
   </div>
 
   <div class="panel">
-    <h3>✏️ Tegneindstillinger</h3>
+    <h3>✏️ Tegnefunktioner</h3>
 
     <div class="control">
-      <label for="mode">Billedtilstand</label>
+      <label>Billedtilstand</label>
       <select id="mode">
-        <option value="original">Original foto</option>
+        <option value="original">Original</option>
         <option value="line">Linjetegning</option>
         <option value="contour">Konturer</option>
         <option value="pencil">Blyantsskitse</option>
@@ -145,114 +135,111 @@ text-decoration:none
     </div>
 
     <div class="control">
-      <label>Gennemsigtighed
-        <span class="value" id="opacityValue">50%</span>
-      </label>
-      <input type="range" id="opacity" min="5" max="100" value="50">
+      <label>Gennemsigtighed <span class="value" id="opv">50%</span></label>
+      <input id="opacity" type="range" min="5" max="100" value="50">
     </div>
 
     <div class="control">
-      <label>Zoom
-        <span class="value" id="zoomValue">100%</span>
-      </label>
-      <input type="range" id="zoom" min="50" max="400" value="100">
+      <label>Zoom <span class="value" id="zv">100%</span></label>
+      <input id="zoom" type="range" min="50" max="400" value="100">
     </div>
 
     <div class="control">
-      <label>Kontrast
-        <span class="value" id="contrastValue">100%</span>
-      </label>
-      <input type="range" id="contrast" min="50" max="250" value="100">
+      <label>Kontrast <span class="value" id="cv">100%</span></label>
+      <input id="contrast" type="range" min="50" max="250" value="100">
     </div>
 
     <div class="control">
-      <label>Stregstyrke
-        <span class="value" id="strengthValue">100%</span>
-      </label>
-      <input type="range" id="strength" min="50" max="200" value="100">
+      <label>Stregstyrke <span class="value" id="sv">100%</span></label>
+      <input id="strength" type="range" min="50" max="200" value="100">
     </div>
   </div>
 
   <div class="panel">
     <h3>🔧 Billedkontrol</h3>
-
-    <div class="button-grid">
+    <div class="grid">
       <button id="lockBtn">🔒 Lås billede</button>
       <button id="resetBtn">↩ Nulstil position</button>
       <button id="fitBtn">⤢ Tilpas billede</button>
-      <button id="resetControlsBtn">⟲ Nulstil filtre</button>
+      <button id="resetFilters">⟲ Nulstil filtre</button>
     </div>
-
     <div class="status" id="lockStatus">Billedet er ulåst</div>
   </div>
 
   <div class="panel">
-    <h3>ℹ️ Sådan bruger du Tracer Studio</h3>
-
+    <h3>ℹ️ Sådan bruges New Tracer Gold</h3>
     <div class="tip">
       1. Sæt telefonen i en holder over bordet.<br><br>
-      2. Tryk Start kamera og tillad kameraadgang.<br><br>
+      2. Tryk Start kamera og giv tilladelse.<br><br>
       3. Læg tegnepapiret på bordet under telefonen.<br><br>
       4. Vælg et foto fra telefonen.<br><br>
-      5. Juster gennemsigtigheden, så papiret er synligt.<br><br>
-      6. Brug zoom og flyt fotoet, så det passer til papiret.<br><br>
-      7. Tryk Lås billede, når det ligger rigtigt.<br><br>
-      8. Tegn på papiret, mens du ser fotoet på skærmen.
+      5. Juster gennemsigtigheden.<br><br>
+      6. Brug zoom eller to fingre for at tilpasse billedet.<br><br>
+      7. Lås billedet, når det ligger rigtigt.<br><br>
+      8. Tegn på papiret, mens du ser billedet på skærmen.
     </div>
   </div>
 
+  <button class="full" onclick="goHome()">⬅️ TIL STARTSKÆRM</button>
 </div>
 
-<footer>TRACER STUDIO GOLD • BLACK & GOLD EDITION</footer>
+<footer>NEW TRACER GOLD</footer>
+</div>
 
 <script>
 "use strict";
 
+/* NAVIGATION */
+function enterProgram(){
+  document.getElementById("startScreen").style.display="none";
+  document.getElementById("program").style.display="block";
+  resizeCanvas();
+}
+function goHome(){
+  stopCamera();
+  document.getElementById("program").style.display="none";
+  document.getElementById("startScreen").style.display="flex";
+}
+
+/* ELEMENTS */
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d",{willReadFrequently:true});
-const wrap=document.getElementById("canvasWrap");
+const wrap=document.getElementById("wrap");
 const fileInput=document.getElementById("fileInput");
 const message=document.getElementById("message");
-const cameraBtn=document.getElementById("cameraBtn");
-const modeSelect=document.getElementById("mode");
-const opacitySlider=document.getElementById("opacity");
-const zoomSlider=document.getElementById("zoom");
-const contrastSlider=document.getElementById("contrast");
-const strengthSlider=document.getElementById("strength");
-const opacityValue=document.getElementById("opacityValue");
-const zoomValue=document.getElementById("zoomValue");
-const contrastValue=document.getElementById("contrastValue");
-const strengthValue=document.getElementById("strengthValue");
-const lockBtn=document.getElementById("lockBtn");
-const resetBtn=document.getElementById("resetBtn");
-const fitBtn=document.getElementById("fitBtn");
-const resetControlsBtn=document.getElementById("resetControlsBtn");
-const lockStatus=document.getElementById("lockStatus");
 const status=document.getElementById("status");
+const cameraBtn=document.getElementById("cameraBtn");
+const mode=document.getElementById("mode");
+const opacity=document.getElementById("opacity");
+const zoomSlider=document.getElementById("zoom");
+const contrast=document.getElementById("contrast");
+const strength=document.getElementById("strength");
 
 const video=document.createElement("video");
 video.setAttribute("playsinline","");
-video.setAttribute("autoplay","");
+video.autoplay=true;
 video.muted=true;
 
-let cameraStream=null;
+let stream=null;
 let cameraOn=false;
 let img=new Image();
 let imageLoaded=false;
 let zoom=1;
-let offsetX=0;
-let offsetY=0;
 let baseScale=1;
+let offsetX=0,offsetY=0;
 let locked=false;
 let pointers=new Map();
 let lastPointer=null;
-let pinchStartDistance=0;
-let pinchStartZoom=1;
+let pinchDistance=0;
+let pinchZoom=1;
 let pinchCenter=null;
-let renderScheduled=false;
+let rafPending=false;
 
+/* CANVAS */
 function resizeCanvas(){
+  if(!wrap)return;
   const rect=wrap.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
   const dpr=Math.min(window.devicePixelRatio||1,2);
   canvas.width=Math.round(rect.width*dpr);
   canvas.height=Math.round(rect.height*dpr);
@@ -264,41 +251,39 @@ function fitImage(){
   if(!imageLoaded)return;
   baseScale=Math.min(wrap.clientWidth/img.width,wrap.clientHeight/img.height);
   zoom=1;
-  offsetX=0;
-  offsetY=0;
+  offsetX=offsetY=0;
   zoomSlider.value=100;
-  zoomValue.textContent="100%";
+  document.getElementById("zv").textContent="100%";
   render();
 }
 
 function scheduleRender(){
-  if(renderScheduled)return;
-  renderScheduled=true;
+  if(rafPending)return;
+  rafPending=true;
   requestAnimationFrame(()=>{
-    renderScheduled=false;
+    rafPending=false;
     render();
   });
 }
 
-function settings(){
+function getSettings(){
   return{
-    mode:modeSelect.value,
-    opacity:Number(opacitySlider.value)/100,
-    contrast:Number(contrastSlider.value)/100,
-    strength:Number(strengthSlider.value)/100
+    mode:mode.value,
+    opacity:Number(opacity.value)/100,
+    contrast:Number(contrast.value)/100,
+    strength:Number(strength.value)/100
   };
 }
 
+/* RENDER */
 function render(){
-  if(!canvas.width||!canvas.height)return;
+  if(!canvas.width)return;
 
   const w=wrap.clientWidth;
   const h=wrap.clientHeight;
-
   ctx.clearRect(0,0,w,h);
 
   if(cameraOn&&video.readyState>=2){
-    ctx.globalAlpha=1;
     ctx.drawImage(video,0,0,w,h);
   }else{
     ctx.fillStyle="#111";
@@ -307,7 +292,7 @@ function render(){
 
   if(!imageLoaded)return;
 
-  const s=settings();
+  const s=getSettings();
   const drawW=img.width*baseScale*zoom;
   const drawH=img.height*baseScale*zoom;
   const x=(w-drawW)/2+offsetX;
@@ -323,11 +308,10 @@ function render(){
   const temp=document.createElement("canvas");
   temp.width=Math.max(1,Math.round(drawW));
   temp.height=Math.max(1,Math.round(drawH));
+  const t=temp.getContext("2d",{willReadFrequently:true});
+  t.drawImage(img,0,0,temp.width,temp.height);
 
-  const tctx=temp.getContext("2d",{willReadFrequently:true});
-  tctx.drawImage(img,0,0,temp.width,temp.height);
-
-  const data=tctx.getImageData(0,0,temp.width,temp.height);
+  const data=t.getImageData(0,0,temp.width,temp.height);
   const px=data.data;
   const gray=new Uint8ClampedArray(temp.width*temp.height);
 
@@ -337,7 +321,7 @@ function render(){
 
   if(s.mode==="gray"){
     for(let i=0;i<px.length;i+=4){
-      let g=(gray[i/4]-128)*s.contrast+128;
+      const g=(gray[i/4]-128)*s.contrast+128;
       px[i]=px[i+1]=px[i+2]=g;
     }
   }
@@ -354,14 +338,11 @@ function render(){
         const d=gray[Math.min(temp.height-1,yy+step)*temp.width+xx];
 
         let edge=Math.abs(l-r)+Math.abs(u-d);
-
         if(s.mode==="contour")edge*=1.5;
         if(s.mode==="pencil")edge=edge*1.25+(255-gray[i])*.35;
-
         edge=Math.min(255,edge*s.strength*s.contrast);
 
         const p=i*4;
-
         if(s.mode==="contour"){
           const v=edge>48?0:255;
           px[p]=px[p+1]=px[p+2]=v;
@@ -373,58 +354,60 @@ function render(){
     }
   }
 
-  tctx.putImageData(data,0,0);
+  t.putImageData(data,0,0);
   ctx.globalAlpha=s.opacity;
   ctx.drawImage(temp,x,y,drawW,drawH);
   ctx.globalAlpha=1;
 }
 
+/* CAMERA */
 cameraBtn.addEventListener("click",async()=>{
   if(cameraOn)return;
-
   try{
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-      throw new Error("Kamera understøttes ikke i denne browser");
+      throw new Error("Kamera understøttes ikke");
     }
-
     status.textContent="Starter kamera...";
-
-    cameraStream=await navigator.mediaDevices.getUserMedia({
+    stream=await navigator.mediaDevices.getUserMedia({
       video:{facingMode:{ideal:"environment"}},
       audio:false
     });
-
-    video.srcObject=cameraStream;
+    video.srcObject=stream;
     await video.play();
-
     cameraOn=true;
-    cameraBtn.textContent="✓ Kamera aktiv";
+    cameraBtn.textContent="✓ KAMERA AKTIV";
     cameraBtn.disabled=true;
-    message.textContent=imageLoaded?"":"Kamera aktiv. Vælg et foto";
-
-    if(imageLoaded)message.style.display="none";
-
+    message.style.display=imageLoaded?"none":"flex";
     status.textContent="Kamera aktivt";
-    render();
-
-    function cameraLoop(){
-      if(!cameraOn)return;
-      render();
-      requestAnimationFrame(cameraLoop);
-    }
-
-    requestAnimationFrame(cameraLoop);
-
+    cameraLoop();
   }catch(err){
     console.error(err);
     status.textContent="Kamera kunne ikke startes. Kontrollér tilladelse.";
   }
 });
 
+function cameraLoop(){
+  if(!cameraOn)return;
+  render();
+  requestAnimationFrame(cameraLoop);
+}
+
+function stopCamera(){
+  cameraOn=false;
+  if(stream){
+    stream.getTracks().forEach(track=>track.stop());
+    stream=null;
+  }
+  video.srcObject=null;
+  cameraBtn.disabled=false;
+  cameraBtn.textContent="📷 START KAMERA";
+  render();
+}
+
+/* PHOTO */
 fileInput.addEventListener("change",e=>{
   const file=e.target.files&&e.target.files[0];
   if(!file)return;
-
   const url=URL.createObjectURL(file);
 
   img.onload=()=>{
@@ -434,104 +417,86 @@ fileInput.addEventListener("change",e=>{
     status.textContent="Foto indlæst";
     URL.revokeObjectURL(url);
   };
-
   img.onerror=()=>{
     status.textContent="Kunne ikke åbne billedet";
     URL.revokeObjectURL(url);
   };
-
   img.src=url;
 });
 
-opacitySlider.addEventListener("input",()=>{
-  opacityValue.textContent=opacitySlider.value+"%";
+/* SLIDERS */
+opacity.addEventListener("input",()=>{
+  document.getElementById("opv").textContent=opacity.value+"%";
   scheduleRender();
 });
-
 zoomSlider.addEventListener("input",()=>{
   zoom=Number(zoomSlider.value)/100;
-  zoomValue.textContent=zoomSlider.value+"%";
+  document.getElementById("zv").textContent=zoomSlider.value+"%";
   scheduleRender();
 });
-
-contrastSlider.addEventListener("input",()=>{
-  contrastValue.textContent=contrastSlider.value+"%";
+contrast.addEventListener("input",()=>{
+  document.getElementById("cv").textContent=contrast.value+"%";
   scheduleRender();
 });
-
-strengthSlider.addEventListener("input",()=>{
-  strengthValue.textContent=strengthSlider.value+"%";
+strength.addEventListener("input",()=>{
+  document.getElementById("sv").textContent=strength.value+"%";
   scheduleRender();
 });
+mode.addEventListener("change",render);
 
-modeSelect.addEventListener("change",render);
-
-lockBtn.addEventListener("click",()=>{
+/* LOCK */
+document.getElementById("lockBtn").addEventListener("click",()=>{
   locked=!locked;
-  lockBtn.textContent=locked?"🔓 Lås billede op":"🔒 Lås billede";
-  lockStatus.textContent=locked?"Billedet er låst":"Billedet er ulåst";
-  wrap.classList.toggle("locked",locked);
+  document.getElementById("lockBtn").textContent=
+    locked?"🔓 LÅS BILLEDE OP":"🔒 LÅS BILLEDE";
+  document.getElementById("lockStatus").textContent=
+    locked?"Billedet er låst":"Billedet er ulåst";
+  wrap.style.borderColor=locked?"#36a566":"#d6ad52";
 });
 
-resetBtn.addEventListener("click",()=>{
+/* RESET */
+document.getElementById("resetBtn").addEventListener("click",()=>{
   offsetX=offsetY=0;
   zoom=1;
   zoomSlider.value=100;
-  zoomValue.textContent="100%";
+  document.getElementById("zv").textContent="100%";
   render();
 });
-
-fitBtn.addEventListener("click",fitImage);
-
-resetControlsBtn.addEventListener("click",()=>{
-  opacitySlider.value=50;
+document.getElementById("fitBtn").addEventListener("click",fitImage);
+document.getElementById("resetFilters").addEventListener("click",()=>{
+  opacity.value=50;
   zoomSlider.value=100;
-  contrastSlider.value=100;
-  strengthSlider.value=100;
-  modeSelect.value="original";
-
-  opacityValue.textContent="50%";
-  zoomValue.textContent="100%";
-  contrastValue.textContent="100%";
-  strengthValue.textContent="100%";
-
+  contrast.value=100;
+  strength.value=100;
+  mode.value="original";
   zoom=1;
+  offsetX=offsetY=0;
+  document.getElementById("opv").textContent="50%";
+  document.getElementById("zv").textContent="100%";
+  document.getElementById("cv").textContent="100%";
+  document.getElementById("sv").textContent="100%";
   render();
 });
 
-function distance(a,b){
-  return Math.hypot(a.x-b.x,a.y-b.y);
-}
-
-function center(a,b){
-  return{x:(a.x+b.x)/2,y:(a.y+b.y)/2};
-}
+/* TOUCH / MOUSE / PINCH */
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function mid(a,b){return{x:(a.x+b.x)/2,y:(a.y+b.y)/2}}
 
 canvas.addEventListener("pointerdown",e=>{
   canvas.setPointerCapture(e.pointerId);
-  pointersSet(e.pointerId,e.clientX,e.clientY);
-
-  if(pointers.size===1){
-    lastPointer={x:e.clientX,y:e.clientY};
-  }
-
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1)lastPointer={x:e.clientX,y:e.clientY};
   if(pointers.size===2){
     const pts=[...pointers.values()];
-    pinchStartDistance=distance(pts[0],pts[1]);
-    pinchStartZoom=zoom;
-    pinchCenter=center(pts[0],pts[1]);
+    pinchDistance=dist(pts[0],pts[1]);
+    pinchZoom=zoom;
+    pinchCenter=mid(pts[0],pts[1]);
   }
 });
 
-function pointersSet(id,x,y){
-  pointers.set(id,{x,y});
-}
-
 canvas.addEventListener("pointermove",e=>{
   if(!pointers.has(e.pointerId))return;
-
-  pointersSet(e.pointerId,e.clientX,e.clientY);
-
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(locked)return;
 
   if(pointers.size===1&&lastPointer){
@@ -543,88 +508,51 @@ canvas.addEventListener("pointermove",e=>{
 
   if(pointers.size===2){
     const pts=[...pointers.values()];
-    const dist=distance(pts[0],pts[1]);
-    const c=center(pts[0],pts[1]);
-
-    if(pinchStartDistance>0){
-      zoom=Math.max(.5,Math.min(4,pinchStartZoom*dist/pinchStartDistance));
+    const d=dist(pts[0],pts[1]);
+    const c=mid(pts[0],pts[1]);
+    if(pinchDistance>0){
+      zoom=Math.max(.5,Math.min(4,pinchZoom*d/pinchDistance));
       zoomSlider.value=Math.round(zoom*100);
-      zoomValue.textContent=zoomSlider.value+"%";
-
+      document.getElementById("zv").textContent=zoomSlider.value+"%";
       if(pinchCenter){
         offsetX+=c.x-pinchCenter.x;
         offsetY+=c.y-pinchCenter.y;
       }
-
       pinchCenter=c;
       scheduleRender();
     }
   }
 });
 
-function endPointer(e){
+function pointerEnd(e){
   pointers.delete(e.pointerId);
-
   if(pointers.size===1){
     const p=[...pointers.values()][0];
     lastPointer={x:p.x,y:p.y};
-  }else{
-    lastPointer=null;
-  }
-
+  }else lastPointer=null;
   if(pointers.size<2){
-    pinchStartDistance=0;
+    pinchDistance=0;
     pinchCenter=null;
   }
 }
-
-canvas.addEventListener("pointerup",endPointer);
-canvas.addEventListener("pointercancel",endPointer);
-canvas.addEventListener("lostpointercapture",endPointer);
-
+canvas.addEventListener("pointerup",pointerEnd);
+canvas.addEventListener("pointercancel",pointerEnd);
+canvas.addEventListener("lostpointercapture",pointerEnd);
 canvas.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 canvas.addEventListener("touchmove",e=>e.preventDefault(),{passive:false});
 
+/* RESIZE */
 window.addEventListener("resize",resizeCanvas);
 
-/* PWA INSTALL */
-let installPromptEvent=null;
-const installAppBtn=document.getElementById("installAppBtn");
-
+/* PWA INSTALL PROMPT */
+let installPrompt=null;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  installPromptEvent=e;
-  installAppBtn.textContent="INSTALLER TRACER";
+  installPrompt=e;
 });
+window.addEventListener("appinstalled",()=>installPrompt=null);
 
-installAppBtn.addEventListener("click",async()=>{
-  if(installPromptEvent){
-    try{
-      installAppBtn.disabled=true;
-      installPromptEvent.prompt();
-      await installPromptEvent.userChoice;
-    }catch(err){
-      console.warn("Install prompt fejl",err);
-    }finally{
-      installPromptEvent=null;
-      installAppBtn.disabled=false;
-    }
-    return;
-  }
-
-  alert("Hvis Chrome ikke viser installation automatisk: Tryk på Chrome-menuen (⋮) og vælg 'Installer app' eller 'Føj til startskærm'.");
-});
-
-/* SERVICE WORKER */
-if("serviceWorker" in navigator &&
-   location.protocol==="https:" &&
-   window.top===window.self){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./service-worker.js")
-      .catch(err=>console.warn("Service Worker registration skipped",err));
-  });
-}
-
+/* INIT */
 resizeCanvas();
 </script>
 </body>
