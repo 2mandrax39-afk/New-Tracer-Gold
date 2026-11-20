@@ -3,45 +3,42 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#111111">
 <title>New Tracer Gold</title>
 
 <style>
 * {
   box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   margin: 0;
-  background: #101010;
-  color: #f0d58a;
+  background: #111;
+  color: white;
   font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 header {
+  background: #1b1b1b;
+  padding: 12px;
   text-align: center;
-  padding: 14px;
-  font-size: 24px;
+  color: #d6b45b;
+  font-size: 20px;
   font-weight: bold;
-  color: #d4af37;
-  letter-spacing: 2px;
 }
 
 #stage {
   position: relative;
-  width: 100%;
-  height: 60vh;
-  min-height: 300px;
+  width: 100vw;
+  height: calc(100dvh - 170px);
   background: #000;
   overflow: hidden;
   touch-action: none;
 }
 
-#cameraCanvas,
-#overlayCanvas,
-#drawCanvas {
+canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -57,89 +54,58 @@ header {
   touch-action: none;
 }
 
-#drawCanvas {
-  z-index: 3;
-  touch-action: none;
-  pointer-events: none;
-}
-
-#message {
-  text-align: center;
-  color: #aaa;
+#controls {
+  height: 170px;
+  overflow-y: auto;
+  background: #1a1a1a;
   padding: 8px;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+button, .fileButton {
+  border: 1px solid #b99a48;
+  background: #292929;
+  color: #f1d27a;
+  border-radius: 8px;
+  padding: 10px 8px;
   font-size: 13px;
-}
-
-.controls {
-  padding: 10px;
-}
-
-button {
-  background: #222;
-  color: #e6c65c;
-  border: 1px solid #b9962e;
-  border-radius: 9px;
-  padding: 12px 8px;
-  font-size: 14px;
   font-weight: bold;
 }
 
 button:active {
-  background: #4b3a13;
+  background: #55451e;
 }
 
-button.active {
-  background: #d4af37;
-  color: #111;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.grid.two {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.sliderbox {
-  background: #1b1b1b;
-  border: 1px solid #3a3018;
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 9px;
-}
-
-.sliderbox label {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 8px;
-  color: #e6c65c;
-}
-
-input[type=range] {
+input[type="range"] {
   width: 100%;
-  accent-color: #d4af37;
+  accent-color: #d6b45b;
 }
 
-#fileInput {
-  display: none;
+label {
+  font-size: 12px;
+  color: #ddd;
+  min-width: 65px;
 }
 
 .small {
-  font-size: 12px;
+  font-size: 11px;
   color: #aaa;
-  text-align: center;
-  padding: 4px;
 }
 
-footer {
-  color: #666;
-  text-align: center;
-  padding: 12px;
-  font-size: 11px;
+#status {
+  color: #d6b45b;
+  font-size: 12px;
+  padding: 3px;
+}
+
+input[type="file"] {
+  display: none;
 }
 </style>
 </head>
@@ -151,97 +117,78 @@ footer {
 <div id="stage">
   <canvas id="cameraCanvas"></canvas>
   <canvas id="overlayCanvas"></canvas>
-  <canvas id="drawCanvas"></canvas>
 </div>
 
-<div id="message">Start kameraet og vælg et billede</div>
+<div id="controls">
 
-<div class="controls">
-
-  <div class="grid two">
-    <button id="cameraBtn">📷 Start kamera</button>
-    <button id="photoBtn">🖼️ Vælg billede</button>
+  <div class="row">
+    <button id="cameraBtn">Start kamera</button>
+    <button id="flipBtn">Skift kamera</button>
+    <button id="resetBtn">Nulstil</button>
+    <button id="fitBtn">Tilpas</button>
   </div>
 
-  <input type="file" id="fileInput" accept="image/*">
-
-  <div class="sliderbox">
-    <label>Kamera-zoom: <span id="cameraZoomText">200%</span></label>
-    <input id="cameraZoom" type="range" min="100" max="400" value="200">
+  <div class="row">
+    <label>Kamera zoom</label>
+    <input id="cameraZoom" type="range" min="1" max="5" step="0.1" value="1">
   </div>
 
-  <div class="sliderbox">
-    <label>Billed-transparens: <span id="opacityText">50%</span></label>
+  <div class="row">
+    <label>Reference</label>
+    <label class="fileButton" for="imageFile">Vælg billede</label>
+    <input id="imageFile" type="file" accept="image/*">
+    <button id="lockBtn">Lås reference</button>
+  </div>
+
+  <div class="row">
+    <label>Gennemsigtighed</label>
     <input id="opacity" type="range" min="0" max="100" value="50">
   </div>
 
-  <div class="sliderbox">
-    <label>Billed-zoom: <span id="imageZoomText">100%</span></label>
-    <input id="imageZoom" type="range" min="25" max="300" value="100">
+  <div class="row">
+    <label>Reference zoom</label>
+    <input id="imageZoom" type="range" min="0.2" max="4" step="0.05" value="1">
   </div>
 
-  <div class="grid">
-    <button id="pencilBtn">✏️ Blyant</button>
-    <button id="contourBtn">◐ Konturer</button>
-    <button id="grayBtn">◑ Gråtoner</button>
+  <div class="row">
+    <button id="contourBtn">Konturer OFF</button>
+    <button id="grayBtn">Gråtone OFF</button>
   </div>
 
-  <div class="grid two">
-    <button id="lockBtn">🔓 Lås billede</button>
-    <button id="clearDrawBtn">🗑️ Slet tegning</button>
-  </div>
+  <div id="status">Klar. Start kamera og vælg et referencebillede.</div>
 
-  <div class="grid two">
-    <button id="resetBtn">↺ Nulstil</button>
-    <button id="fitBtn">⛶ Tilpas billede</button>
-  </div>
-
-  <div class="sliderbox">
-    <label>Blyant størrelse</label>
-    <input id="brushSize" type="range" min="1" max="20" value="3">
+  <div class="small">
+    Flyt og zoom referencebilledet med fingrene.
+    Tegn på papiret, ikke på telefonen.
   </div>
 
 </div>
-
-<div class="small">
-  Brug to fingre til at zoome og flytte billedet.
-</div>
-
-<footer>New Tracer Gold</footer>
 
 <script>
-/* =========================
-   NEW TRACER GOLD
-   SERVICE WORKER REMOVED
-========================= */
+(() => {
+"use strict";
 
 const stage = document.getElementById("stage");
 const cameraCanvas = document.getElementById("cameraCanvas");
 const overlayCanvas = document.getElementById("overlayCanvas");
-const drawCanvas = document.getElementById("drawCanvas");
 
 const cameraCtx = cameraCanvas.getContext("2d");
 const overlayCtx = overlayCanvas.getContext("2d");
-const drawCtx = drawCanvas.getContext("2d");
 
 const cameraBtn = document.getElementById("cameraBtn");
-const photoBtn = document.getElementById("photoBtn");
-const fileInput = document.getElementById("fileInput");
+const flipBtn = document.getElementById("flipBtn");
+const resetBtn = document.getElementById("resetBtn");
+const fitBtn = document.getElementById("fitBtn");
+const lockBtn = document.getElementById("lockBtn");
 
 const cameraZoom = document.getElementById("cameraZoom");
-const opacitySlider = document.getElementById("opacity");
-const imageZoomSlider = document.getElementById("imageZoom");
-const brushSizeSlider = document.getElementById("brushSize");
+const imageZoom = document.getElementById("imageZoom");
+const opacity = document.getElementById("opacity");
+const imageFile = document.getElementById("imageFile");
 
-const cameraZoomText = document.getElementById("cameraZoomText");
-const opacityText = document.getElementById("opacityText");
-const imageZoomText = document.getElementById("imageZoomText");
-const message = document.getElementById("message");
-
-const pencilBtn = document.getElementById("pencilBtn");
 const contourBtn = document.getElementById("contourBtn");
 const grayBtn = document.getElementById("grayBtn");
-const lockBtn = document.getElementById("lockBtn");
+const status = document.getElementById("status");
 
 let video = document.createElement("video");
 video.autoplay = true;
@@ -249,71 +196,290 @@ video.playsInline = true;
 video.muted = true;
 
 let stream = null;
-let cameraOn = false;
+let facingMode = "environment";
 
-let overlayImage = null;
-let overlayLoaded = false;
+let referenceImage = null;
+let referenceLoaded = false;
 
-let overlayOpacity = 0.5;
-let overlayScale = 1;
 let overlayX = 0;
 let overlayY = 0;
+let overlayScale = 1;
 
-let cameraZoomValue = 2;
+let locked = false;
+let contours = false;
+let grayscale = false;
 
-let imageLocked = false;
-let drawMode = false;
-let contourMode = false;
-let grayscaleMode = false;
+let pointerMap = new Map();
+let lastPointer = null;
+let pinchDistance = 0;
+let pinchScale = 1;
+let pinchCenter = null;
 
-let drawing = false;
-let lastX = 0;
-let lastY = 0;
+let stageWidth = 0;
+let stageHeight = 0;
 
-let animationFrame = null;
-
-let pointers = new Map();
-let pinchStartDistance = 0;
-let pinchStartScale = 1;
-let pinchStartX = 0;
-let pinchStartY = 0;
-let pinchStartMidX = 0;
-let pinchStartMidY = 0;
-
-/* CANVAS SIZE */
-
-function resizeCanvas() {
-  const rect = stage.getBoundingClientRect();
-
-  [cameraCanvas, overlayCanvas, drawCanvas].forEach(canvas => {
-    canvas.width = Math.round(rect.width * devicePixelRatio);
-    canvas.height = Math.round(rect.height * devicePixelRatio);
-    canvas.style.width = rect.width + "px";
-    canvas.style.height = rect.height + "px";
-  });
-
-  cameraCtx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-  overlayCtx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-  drawCtx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-
-  renderOverlay();
+function setStatus(message) {
+  status.textContent = message;
 }
 
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+function resize() {
+  const rect = stage.getBoundingClientRect();
 
-/* CAMERA */
+  stageWidth = rect.width;
+  stageHeight = rect.height;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  cameraCanvas.width = Math.round(stageWidth * dpr);
+  cameraCanvas.height = Math.round(stageHeight * dpr);
+
+  overlayCanvas.width = Math.round(stageWidth * dpr);
+  overlayCanvas.height = Math.round(stageHeight * dpr);
+
+  cameraCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  drawOverlay();
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+function drawCamera() {
+  if (!video || !video.videoWidth || !video.videoHeight) {
+    requestAnimationFrame(drawCamera);
+    return;
+  }
+
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+
+  const zoom = Number(cameraZoom.value);
+
+  const aspect = stageWidth / stageHeight;
+
+  let cropW = vw;
+  let cropH = vh;
+
+  if (vw / vh > aspect) {
+    cropW = vh * aspect;
+  } else {
+    cropH = vw / aspect;
+  }
+
+  cropW /= zoom;
+  cropH /= zoom;
+
+  const sx = (vw - cropW) / 2;
+  const sy = (vh - cropH) / 2;
+
+  cameraCtx.clearRect(0, 0, stageWidth, stageHeight);
+
+  cameraCtx.save();
+
+  if (grayscale) {
+    cameraCtx.filter = "grayscale(100%)";
+  } else {
+    cameraCtx.filter = "none";
+  }
+
+  cameraCtx.drawImage(
+    video,
+    sx, sy, cropW, cropH,
+    0, 0, stageWidth, stageHeight
+  );
+
+  cameraCtx.restore();
+
+  if (contours) {
+    drawContours();
+  }
+
+  requestAnimationFrame(drawCamera);
+}
+
+function drawContours() {
+  try {
+    const imageData = cameraCtx.getImageData(
+      0, 0, stageWidth, stageHeight
+    );
+
+    const data = imageData.data;
+    const w = stageWidth;
+    const h = stageHeight;
+
+    const step = 2;
+
+    for (let y = step; y < h - step; y += step) {
+      for (let x = step; x < w - step; x += step) {
+        const i = (y * w + x) * 4;
+
+        const left = ((y * w + (x - step)) * 4);
+        const right = ((y * w + (x + step)) * 4);
+        const up = (((y - step) * w + x) * 4);
+        const down = (((y + step) * w + x) * 4);
+
+        const lumL = data[left];
+        const lumR = data[right];
+        const lumU = data[up];
+        const lumD = data[down];
+
+        const edge =
+          Math.abs(lumL - lumR) +
+          Math.abs(lumU - lumD);
+
+        if (edge > 100) {
+          data[i] = 255;
+          data[i + 1] = 215;
+          data[i + 2] = 80;
+          data[i + 3] = 255;
+        }
+      }
+    }
+
+    cameraCtx.putImageData(imageData, 0, 0);
+
+  } catch (e) {
+    // Konturer kan være utilgængelige på visse enheder.
+  }
+}
+
+function drawOverlay() {
+  overlayCtx.clearRect(0, 0, stageWidth, stageHeight);
+
+  if (!referenceLoaded || !referenceImage) return;
+
+  const opacityValue = Number(opacity.value) / 100;
+
+  const imgW = referenceImage.width * overlayScale;
+  const imgH = referenceImage.height * overlayScale;
+
+  overlayCtx.save();
+  overlayCtx.globalAlpha = opacityValue;
+
+  overlayCtx.drawImage(
+    referenceImage,
+    overlayX,
+    overlayY,
+    imgW,
+    imgH
+  );
+
+  overlayCtx.restore();
+}
+
+function fitReference() {
+  if (!referenceLoaded) return;
+
+  const scaleX = stageWidth * 0.85 / referenceImage.width;
+  const scaleY = stageHeight * 0.85 / referenceImage.height;
+
+  overlayScale = Math.min(scaleX, scaleY);
+
+  imageZoom.value = 1;
+
+  overlayX = (stageWidth - referenceImage.width * overlayScale) / 2;
+  overlayY = (stageHeight - referenceImage.height * overlayScale) / 2;
+
+  drawOverlay();
+}
+
+function resetReference() {
+  if (!referenceLoaded) return;
+
+  overlayScale = 1;
+  imageZoom.value = 1;
+
+  overlayX = (stageWidth - referenceImage.width) / 2;
+  overlayY = (stageHeight - referenceImage.height) / 2;
+
+  locked = false;
+  lockBtn.textContent = "Lås reference";
+
+  drawOverlay();
+}
+
+imageFile.addEventListener("change", event => {
+  const file = event.target.files && event.target.files[0];
+
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+
+  const img = new Image();
+
+  img.onload = () => {
+    referenceImage = img;
+    referenceLoaded = true;
+
+    overlayScale = 1;
+    imageZoom.value = 1;
+
+    fitReference();
+
+    setStatus("Referencebillede indlæst.");
+    URL.revokeObjectURL(url);
+  };
+
+  img.onerror = () => {
+    setStatus("Billedet kunne ikke indlæses.");
+    URL.revokeObjectURL(url);
+  };
+
+  img.src = url;
+});
+
+opacity.addEventListener("input", drawOverlay);
+
+imageZoom.addEventListener("input", () => {
+  if (!referenceLoaded || locked) return;
+
+  const newScale = Number(imageZoom.value);
+
+  const centerX = overlayX + referenceImage.width * overlayScale / 2;
+  const centerY = overlayY + referenceImage.height * overlayScale / 2;
+
+  overlayScale = newScale;
+
+  overlayX = centerX - referenceImage.width * overlayScale / 2;
+  overlayY = centerY - referenceImage.height * overlayScale / 2;
+
+  drawOverlay();
+});
+
+lockBtn.addEventListener("click", () => {
+  locked = !locked;
+
+  lockBtn.textContent = locked ? "Låst" : "Lås reference";
+
+  setStatus(locked ? "Reference låst." : "Reference låst op.");
+});
+
+resetBtn.addEventListener("click", resetReference);
+fitBtn.addEventListener("click", fitReference);
+
+contourBtn.addEventListener("click", () => {
+  contours = !contours;
+  contourBtn.textContent = contours ? "Konturer ON" : "Konturer OFF";
+});
+
+grayBtn.addEventListener("click", () => {
+  grayscale = !grayscale;
+  grayBtn.textContent = grayscale ? "Gråtone ON" : "Gråtone OFF";
+});
+
+cameraZoom.addEventListener("input", () => {});
 
 async function startCamera() {
   try {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      message.textContent = "Din browser understøtter ikke kamera.";
-      return;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
     }
 
     stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment"
+        facingMode: facingMode,
       },
       audio: false
     });
@@ -321,447 +487,152 @@ async function startCamera() {
     video.srcObject = stream;
     await video.play();
 
-    cameraOn = true;
-    cameraBtn.textContent = "⏹ Stop kamera";
-    message.textContent = "Kamera aktiv. Brug kamera-zoom til at gøre papiret større.";
-
-    renderCamera();
+    cameraBtn.textContent = "Kamera aktiv";
+    setStatus("Kamera startet.");
 
   } catch (error) {
-    console.error(error);
-    message.textContent = "Kamera kunne ikke startes. Kontrollér kamera-tilladelsen.";
+    setStatus("Kamera fejl: " + error.message);
   }
 }
 
-function stopCamera() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    stream = null;
-  }
+cameraBtn.addEventListener("click", startCamera);
 
-  video.srcObject = null;
-  cameraOn = false;
-
-  if (animationFrame) {
-    cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-  }
-
-  cameraCtx.clearRect(
-    0, 0,
-    cameraCanvas.width / devicePixelRatio,
-    cameraCanvas.height / devicePixelRatio
-  );
-
-  cameraBtn.textContent = "📷 Start kamera";
-  message.textContent = "Kamera stoppet.";
-}
-
-function renderCamera() {
-  if (!cameraOn) return;
-
-  const width = cameraCanvas.width / devicePixelRatio;
-  const height = cameraCanvas.height / devicePixelRatio;
-
-  if (video.readyState >= 2) {
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
-
-    if (vw && vh) {
-      const zoom = cameraZoomValue;
-
-      const cropWidth = vw / zoom;
-      const cropHeight = vh / zoom;
-
-      const sx = (vw - cropWidth) / 2;
-      const sy = (vh - cropHeight) / 2;
-
-      cameraCtx.clearRect(0, 0, width, height);
-
-      cameraCtx.save();
-
-      if (grayscaleMode) {
-        cameraCtx.filter = "grayscale(100%)";
-      } else if (contourMode) {
-        cameraCtx.filter = "contrast(180%) grayscale(100%)";
-      } else {
-        cameraCtx.filter = "none";
-      }
-
-      cameraCtx.drawImage(
-        video,
-        sx, sy, cropWidth, cropHeight,
-        0, 0, width, height
-      );
-
-      cameraCtx.restore();
-    }
-  }
-
-  animationFrame = requestAnimationFrame(renderCamera);
-}
-
-/* IMAGE */
-
-photoBtn.addEventListener("click", () => {
-  fileInput.click();
+flipBtn.addEventListener("click", async () => {
+  facingMode = facingMode === "environment" ? "user" : "environment";
+  await startCamera();
 });
 
-fileInput.addEventListener("change", event => {
-  const file = event.target.files && event.target.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-  const img = new Image();
-
-  img.onload = () => {
-    overlayImage = img;
-    overlayLoaded = true;
-
-    overlayScale = 1;
-    overlayX = 0;
-    overlayY = 0;
-
-    imageZoomSlider.value = 100;
-    imageZoomText.textContent = "100%";
-
-    renderOverlay();
-    message.textContent = "Billede indlæst. Du kan flytte og zoome billedet.";
-    URL.revokeObjectURL(url);
-  };
-
-  img.onerror = () => {
-    message.textContent = "Billedet kunne ikke åbnes.";
-    URL.revokeObjectURL(url);
-  };
-
-  img.src = url;
-});
-
-/* OVERLAY DRAWING */
-
-function renderOverlay() {
-  const width = overlayCanvas.width / devicePixelRatio;
-  const height = overlayCanvas.height / devicePixelRatio;
-
-  overlayCtx.clearRect(0, 0, width, height);
-
-  if (!overlayLoaded || !overlayImage) return;
-
-  const baseScale = Math.min(
-    width / overlayImage.width,
-    height / overlayImage.height
-  );
-
-  const scale = baseScale * overlayScale;
-
-  const drawWidth = overlayImage.width * scale;
-  const drawHeight = overlayImage.height * scale;
-
-  const centerX = width / 2 + overlayX;
-  const centerY = height / 2 + overlayY;
-
-  overlayCtx.save();
-  overlayCtx.globalAlpha = overlayOpacity;
-
-  if (grayscaleMode) {
-    overlayCtx.filter = "grayscale(100%)";
-  } else if (contourMode) {
-    overlayCtx.filter = "grayscale(100%) contrast(180%)";
-  } else {
-    overlayCtx.filter = "none";
-  }
-
-  overlayCtx.drawImage(
-    overlayImage,
-    centerX - drawWidth / 2,
-    centerY - drawHeight / 2,
-    drawWidth,
-    drawHeight
-  );
-
-  overlayCtx.restore();
-}
-
-cameraZoom.addEventListener("input", () => {
-  cameraZoomValue = Number(cameraZoom.value) / 100;
-  cameraZoomText.textContent = cameraZoom.value + "%";
-});
-
-opacitySlider.addEventListener("input", () => {
-  overlayOpacity = Number(opacitySlider.value) / 100;
-  opacityText.textContent = opacitySlider.value + "%";
-  renderOverlay();
-});
-
-imageZoomSlider.addEventListener("input", () => {
-  overlayScale = Number(imageZoomSlider.value) / 100;
-  imageZoomText.textContent = imageZoomSlider.value + "%";
-  renderOverlay();
-});
-
-/* BUTTONS */
-
-cameraBtn.addEventListener("click", () => {
-  if (cameraOn) {
-    stopCamera();
-  } else {
-    startCamera();
-  }
-});
-
-pencilBtn.addEventListener("click", () => {
-  drawMode = !drawMode;
-
-  if (drawMode) {
-    pencilBtn.classList.add("active");
-    overlayCanvas.style.pointerEvents = "none";
-    drawCanvas.style.pointerEvents = "auto";
-    message.textContent = "Blyant aktiv. Tegn med fingeren.";
-  } else {
-    pencilBtn.classList.remove("active");
-    drawCanvas.style.pointerEvents = "none";
-    overlayCanvas.style.pointerEvents = "auto";
-    message.textContent = "Blyant slået fra.";
-  }
-});
-
-contourBtn.addEventListener("click", () => {
-  contourMode = !contourMode;
-
-  contourBtn.classList.toggle("active", contourMode);
-
-  if (contourMode) {
-    grayscaleMode = false;
-    grayBtn.classList.remove("active");
-  }
-
-  renderOverlay();
-});
-
-grayBtn.addEventListener("click", () => {
-  grayscaleMode = !grayscaleMode;
-
-  grayBtn.classList.toggle("active", grayscaleMode);
-
-  if (grayscaleMode) {
-    contourMode = false;
-    contourBtn.classList.remove("active");
-  }
-
-  renderOverlay();
-});
-
-lockBtn.addEventListener("click", () => {
-  imageLocked = !imageLocked;
-
-  lockBtn.textContent = imageLocked
-    ? "🔒 Billede låst"
-    : "🔓 Lås billede";
-
-  lockBtn.classList.toggle("active", imageLocked);
-});
-
-document.getElementById("clearDrawBtn").addEventListener("click", () => {
-  drawCtx.clearRect(
-    0, 0,
-    drawCanvas.width,
-    drawCanvas.height
-  );
-
-  message.textContent = "Tegning slettet.";
-});
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-  overlayScale = 1;
-  overlayX = 0;
-  overlayY = 0;
-  overlayOpacity = 0.5;
-  cameraZoomValue = 2;
-
-  imageZoomSlider.value = 100;
-  imageZoomText.textContent = "100%";
-
-  opacitySlider.value = 50;
-  opacityText.textContent = "50%";
-
-  cameraZoom.value = 200;
-  cameraZoomText.textContent = "200%";
-
-  drawCtx.clearRect(
-    0, 0,
-    drawCanvas.width,
-    drawCanvas.height
-  );
-
-  renderOverlay();
-
-  message.textContent = "Indstillinger nulstillet.";
-});
-
-document.getElementById("fitBtn").addEventListener("click", () => {
-  overlayScale = 1;
-  overlayX = 0;
-  overlayY = 0;
-
-  imageZoomSlider.value = 100;
-  imageZoomText.textContent = "100%";
-
-  renderOverlay();
-  message.textContent = "Billede tilpasset skærmen.";
-});
-
-/* POINTER / TOUCH */
-
-function getPoint(event) {
-  const rect = stage.getBoundingClientRect();
-
-  return {
-    x: event.clientX - rect.left,
-    y: event.clientY - rect.top
-  };
-}
+// Flyt og zoom kun referencebilledet.
+// Der er ingen tegnefunktion på telefonens skærm.
 
 function distance(a, b) {
-  return Math.hypot(b.x - a.x, b.y - a.y);
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
 }
 
-function midpoint(a, b) {
+function centerOfTwo(a, b) {
   return {
     x: (a.x + b.x) / 2,
     y: (a.y + b.y) / 2
   };
 }
 
-stage.addEventListener("pointerdown", event => {
-  event.preventDefault();
+overlayCanvas.addEventListener("pointerdown", event => {
+  overlayCanvas.setPointerCapture(event.pointerId);
 
-  stage.setPointerCapture(event.pointerId);
+  pointerMap.set(event.pointerId, {
+    x: event.offsetX,
+    y: event.offsetY
+  });
 
-  const point = getPoint(event);
-  pointers.set(event.pointerId, point);
-
-  if (drawMode) {
-    if (pointers.size === 1) {
-      drawing = true;
-      lastX = point.x;
-      lastY = point.y;
-    }
-    return;
+  if (pointerMap.size === 1) {
+    lastPointer = {
+      x: event.offsetX,
+      y: event.offsetY
+    };
   }
 
-  if (!imageLocked && pointers.size === 1) {
-    lastX = point.x;
-    lastY = point.y;
-  }
+  if (pointerMap.size === 2) {
+    const points = Array.from(pointerMap.values());
 
-  if (pointers.size === 2) {
-    const pts = Array.from(pointers.values());
-
-    pinchStartDistance = distance(pts[0], pts[1]);
-    pinchStartScale = overlayScale;
-
-    pinchStartX = overlayX;
-    pinchStartY = overlayY;
-
-    const mid = midpoint(pts[0], pts[1]);
-    pinchStartMidX = mid.x;
-    pinchStartMidY = mid.y;
+    pinchDistance = distance(points[0], points[1]);
+    pinchScale = overlayScale;
+    pinchCenter = centerOfTwo(points[0], points[1]);
   }
 });
 
-stage.addEventListener("pointermove", event => {
-  if (!pointers.has(event.pointerId)) return;
+overlayCanvas.addEventListener("pointermove", event => {
+  if (!pointerMap.has(event.pointerId)) return;
 
-  event.preventDefault();
+  pointerMap.set(event.pointerId, {
+    x: event.offsetX,
+    y: event.offsetY
+  });
 
-  const point = getPoint(event);
-  pointers.set(event.pointerId, point);
+  if (locked || !referenceLoaded) return;
 
-  if (drawMode && drawing && pointers.size === 1) {
-    drawCtx.lineWidth = Number(brushSizeSlider.value);
-    drawCtx.lineCap = "round";
-    drawCtx.lineJoin = "round";
-    drawCtx.strokeStyle = "#d4af37";
+  if (pointerMap.size === 1 && lastPointer) {
+    const current = pointerMap.get(event.pointerId);
 
-    drawCtx.beginPath();
-    drawCtx.moveTo(lastX, lastY);
-    drawCtx.lineTo(point.x, point.y);
-    drawCtx.stroke();
+    overlayX += current.x - lastPointer.x;
+    overlayY += current.y - lastPointer.y;
 
-    lastX = point.x;
-    lastY = point.y;
-    return;
+    lastPointer = {
+      x: current.x,
+      y: current.y
+    };
+
+    drawOverlay();
   }
 
-  if (pointers.size === 2 && !imageLocked && !drawMode) {
-    const pts = Array.from(pointers.values());
+  if (pointerMap.size === 2) {
+    const points = Array.from(pointerMap.values());
 
-    const newDistance = distance(pts[0], pts[1]);
-    const mid = midpoint(pts[0], pts[1]);
+    const newDistance = distance(points[0], points[1]);
+    const newCenter = centerOfTwo(points[0], points[1]);
 
-    if (pinchStartDistance > 0) {
-      const ratio = newDistance / pinchStartDistance;
+    if (pinchDistance > 0) {
+      const factor = newDistance / pinchDistance;
 
-      overlayScale = Math.max(
-        0.25,
-        Math.min(5, pinchStartScale * ratio)
+      const newScale = Math.max(
+        0.1,
+        Math.min(8, pinchScale * factor)
       );
 
-      overlayX = pinchStartX + (mid.x - pinchStartMidX);
-      overlayY = pinchStartY + (mid.y - pinchStartMidY);
+      const oldCenterX =
+        overlayX + referenceImage.width * overlayScale / 2;
 
-      const percent = Math.round(overlayScale * 100);
-      imageZoomSlider.value = Math.max(
-        25,
-        Math.min(300, percent)
+      const oldCenterY =
+        overlayY + referenceImage.height * overlayScale / 2;
+
+      overlayScale = newScale;
+
+      overlayX = oldCenterX - referenceImage.width * overlayScale / 2;
+      overlayY = oldCenterY - referenceImage.height * overlayScale / 2;
+
+      overlayX += newCenter.x - pinchCenter.x;
+      overlayY += newCenter.y - pinchCenter.y;
+
+      imageZoom.value = Math.min(
+        4,
+        Math.max(0.2, overlayScale)
       );
 
-      imageZoomText.textContent = percent + "%";
-      renderOverlay();
+      pinchCenter = newCenter;
+      pinchScale = overlayScale;
+      pinchDistance = newDistance;
     }
-  } else if (pointers.size === 1 && !imageLocked && !drawMode) {
-    const dx = point.x - lastX;
-    const dy = point.y - lastY;
 
-    overlayX += dx;
-    overlayY += dy;
-
-    lastX = point.x;
-    lastY = point.y;
-
-    renderOverlay();
+    drawOverlay();
   }
 });
 
-function pointerEnd(event) {
-  pointers.delete(event.pointerId);
+function endPointer(event) {
+  pointerMap.delete(event.pointerId);
 
-  if (pointers.size === 0) {
-    drawing = false;
-    pinchStartDistance = 0;
-  }
+  if (pointerMap.size === 1) {
+    const remaining = Array.from(pointerMap.values())[0];
 
-  if (pointers.size === 1) {
-    const remaining = Array.from(pointers.values())[0];
-    lastX = remaining.x;
-    lastY = remaining.y;
+    lastPointer = {
+      x: remaining.x,
+      y: remaining.y
+    };
+  } else {
+    lastPointer = null;
+    pinchDistance = 0;
   }
 }
 
-stage.addEventListener("pointerup", pointerEnd);
-stage.addEventListener("pointercancel", pointerEnd);
-stage.addEventListener("pointerleave", event => {
-  if (event.buttons === 0) pointerEnd(event);
+overlayCanvas.addEventListener("pointerup", endPointer);
+overlayCanvas.addEventListener("pointercancel", endPointer);
+overlayCanvas.addEventListener("pointerleave", event => {
+  if (pointerMap.has(event.pointerId)) endPointer(event);
 });
 
-/* INITIAL STATE */
+requestAnimationFrame(drawCamera);
 
-drawCanvas.style.pointerEvents = "none";
-overlayCanvas.style.pointerEvents = "auto";
-
-message.textContent = "Start kameraet og vælg et billede.";
-
+})();
 </script>
 
 </body>
