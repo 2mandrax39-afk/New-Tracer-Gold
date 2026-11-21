@@ -1,11 +1,11 @@
-
-const CACHE_NAME = "new-tracer-gold-offline-v1";
+const CACHE_NAME = "new-tracer-gold-offline-v2";
 
 const APP_FILES = [
   "./",
   "./index.html"
 ];
 
+// INSTALL: Gem appen første gang
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -14,58 +14,112 @@ self.addEventListener("install", event => {
   );
 });
 
+// ACTIVATE: Ryd kun gamle New Tracer Gold-caches
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter(key => key !== CACHE_NAME)
+          .filter(key =>
+            key.startsWith("new-tracer-gold-offline-") &&
+            key !== CACHE_NAME
+          )
           .map(key => caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
 });
 
+// FETCH: OFFLINE FIRST
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
+  const request = event.request;
 
-  const url = new URL(event.request.url);
+  if (request.method !== "GET") return;
 
+  const url = new URL(request.url);
+
+  // Kun appens eget domæne
   if (url.origin !== self.location.origin) return;
 
-  if (event.request.mode === "navigate") {
+  // Navigationsforespørgsler
+  if (request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache =>
-              cache.put("./index.html", copy)
-            );
+      caches.open(CACHE_NAME).then(async cache => {
+
+        const cachedPage = await cache.match("./index.html");
+
+        // Hent opdatering fra nettet i baggrunden
+        const networkUpdate = fetch(request)
+          .then(response => {
+            if (response.ok) {
+              cache.put("./index.html", response.clone());
+            }
+            return response;
+          })
+          .catch(() => null);
+
+        // Brug den gemte side med det samme
+        if (cachedPage) {
+          event.waitUntil(networkUpdate);
+          return cachedPage;
+        }
+
+        // Første besøg kræver internet
+        const response = await networkUpdate;
+
+        if (response) return response;
+
+        return new Response(
+          "New Tracer Gold er endnu ikke gemt offline. Åbn appen med internet først.",
+          {
+            status: 503,
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8"
+            }
           }
-          return response;
-        })
-        .catch(() =>
-          caches.match("./index.html")
-            .then(cached => cached || caches.match("./"))
-        )
+        );
+      })
     );
+
     return;
   }
 
+  // Andre filer: cache først
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
+    caches.open(CACHE_NAME).then(async cache => {
+      const cached = await cache.match(request);
 
-      return fetch(event.request).then(response => {
+      if (cached) {
+        // Opdater cache i baggrunden
+        fetch(request)
+          .then(response => {
+            if (response.ok && response.type === "basic") {
+              cache.put(request, response.clone());
+            }
+          })
+          .catch(() => {});
+
+        return cached;
+      }
+
+      // Hvis filen ikke findes i cache, hent den
+      try {
+        const response = await fetch(request);
+
         if (response.ok && response.type === "basic") {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache =>
-            cache.put(event.request, copy)
-          );
+          cache.put(request, response.clone());
         }
+
         return response;
-      });
+
+      } catch (error) {
+        return new Response("Offline. Filen er ikke gemt lokalt.", {
+          status: 503,
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8"
+          }
+        });
+      }
     })
   );
 });
